@@ -247,4 +247,37 @@ export namespace system {
 
     return result.value;
   }
+
+  export function callContract(contractId: Uint8Array, entryPoint: u32, contractArgs: Uint8Array): Uint8Array {
+    const args = new chain.call_contract_arguments(contractId, entryPoint, contractArgs);
+    const encodedArgs = Protobuf.encode(args, chain.call_contract_arguments.encode);
+    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
+
+    const len = env.invoke_system_call(system_call_id.call_contract, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const result = Protobuf.decode<chain.call_contract_result>(readBuffer, chain.call_contract_result.decode, len);
+
+    return result.value as Uint8Array;
+  }
+
+  export function getAccountRC(account: Uint8Array): u64 {
+    const args = new chain.get_account_rc_arguments(account);
+    const encodedArgs = Protobuf.encode(args, chain.get_account_rc_arguments.encode);
+    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
+
+    const len = env.invoke_system_call(system_call_id.get_account_rc, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const result = Protobuf.decode<chain.get_account_rc_result>(readBuffer, chain.get_account_rc_result.decode, len);
+
+    return result.value;
+  }
+
+  export function getTransactionSignature(): Uint8Array {
+    const args = new chain.get_transaction_signature_arguments();
+    const encodedArgs = Protobuf.encode(args, chain.get_transaction_signature_arguments.encode);
+    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
+
+    const len = env.invoke_system_call(system_call_id.get_transaction_signature, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const result = Protobuf.decode<chain.get_transaction_signature_result>(readBuffer, chain.get_transaction_signature_result.decode, len);
+
+    return result.value as Uint8Array;
+  }
 }
