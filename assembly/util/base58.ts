@@ -1,4 +1,4 @@
-export namespace base58 {
+export namespace Base58 {
   /**
    * Encode Uint8Array as a base58 string.
    * @param bytes Byte array of type Uint8Array.

@@ -1,8 +1,8 @@
-export namespace util {
+export namespace StringBytes {
   /**
-   * Convert a given string into a Uint8Array encoded as UTF-8.
-   * @param s data to encode
-   */
+ * Convert a given string into a Uint8Array encoded as UTF-8.
+ * @param s data to encode
+ */
   export function stringToBytes(s: string): Uint8Array {
     let len = String.UTF8.byteLength(s, true) - 1;
     let bytes = new Uint8Array(len);

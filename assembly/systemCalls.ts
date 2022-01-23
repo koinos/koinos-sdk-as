@@ -1,12 +1,12 @@
-import { env } from "./env/env";
+import { env } from "./env";
 import { Protobuf } from 'as-proto';
 import { chain } from "./protos/chain";
 import { system_call_id } from "./protos/system_call_ids";
-import { util } from ".";
+import { StringBytes } from "./util";
 
 const MAX_BUFFER_SIZE = 2 ** 10;
 
-export namespace system {
+export namespace System {
   export function getEntryPoint(): u32 {
     const args = new chain.get_entry_point_arguments();
     const encodedArgs = Protobuf.encode(args, chain.get_entry_point_arguments.encode);
@@ -148,7 +148,7 @@ export namespace system {
     if (key instanceof Uint8Array) {
       finalKey = key;
     } else if (typeof key === "string") {
-      finalKey = util.stringToBytes(key);
+      finalKey = StringBytes.stringToBytes(key);
     } else {
       print('key type is not supported');
       exitContract(1);
@@ -158,7 +158,7 @@ export namespace system {
     if (obj instanceof Uint8Array) {
       finalObj = obj;
     } else if (typeof obj == 'string') {
-      finalKey = util.stringToBytes(obj);
+      finalKey = StringBytes.stringToBytes(obj);
     } else {
       print('obj type is not supported');
       exitContract(1);
@@ -185,7 +185,7 @@ export namespace system {
     if (key instanceof Uint8Array) {
       finalKey = key;
     } else if (typeof key == 'string') {
-      finalKey = util.stringToBytes(key);
+      finalKey = StringBytes.stringToBytes(key);
     } else {
       print('key type is not supported');
       exitContract(1);
@@ -209,7 +209,7 @@ export namespace system {
       finalKey = key;
     } else if (typeof key == 'string') {
       // @ts-ignore
-      finalKey = util.stringToBytes(key);
+      finalKey = stringToBytes(key);
     } else {
       print('key type is not supported');
       exitContract(1);
@@ -231,7 +231,7 @@ export namespace system {
     if (key instanceof Uint8Array) {
       finalKey = key;
     } else if (typeof key == 'string') {
-      finalKey = util.stringToBytes(key);
+      finalKey = StringBytes.stringToBytes(key);
     } else {
       print('key type is not supported');
       exitContract(1);
