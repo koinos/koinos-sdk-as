@@ -280,4 +280,16 @@ export namespace system {
 
     return result.value as Uint8Array;
   }
-}
+
+  export function assert<T>(isTrueish: T, message?: string): T {
+
+    if (!isTrueish) {
+      if (message) {
+        print(message);
+      }
+      exitContract(1);
+    }
+
+    return isTrueish;
+  }
+ }
