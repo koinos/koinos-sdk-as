@@ -1,7 +1,7 @@
 import { env } from "./env";
 import { Protobuf } from 'as-proto';
-import { chain } from "./protos/chain";
-import { system_call_id } from "./protos/system_call_ids";
+import { chain } from "./proto/chain";
+import { system_call_id } from "./proto/system_call_ids";
 import { StringBytes } from "./util";
 
 const MAX_BUFFER_SIZE = 2 ** 10;
