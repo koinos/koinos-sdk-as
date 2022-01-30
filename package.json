@@ -1,6 +1,6 @@
 {
   "name": "koinos-cdt-as",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "main": "assembly/index.ts",
   "license": "MIT",
   "author": "Roamin Roe <roamin@tuta.io>",
@@ -21,6 +21,7 @@
     "asbuild:untouched": "asc assembly/index.ts --target debug --use abort=",
     "asbuild:optimized": "asc assembly/index.ts --target release --use abort=",
     "asbuild": "npm run lint && npm run asbuild:untouched && npm run asbuild:optimized",
-    "lint": "eslint --max-warnings 0 --ext ts \"assembly/**/*.ts\""
+    "lint": "eslint --max-warnings 0 --ext ts \"assembly/**/*.ts\"",
+    "compileTransform": "tsc tools/koinos-contract-transform.ts"
   }
 }
