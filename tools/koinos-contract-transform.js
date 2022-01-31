@@ -17,18 +17,14 @@ var __extends = (this && this.__extends) || (function () {
 var transform_1 = require("assemblyscript/cli/transform");
 var assemblyscript_1 = require("assemblyscript");
 var fs_1 = require("fs");
+var crypto = require("crypto");
 var CONTRACT_PATH = process.env.CONTRACT_PATH;
 var CONTRACT_DECORATOR = 'contract';
 var ENTRY_POINT_DECORATOR = 'entry_point';
 var INDEX_TS_FILE_PATH = CONTRACT_PATH + '/assembly/index.ts';
 var CONTRACT_ENTRY_POINT_TEMPLATE_PATH = './node_modules/koinos-cdt-as/templates/template.ts';
-var CONTRACT_ABI_PATH = CONTRACT_PATH + '/abi/contract.abi';
 var nbContractClass = 0;
 var entryPoints = [];
-var ABI = {
-    methods: {},
-    types: ""
-};
 var KoinosContractTransform = /** @class */ (function (_super) {
     __extends(KoinosContractTransform, _super);
     function KoinosContractTransform() {
@@ -39,10 +35,6 @@ var KoinosContractTransform = /** @class */ (function (_super) {
         // delete generated index.ts file
         if ((0, fs_1.existsSync)(INDEX_TS_FILE_PATH)) {
             (0, fs_1.unlinkSync)(INDEX_TS_FILE_PATH);
-        }
-        // delete generated contract.abi file
-        if ((0, fs_1.existsSync)(CONTRACT_ABI_PATH)) {
-            (0, fs_1.unlinkSync)(CONTRACT_ABI_PATH);
         }
         // load template
         var contractEntryPointTemplate = (0, fs_1.readFileSync)(CONTRACT_ENTRY_POINT_TEMPLATE_PATH).toString();
@@ -79,14 +71,7 @@ var KoinosContractTransform = /** @class */ (function (_super) {
                         var typesClassNames_1 = [];
                         entryPoints.forEach(function (et) {
                             var entryPointName = et.name;
-                            // extract entry point details for ABI generation
-                            var entryPointDecorator = et.decoratorNodes.find(function (d) { return d.decoratorKind === assemblyscript_1.DecoratorKind.CUSTOM && d.name.text == ENTRY_POINT_DECORATOR; });
-                            if (!entryPointDecorator.args || entryPointDecorator.args.length < 2) {
-                                throw new Error("Entry point \"".concat(entryPointName, "\" is missing parameters"));
-                            }
-                            var entryPoindIndex = entryPointDecorator.args[0].value;
-                            var entryPointDescription = entryPointDecorator.args[1].value;
-                            var entryPointReadOnly = (entryPointDecorator.args[2].text === 'true');
+                            var entryPoindIndex = "0x".concat(crypto.createHash('sha256').update(entryPointName).digest('hex')).slice(0, 10);
                             var signature = et.declaration.signature;
                             // parse parameters
                             if (signature.parameters.length !== 1) {
@@ -118,14 +103,7 @@ var KoinosContractTransform = /** @class */ (function (_super) {
                             }
                             var entryPointTemplate = "\n    case ".concat(entryPoindIndex, ": {\n      const args = Protobuf.decode<").concat(paramType, ">(rdbuf, ").concat(paramType, ".decode);\n      const res = c.").concat(entryPointName, "(args);\n      retbuf = Protobuf.encode(res, ").concat(returnType, ".encode);\n      break;\n    }\n              ");
                             entryPointTemplates_1 += entryPointTemplate;
-                            _this.log("Generated entry point \"".concat(entryPointName, "(").concat(entryPoindIndex, ")\": ").concat(entryPointDescription, " (\"").concat(entryPointName, "(").concat(paramType, "):").concat(returnType, "\")"));
-                            ABI.methods[entryPointName] = {
-                                argument: paramType,
-                                "return": returnType,
-                                entry_point: entryPoindIndex,
-                                description: entryPointDescription,
-                                "read-only": entryPointReadOnly
-                            };
+                            _this.log("Generated entry point \"".concat(entryPointName, "(").concat(entryPoindIndex, ")\": (\"").concat(entryPointName, "(").concat(paramType, "):").concat(returnType, "\")"));
                         });
                         // @ts-ignore
                         contractEntryPointTemplate = contractEntryPointTemplate.replaceAll('##_CONTRACT_CLASS_NAME_##', contractClassName);
@@ -135,10 +113,6 @@ var KoinosContractTransform = /** @class */ (function (_super) {
                         contractEntryPointTemplate = contractEntryPointTemplate.replaceAll('##_CONTRACT_ENTRY_POINTS_##', entryPointTemplates_1);
                         (0, fs_1.writeFileSync)(INDEX_TS_FILE_PATH, contractEntryPointTemplate);
                         _this.log("Saved Generated \"index.ts\" file in \"".concat(INDEX_TS_FILE_PATH, "\""));
-                        // generate types for ABI
-                        ABI.types = (0, fs_1.readFileSync)("".concat(CONTRACT_PATH, "/assembly/proto/").concat(contractClassName, ".pb")).toString('base64');
-                        (0, fs_1.writeFileSync)(CONTRACT_ABI_PATH, JSON.stringify(ABI, null, 4));
-                        _this.log("Saved Generated ABI file \"contract.abi\" file in \"".concat(CONTRACT_ABI_PATH, "\""));
                     }
                 }
             }
