@@ -1,6 +1,6 @@
 {
   "name": "koinos-cdt-as",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "main": "assembly/index.ts",
   "license": "MIT",
   "author": "Roamin Roe <roamin@tuta.io>",

@@ -1,5 +1,5 @@
 import { env } from "./env";
-import { Protobuf } from 'as-proto';
+import { Protobuf, Reader, Writer } from 'as-proto';
 import { chain } from "./proto/chain";
 import { system_call_id } from "./proto/system_call_ids";
 import { StringBytes } from "./util";
@@ -25,7 +25,11 @@ export namespace System {
     const len = env.invokeSystemCall(system_call_id.get_contract_arguments, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
     const result = Protobuf.decode<chain.get_contract_arguments_result>(readBuffer, chain.get_contract_arguments_result.decode, len);
 
-    return result.value as Uint8Array;
+    if (result.value) {
+      return result.value as Uint8Array;
+    }
+
+    return new Uint8Array(0);
   }
 
   export function getContractArgumentsSize(): u32 {
@@ -82,7 +86,11 @@ export namespace System {
     const len = env.invokeSystemCall(system_call_id.hash, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
     const result = Protobuf.decode<chain.hash_result>(readBuffer, chain.hash_result.decode, len);
 
-    return result.value as Uint8Array;
+    if (result.value) {
+      return result.value as Uint8Array;
+    }
+
+    return new Uint8Array(0);
   }
 
   export function recoverPublicKey(signatureData: Uint8Array, digest: Uint8Array): Uint8Array {
@@ -93,7 +101,11 @@ export namespace System {
     const len = env.invokeSystemCall(system_call_id.recover_public_key, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
     const result = Protobuf.decode<chain.recover_public_key_result>(readBuffer, chain.recover_public_key_result.decode, len);
 
-    return result.value as Uint8Array;
+    if (result.value) {
+      return result.value as Uint8Array;
+    }
+
+    return new Uint8Array(0);
   }
 
   export function getLastIrreversibleBlock(): u64 {
@@ -114,8 +126,8 @@ export namespace System {
 
     const len = env.invokeSystemCall(system_call_id.get_caller, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
     const result = Protobuf.decode<chain.get_caller_result>(readBuffer, chain.get_caller_result.decode, len);
-    
-    return result.value as chain.caller_data; 
+
+    return result.value as chain.caller_data;
   }
 
   export function requireAuthority(account: Uint8Array): void {
@@ -138,12 +150,12 @@ export namespace System {
   }
 
   /**
-   * Store an object
+   * Store bytes (Uint8Array)
    * @param { string | Uint8Array } key key of object to store (string or Uint8Array)
-   * @param { string | Uint8Array } obj object to store (string or Uint8Array)
-   * @returns { bool } key already exists
+   * @param { Uint8Array } obj bytes to store (Uint8Array)
+   * @returns { bool } key already existed
    */
-  export function putObject<K, V>(space: chain.object_space, key: K, obj: V): bool {
+  export function putBytes<K>(space: chain.object_space, key: K, obj: Uint8Array): bool {
     let finalKey: Uint8Array;
     if (key instanceof Uint8Array) {
       finalKey = key;
@@ -154,18 +166,8 @@ export namespace System {
       exitContract(1);
     }
 
-    let finalObj: Uint8Array;
-    if (obj instanceof Uint8Array) {
-      finalObj = obj;
-    } else if (typeof obj == 'string') {
-      finalKey = StringBytes.stringToBytes(obj);
-    } else {
-      print('obj type is not supported');
-      exitContract(1);
-    } 
-
     // @ts-ignore
-    const args = new chain.put_object_arguments(space, finalKey, finalObj);
+    const args = new chain.put_object_arguments(space, finalKey, obj);
     const encodedArgs = Protobuf.encode(args, chain.put_object_arguments.encode);
     const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
@@ -176,11 +178,31 @@ export namespace System {
   }
 
   /**
-   * Store an object
-   * @param { string | Uint8Array } key key of object to store
-   * @param { string | Uint8Array } obj object to store
+   * Store proto object
+   * @param { string | Uint8Array } key key of object to store (string or Uint8Array)
+   * @param { TMessage } obj object to store (string or Uint8Array)
+   * @returns { bool } key already existed
    */
-  export function getObject<K>(space: chain.object_space, key: K): Uint8Array | null {
+  export function putObject<K, TMessage>(
+    space: chain.object_space,
+    key: K,
+    obj: TMessage,
+    encoder: (message: TMessage, writer: Writer) => void
+  ): bool {
+    let finalObj = Protobuf.encode<TMessage>(obj, encoder);
+
+    return putBytes(space, key, finalObj);
+  }
+
+  /**
+   * Get bytes (Uint8Array)
+   * @param { string | Uint8Array } key key of object
+   * @returns bytes (Uint8Array)
+   */
+  export function getBytes<K>(
+    space: chain.object_space,
+    key: K
+  ): Uint8Array | null {
     let finalKey: Uint8Array;
     if (key instanceof Uint8Array) {
       finalKey = key;
@@ -190,7 +212,7 @@ export namespace System {
       print('key type is not supported');
       exitContract(1);
     }
-  
+
     // @ts-ignore
     const args = new chain.get_object_arguments(space, finalKey);
     const encodedArgs = Protobuf.encode(args, chain.get_object_arguments.encode);
@@ -199,34 +221,42 @@ export namespace System {
     const len = env.invokeSystemCall(system_call_id.get_object, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
     const result = Protobuf.decode<chain.get_object_result>(readBuffer, chain.get_object_result.decode, len);
 
-    return result.value;
-  }
-
-  export function getPrevObject<K>(space: chain.object_space, key: K): Uint8Array | null {
-    let finalKey: Uint8Array;
-
-    if (key instanceof Uint8Array) {
-      finalKey = key;
-    } else if (typeof key == 'string') {
-      // @ts-ignore
-      finalKey = stringToBytes(key);
-    } else {
-      print('key type is not supported');
-      exitContract(1);
+    if (result.value) {
+      return result.value as Uint8Array;
     }
-  
-    // @ts-ignore
-    const args = new chain.get_prev_object_arguments(space, finalKey);
-    const encodedArgs = Protobuf.encode(args, chain.get_prev_object_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_id.get_object, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<chain.get_prev_object_result>(readBuffer, chain.get_prev_object_result.decode, len);
-
-    return result.value;
+    return null;
   }
 
-  export function getNextObject<K>(space: chain.object_space, key: K): Uint8Array | null {
+  /**
+   * Get proto object
+   * @param { string | Uint8Array } key key of object
+   * @returns proto object (TMessage)
+   */
+  export function getObject<K, TMessage>(
+    space: chain.object_space,
+    key: K,
+    decoder: (reader: Reader, length: i32) => TMessage
+  ): TMessage | null {
+
+    const value = getBytes(space, key);
+
+    if (!value) {
+      return null;
+    }
+
+    return Protobuf.decode<TMessage>(value, decoder);
+  }
+
+  /**
+   * Get next bytes (Uint8Array)
+   * @param { string | Uint8Array } key key of object
+   * @returns bytes (Uint8Array)
+   */
+  export function getNextBytes<K>(
+    space: chain.object_space,
+    key: K
+  ): Uint8Array | null {
     let finalKey: Uint8Array;
     if (key instanceof Uint8Array) {
       finalKey = key;
@@ -242,10 +272,88 @@ export namespace System {
     const encodedArgs = Protobuf.encode(args, chain.get_next_object_arguments.encode);
     const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_id.get_object, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const len = env.invokeSystemCall(system_call_id.get_next_object, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
     const result = Protobuf.decode<chain.get_next_object_result>(readBuffer, chain.get_next_object_result.decode, len);
+    
+    if (result.value) {
+      return result.value as Uint8Array;
+    }
 
-    return result.value;
+    return null;
+  }
+
+  /**
+   * Get next proto object
+   * @param { string | Uint8Array } key key of object
+   * @returns proto object (TMessage)
+   */
+  export function getNextObject<K, TMessage>(
+    space: chain.object_space,
+    key: K,
+    decoder: (reader: Reader, length: i32) => TMessage
+  ): TMessage | null {
+
+    const value = getNextBytes(space, key);
+
+    if (!value) {
+      return null;
+    }
+
+    return Protobuf.decode<TMessage>(value, decoder);
+  }
+
+  /**
+   * Get previous bytes (Uint8Array)
+   * @param { string | Uint8Array } key key of object
+   * @returns bytes (Uint8Array)
+   */
+  export function getPrevBytes<K>(
+    space: chain.object_space,
+    key: K
+  ): Uint8Array | null {
+    let finalKey: Uint8Array;
+    if (key instanceof Uint8Array) {
+      finalKey = key;
+    } else if (typeof key == 'string') {
+      finalKey = StringBytes.stringToBytes(key);
+    } else {
+      print('key type is not supported');
+      exitContract(1);
+    }
+
+    // @ts-ignore
+    const args = new chain.get_prev_object_arguments(space, finalKey);
+    const encodedArgs = Protobuf.encode(args, chain.get_prev_object_arguments.encode);
+    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
+
+    const len = env.invokeSystemCall(system_call_id.get_prev_object, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const result = Protobuf.decode<chain.get_prev_object_result>(readBuffer, chain.get_prev_object_result.decode, len);
+    
+    if (result.value) {
+      return result.value as Uint8Array;
+    }
+
+    return null;
+  }
+
+  /**
+   * Get previous proto object
+   * @param { string | Uint8Array } key key of object
+   * @returns proto object (TMessage)
+   */
+  export function getPrevObject<K, TMessage>(
+    space: chain.object_space,
+    key: K,
+    decoder: (reader: Reader, length: i32) => TMessage
+  ): TMessage | null {
+
+    const value = getPrevBytes(space, key);
+
+    if (!value) {
+      return null;
+    }
+
+    return Protobuf.decode<TMessage>(value, decoder);
   }
 
   export function callContract(contractId: Uint8Array, entryPoint: u32, contractArgs: Uint8Array): Uint8Array {
@@ -256,7 +364,11 @@ export namespace System {
     const len = env.invokeSystemCall(system_call_id.call_contract, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
     const result = Protobuf.decode<chain.call_contract_result>(readBuffer, chain.call_contract_result.decode, len);
 
-    return result.value as Uint8Array;
+    if (result.value) {
+      return result.value as Uint8Array;
+    }
+
+    return new Uint8Array(0);
   }
 
   export function getAccountRC(account: Uint8Array): u64 {
@@ -292,4 +404,4 @@ export namespace System {
 
     return isTrueish;
   }
- }
+}
