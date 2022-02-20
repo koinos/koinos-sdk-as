@@ -1,4 +1,5 @@
 # koinos-cdt-as
+AssemblyScript (AS) Contract Development Toolkit (CDT) for the Koinos Blockchain
 
 ## Installation
 

@@ -366,10 +366,13 @@ export namespace System {
     env.invokeSystemCall(system_call_id.require_authority, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
   }
 
-  export function assert<T>(isTrueish: T): T {
+  export function require<T>(isTrueish: T, message: string = "", exitCode: i32 = 0): T {
 
     if (!isTrueish) {
-      exitContract(1);
+      if (message != "") {
+        log(message);
+      }
+      exitContract(exitCode);
     }
 
     return isTrueish;

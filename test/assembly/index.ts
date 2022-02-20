@@ -5,6 +5,7 @@ import { System, Protobuf, Base58, Base64, Crypto, StringBytes, chain, common, a
 export function main(): i32 {
   const entryPoint = System.getEntryPoint();
   System.log('entryPoint: ' + entryPoint.toString());
+  System.require(entryPoint == 0xc3ab8ff1, `expected entry point "0xc3ab8ff1", got "${entryPoint}"`);
 
   const rdbuf = System.getContractArguments();
   const contractArgs = Protobuf.decode<foobar.foobar_arguments>(rdbuf, foobar.foobar_arguments.decode);
@@ -39,6 +40,7 @@ export function main(): i32 {
   if (obj) {
     const strObj = StringBytes.bytesToString(obj) as string;
     System.log('obj: ' + strObj);
+    System.require(strObj == 'testValue', `expected "testValue", got "${strObj}"`);
   }
 
   const contractSpace2 = new chain.object_space(false, contractId, 2);
@@ -50,6 +52,7 @@ export function main(): i32 {
   if (obj2) {
     const strObj = StringBytes.bytesToString(obj2) as string;
     System.log('obj: ' + strObj);
+    System.require(strObj == 'testValue2', `expected "testValue2", got "${strObj}"`);
   }
 
   const obj3 = System.getBytes(contractSpace2, StringBytes.stringToBytes('testKey'));
@@ -57,6 +60,7 @@ export function main(): i32 {
   if (obj3) {
     const strObj = StringBytes.bytesToString(obj3) as string;
     System.log('obj: ' + strObj);
+    System.require(strObj == 'testValue2', `expected "testValue2", got "${strObj}"`);
   }
 
   const contractSpace3 = new chain.object_space(false, contractId, 3);
@@ -69,6 +73,7 @@ export function main(): i32 {
   const obj5 = System.getObject<string, test.test_object>(contractSpace3, "test", test.test_object.decode);
   if (obj5) {
     System.log('obj5.value: ' + obj5.value.toString());
+    System.require(obj5.value == 42, `expected "42", got "${obj5.value}"`);
   }
 
   const message = 'hello-world';
@@ -78,12 +83,13 @@ export function main(): i32 {
   const addr = Crypto.addressFromPublicKey(recoveredKey as Uint8Array);
   System.log('recoveredKey (b58): ' + Base58.encode(addr));
 
-  System.assert('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe' == Base58.encode(addr));  
+  System.require('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe' == Base58.encode(addr), `expected "1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe", got "${Base58.encode(addr)}"`);
 
   let verify = System.verifySignature(recoveredKey as Uint8Array, signatureData, digest as Uint8Array);
-  System.assert(verify == true);  
+  System.require(verify == true, `expected "true", got "${verify}"`);
+
   verify = System.verifySignature(addr, signatureData, digest as Uint8Array);
-  System.assert(verify == false);  
+  System.require(verify == false, `expected "false", got "${verify}"`);
 
   const contractSpace100 = new chain.object_space(false, contractId, 100);
   System.putBytes(contractSpace100, StringBytes.stringToBytes('key3'), StringBytes.stringToBytes('value3'));
@@ -93,38 +99,49 @@ export function main(): i32 {
   let obj100 = System.getBytes(contractSpace100, StringBytes.stringToBytes('key2'));
 
   if (obj100) {
-    System.log(StringBytes.bytesToString(obj100) as string);
+    const str = StringBytes.bytesToString(obj100) as string;
+    System.log(str);
+    System.require(str == 'value2', `expected "value2", got "${str}"`);
   }
 
   obj100 = System.getBytes(contractSpace100, StringBytes.stringToBytes('key5'));
+  System.require(!obj100, `expected "null", got "obj100"`);
 
   if (obj100) {
-    System.log(StringBytes.bytesToString(obj100) as string);
-  } else {
     System.log('no key5');
   }
 
   let obj101 = System.getNextBytes(contractSpace100, StringBytes.stringToBytes('key2'));
 
   if (obj101) {
-    System.log(StringBytes.bytesToString(obj101.value) as string);
-    System.log(StringBytes.bytesToString(obj101.key) as string);
+    const key = StringBytes.bytesToString(obj101.key) as string;
+    System.log(key);
+    System.require(key == 'key3', `expected "key3", got "${key}"`);
+    const val = StringBytes.bytesToString(obj101.value) as string;
+    System.log(val);
+    System.require(val == 'value3', `expected "value3", got "${val}"`);
   }
 
   let obj102 = System.getPrevBytes(contractSpace100, StringBytes.stringToBytes('key2'));
 
   if (obj102) {
-    System.log(StringBytes.bytesToString(obj102.value) as string);
-    System.log(StringBytes.bytesToString(obj102.key) as string);
+    const key = StringBytes.bytesToString(obj102.key) as string;
+    System.log(key);
+    System.require(key == 'key1', `expected "key1", got "${key}"`);
+    const val = StringBytes.bytesToString(obj102.value) as string;
+    System.log(val);
+    System.require(val == 'value1', `expected "value1", got "${val}"`);
   }
 
   let obj103 = System.getPrevBytes(contractSpace100, StringBytes.stringToBytes('key1'));
+  System.require(!obj103, `expected "null", got "obj103"`);
 
   if (!obj103) {
     System.log('nothing before key1');
   }
 
   let obj104 = System.getNextBytes(contractSpace100, StringBytes.stringToBytes('key3'));
+  System.require(!obj104, `expected "null", got "obj104"`);
 
   if (!obj104) {
     System.log('nothing after key3');
@@ -142,27 +159,32 @@ export function main(): i32 {
 
   if (obj201) {
     System.log('obj201.value: ' + obj201.value.toString());
+    System.require(obj201.value == 200, `expected "200", got "${obj201.value}"`);
   }
 
   let obj202 = System.getNextObject<string, test.test_object>(contractSpace100, 'key2', test.test_object.decode);
 
   if (obj202) {
     System.log('next obj202.value: ' + obj202.value.value.toString());
+    System.require(obj202.value.value == 300, `expected "300", got "${obj202.value.value}"`);
   }
 
   obj202 = System.getPrevObject<string, test.test_object>(contractSpace100, 'key2', test.test_object.decode);
 
   if (obj202) {
     System.log('prev obj202.value: ' + obj202.value.value.toString());
+    System.require(obj202.value.value == 100, `expected "100", got "${obj202.value.value}"`);
   }
 
   obj202 = System.getPrevObject<string, test.test_object>(contractSpace100, 'key1', test.test_object.decode);
+  System.require(!obj202, `expected "null" for prev "key1", got "obj202"`);
 
   if (!obj202) {
     System.log('nothing before key1');
   }
 
   obj202 = System.getNextObject<string, test.test_object>(contractSpace100, 'key3', test.test_object.decode);
+  System.require(!obj202, `expected "null" for next "key3", got "obj202"`);
 
   if (!obj202) {
     System.log('nothing after key3');
@@ -177,11 +199,11 @@ export function main(): i32 {
     System.log("payer: " + Base58.encode(txField.bytes_value as Uint8Array));
   }
 
-  // const impacted: Uint8Array[] = [];
-  // impacted.push(Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe'));
-  // impacted.push(Base58.decode('2DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe'));
+  const impacted: Uint8Array[] = [];
+  impacted.push(Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe'));
+  impacted.push(Base58.decode('2DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe'));
 
-  // System.event('my_event', StringBytes.stringToBytes('my_event_data'), impacted);
+  System.event('my_event', StringBytes.stringToBytes('my_event_data'), impacted);
 
   // const b = System.getBlock();
   // const blheader = b.header as protocol.block_header;
