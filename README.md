@@ -20,7 +20,7 @@ npm run buildTest
 yarn run buildTest
 ```
 
-## Upload and trigger test contract
+## Upload and trigger the test contract on a local devnet using [Local-Koinos](https://github.com/roaminroe/local-koinos)
 ```sh
 🚫 🔐 > open wallets/bob.wallet bob
 Opened wallet: wallets/bob.wallet

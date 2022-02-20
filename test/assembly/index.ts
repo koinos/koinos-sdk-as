@@ -1,5 +1,6 @@
 import { test } from "./proto/test";
 import { foobar } from "./proto/foobar";
+import { token as koin, token } from "./proto/token";
 import { System, Protobuf, Base58, Base64, Crypto, StringBytes, chain, common, authority, protocol } from "../../assembly";
 
 export function main(): i32 {
@@ -199,11 +200,38 @@ export function main(): i32 {
     System.log("payer: " + Base58.encode(txField.bytes_value as Uint8Array));
   }
 
-  const impacted: Uint8Array[] = [];
-  impacted.push(Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe'));
-  impacted.push(Base58.decode('2DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe'));
+  // Transfer 10 tKOIN to 1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe
+  const koinContractId = Base58.decode("1NvZvWNqDX7t93inmLBvbv6kxhpEZYRFWK");
+  const tranferEntryPoint = 0x62efa292;
+  const from = contractId; // this contract
+  const to = Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe");
+  const amount = 10 * 10 ** 8; // needs to be multiplied by 10^8 because Koin is 8 decimals
 
-  System.event('my_event', StringBytes.stringToBytes('my_event_data'), impacted);
+  const koinTransferArgs = new koin.transfer_arguments();
+  koinTransferArgs.from = from;
+  koinTransferArgs.to = to;
+  koinTransferArgs.value = amount;
+
+  const resBuf = System.callContract(koinContractId, tranferEntryPoint, Protobuf.encode(koinTransferArgs, koin.transfer_arguments.encode));
+  System.require(resBuf, `expected resBuf not "null", got "null"`);
+
+  if (resBuf) {
+    const transferRes = Protobuf.decode<koin.transfer_result>(resBuf, koin.transfer_result.decode);
+    System.require(transferRes.value, `expected transfer not "true", got "false"`);
+
+    const impacted: Uint8Array[] = [];
+    impacted.push(from);
+    impacted.push(to);
+
+    const transferEvent = new token.transfer_event();
+    transferEvent.from = from;
+    transferEvent.to = to;
+    transferEvent.value = amount;
+
+    System.event('koin.transfer', Protobuf.encode(transferEvent, token.transfer_event.encode), impacted);
+
+    System.log(`transfered ${amount / 10 ** 8} tKoin from ${Base58.encode(from)} to ${Base58.encode(to)}`);
+  }
 
   // const b = System.getBlock();
   // const blheader = b.header as protocol.block_header;
