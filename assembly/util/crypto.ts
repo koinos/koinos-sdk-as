@@ -119,7 +119,7 @@ export namespace Crypto {
     ripemd160.deserialize(System.hash(multicodec.ripemd_160, sha256.digest) as Uint8Array);
 
     let tmpAddr = new Uint8Array(ripemd160.digest.byteLength + 1);
-    tmpAddr[0] = DEFAULT_PREFIX;
+    tmpAddr[0] = prefix;
     memory.copy(tmpAddr.dataStart + 1, ripemd160.digest.dataStart, ripemd160.digest.byteLength);
  
     sha256.deserialize(System.hash(multicodec.sha2_256, tmpAddr) as Uint8Array);
