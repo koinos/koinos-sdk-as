@@ -228,7 +228,7 @@ export namespace System {
     env.invokeSystemCall(system_call_id.log, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
   }
 
-  export function event(name: string, data: Uint8Array, impacted: Array<Uint8Array>): void {
+  export function event(name: string, data: Uint8Array, impacted: Uint8Array[]): void {
     const args = new system_calls.event_arguments(name, data, impacted);
     const encodedArgs = Protobuf.encode(args, system_calls.event_arguments.encode);
     const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
