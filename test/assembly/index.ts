@@ -233,14 +233,20 @@ export function main(): i32 {
     System.log(`transfered ${amount / 10 ** 8} tKoin from ${Base58.encode(from)} to ${Base58.encode(to)}`);
   }
 
-  // const b = System.getBlock();
-  // const blheader = b.header as protocol.block_header;
-  // System.log("signer: " + Base58.encode((blheader.signer) as Uint8Array));
+  const b = System.getBlock();
+  const blheader = b.header as protocol.block_header;
+  System.log("signer: " + Base58.encode((blheader.signer) as Uint8Array));
+  System.require('1GXe3r3VmkKAEhj6C156jPxQC8p1xbQD2i' == Base58.encode(blheader.signer as Uint8Array), `expected "1GXe3r3VmkKAEhj6C156jPxQC8p1xbQD2i", got "${Base58.encode(blheader.signer as Uint8Array)}"`);
 
-  // const blField = System.getBlockField('header.signer');
-  // if (blField) {
-  //   System.log("signer: " + Base58.encode(blField.bytes_value as Uint8Array));
-  // }
+
+  const blField = System.getBlockField('header.signer');
+  System.require(blField, `expected blField not "null", got "null"`);
+
+  if (blField) {
+    System.log("signer: " + Base58.encode(blField.bytes_value as Uint8Array));
+    System.require('1GXe3r3VmkKAEhj6C156jPxQC8p1xbQD2i' == Base58.encode(blField.bytes_value as Uint8Array), `expected "1GXe3r3VmkKAEhj6C156jPxQC8p1xbQD2i", got "${Base58.encode(blField.bytes_value as Uint8Array)}"`);
+
+  }
 
   const contractRes = new foobar.foobar_result(42);
   System.setContractResult(Protobuf.encode(contractRes, foobar.foobar_result.encode));

@@ -14,7 +14,7 @@ module.exports = {
     sourceType: "module",
     ecmaFeatures: {}
   },
-
+  ignorePatterns: ["**/assembly/proto/*.ts"],
   // === General rules =========================================================
 
   rules: {
