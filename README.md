@@ -1,14 +1,14 @@
-# koinos-cdt-as
-AssemblyScript (AS) Contract Development Toolkit (CDT) for the Koinos Blockchain
+# koinos-as-sdk
+AssemblyScript (AS) Software Development Toolkit (SDK) for the Koinos Blockchain
 
 ## Installation
 
 ```sh
 # with npm
-npm install koinos-cdt-as
+npm install koinos-as-sdk
 
 # with yarn
-yarn add koinos-cdt-as
+yarn add koinos-as-sdk
 ```
 
 ## Build test contract
