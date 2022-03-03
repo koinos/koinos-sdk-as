@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package foobar;
+
+// @description foobar
+// @read-only false
+message foobar_arguments {
+    int64 value = 1;
+}
+
+message foobar_result {
+    int64 value = 1;
+}

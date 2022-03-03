@@ -1,6 +1,7 @@
 node_modules
 build
+koinos
 \.idea/
 \.vs/
-
+docs
 *.wasm

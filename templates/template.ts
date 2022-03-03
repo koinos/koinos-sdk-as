@@ -1,4 +1,4 @@
-import { System, Protobuf } from 'koinos-cdt-as';
+import { System, Protobuf } from 'koinos-as-sdk';
 import { ##_CONTRACT_CLASS_NAME_## } from './##_CONTRACT_CLASS_NAME_##';
 import { ##_CONTRACT_TYPES_CLASS_NAMES_## } from './proto/##_CONTRACT_CLASS_NAME_##';
 
