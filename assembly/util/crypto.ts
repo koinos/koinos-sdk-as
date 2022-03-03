@@ -106,6 +106,18 @@ export namespace Crypto {
     }
   }
 
+  /**
+    * Decodes an address from a public key.
+    * @param pubKey public key as a Uint8Array.
+    * @param prefix address prefix
+    * @returns Uint8Array
+    * @example
+    * ```ts
+    * const recoveredKey = System.recoverPublicKey(signatureData, digest as Uint8Array);
+    * const addr = Crypto.addressFromPublicKey(recoveredKey as Uint8Array);
+    * System.log('recoveredKey (b58): ' + Base58.encode(addr));
+    * ```
+    */
   export function addressFromPublicKey(pubKey: Uint8Array, prefix: u8 = DEFAULT_PREFIX): Uint8Array {
     // Address is:
     // 1 byte prefix

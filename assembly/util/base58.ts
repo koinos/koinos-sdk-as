@@ -1,8 +1,13 @@
 export namespace Base58 {
   /**
-   * Encode Uint8Array as a base58 string.
-   * @param bytes Byte array of type Uint8Array.
-   */
+    * Encode Uint8Array as a base58 string.
+    * @param bytes Byte array of type Uint8Array.
+    * @example
+    * ```ts
+    * const contractId = System.getContractId();
+    * System.log("contractId: " + Base58.encode(contractId));
+    * ```
+    */
   export function encode(source: Uint8Array): string {
     // Code converted from:
     // https://github.com/cryptocoinjs/base-x/blob/master/index.js
@@ -61,6 +66,14 @@ export namespace Base58 {
     return str;
   }
 
+  /**
+    * Decode a base58 string into aUint8Array
+    * @param string base58 encoded string
+    * @example
+    * ```ts
+    * const from = Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe");
+    * ```
+    */
   export function decode(string: string): Uint8Array {
     const buffer = decodeUnsafe(string);
     if (buffer) {

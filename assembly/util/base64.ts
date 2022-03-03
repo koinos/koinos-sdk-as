@@ -17,9 +17,13 @@ export namespace Base64 {
 
 
   /**
-   * Decode a base64-encoded string and return a Uint8Array.
-   * @param s Base64 encoded string.
-   */
+    * Decode a base64-encoded string and return a Uint8Array.
+    * @param s Base64 encoded string.
+    * @example
+    * ```ts
+    * const signatureData = Base64.decode('IHhJwlD7P-o6x7L38den1MnumUhnYmNhTZhIUQQhezvEMf7rx89NbIIioNCIQSk1PQYdQ9mOI4-rDYiwO2pLvM4=');
+    * ```
+    */
   export function decode(s: string): Uint8Array {
     let i: u32, b10: u32;
     let pads = 0,
@@ -73,9 +77,13 @@ export namespace Base64 {
   }
 
   /**
-   * Encode Uint8Array as a base64 string.
-   * @param bytes Byte array of type Uint8Array.
-   */
+    * Encode Uint8Array as a base64 string.
+    * @param bytes Byte array of type Uint8Array.
+    * @example
+    * ```ts
+    * const base64encodedStr = Base64.encode('Hello world!');
+    * ```
+    */
   export function encode(bytes: Uint8Array): string {
     let i: i32, b10: u32;
 
