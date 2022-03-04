@@ -53,6 +53,7 @@ obj: testValue2
 obj: testValue2
 putRes3: 0
 obj5.value: 42
+no obj5
 recoveredKey (b58): 1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe
 value2
 no key5
