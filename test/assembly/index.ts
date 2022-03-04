@@ -71,11 +71,23 @@ export function main(): i32 {
   const putRes3 = System.putObject(contractSpace3, "test", obj4, test.test_object.encode);
   System.log('putRes3: ' + putRes3.toString());
 
-  const obj5 = System.getObject<string, test.test_object>(contractSpace3, "test", test.test_object.decode);
+  let obj5 = System.getObject<string, test.test_object>(contractSpace3, "test", test.test_object.decode);
+  System.require(obj5, `expected "obj5", got "null"`);
+
   if (obj5) {
     System.log('obj5.value: ' + obj5.value.toString());
     System.require(obj5.value == 42, `expected "42", got "${obj5.value}"`);
   }
+
+  System.removeObject(contractSpace3, "test");
+
+  obj5 = System.getObject<string, test.test_object>(contractSpace3, "test", test.test_object.decode);
+  System.require(!obj5, `expected "null", got "obj5"`);
+
+  if (!obj5) {
+    System.log('no obj5');
+  }
+
 
   const message = 'hello-world';
   const signatureData = Base64.decode('IHhJwlD7P-o6x7L38den1MnumUhnYmNhTZhIUQQhezvEMf7rx89NbIIioNCIQSk1PQYdQ9mOI4-rDYiwO2pLvM4=');
@@ -108,7 +120,7 @@ export function main(): i32 {
   obj100 = System.getBytes(contractSpace100, StringBytes.stringToBytes('key5'));
   System.require(!obj100, `expected "null", got "obj100"`);
 
-  if (obj100) {
+  if (!obj100) {
     System.log('no key5');
   }
 

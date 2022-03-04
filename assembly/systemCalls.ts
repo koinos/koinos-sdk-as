@@ -705,6 +705,36 @@ export namespace System {
   }
 
   /**
+    * Remove an object
+    * @param { chain.object_space } space space where to put the byets
+    * @param { string | Uint8Array } key key of the bytes to store (string or Uint8Array)
+    * @example
+    * ```ts
+    * const contractId = System.getContractId();
+    * const contractSpace = new chain.object_space(false, contractId, 1);
+    *
+    * System.removeObject(contractSpace, 'testKey');
+    * ```
+    */
+  export function removeObject<K>(space: chain.object_space, key: K): void {
+    let finalKey: Uint8Array;
+    if (key instanceof Uint8Array) {
+      finalKey = key;
+    } else if (typeof key === "string") {
+      finalKey = StringBytes.stringToBytes(key);
+    } else {
+      exitContract(1);
+    }
+
+    // @ts-ignore
+    const args = new system_calls.remove_object_arguments(space, finalKey);
+    const encodedArgs = Protobuf.encode(args, system_calls.remove_object_arguments.encode);
+    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
+
+    env.invokeSystemCall(system_call_id.remove_object, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+  }
+
+  /**
     * Get bytes (Uint8Array)
     * @param { chain.object_space } space space where to get the object
     * @param { string | Uint8Array } key key of object to get
