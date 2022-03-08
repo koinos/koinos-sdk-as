@@ -214,7 +214,7 @@ export function main(): i32 {
 
   // Transfer 10 tKOIN to 1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe
   const koinContractId = Base58.decode("1NvZvWNqDX7t93inmLBvbv6kxhpEZYRFWK");
-  const tranferEntryPoint = 0x62efa292;
+  const tranferEntryPoint = 0x27f576ca;
   const from = contractId; // this contract
   const to = Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe");
   const amount = 10 * 10 ** 8; // needs to be multiplied by 10^8 because Koin is 8 decimals
