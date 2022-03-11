@@ -811,7 +811,7 @@ export namespace System {
     return Protobuf.decode<TMessage>(value as Uint8Array, decoder);
   }
 
-  class ProtoDatabaseObject<TMessage> {
+  export class ProtoDatabaseObject<TMessage> {
     value: TMessage;
     key: Uint8Array | null;
 
