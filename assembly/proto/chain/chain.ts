@@ -66,7 +66,7 @@ export namespace chain {
       if (space !== null) {
         writer.uint32(10);
         writer.fork();
-        chain.object_space.encode(space, writer);
+        object_space.encode(space, writer);
         writer.ldelim();
       }
 
@@ -85,7 +85,7 @@ export namespace chain {
         const tag = reader.uint32();
         switch (tag >>> 3) {
           case 1:
-            message.space = chain.object_space.decode(
+            message.space = object_space.decode(
               reader,
               reader.uint32()
             );
@@ -104,11 +104,11 @@ export namespace chain {
       return message;
     }
 
-    space: chain.object_space | null;
+    space: object_space | null;
     key: Uint8Array | null;
 
     constructor(
-      space: chain.object_space | null = null,
+      space: object_space | null = null,
       key: Uint8Array | null = null
     ) {
       this.space = space;
@@ -250,11 +250,11 @@ export namespace chain {
     }
 
     caller: Uint8Array | null;
-    caller_privilege: chain.privilege;
+    caller_privilege: privilege;
 
     constructor(
       caller: Uint8Array | null = null,
-      caller_privilege: chain.privilege = 0
+      caller_privilege: privilege = 0
     ) {
       this.caller = caller;
       this.caller_privilege = caller_privilege;
@@ -476,9 +476,7 @@ export namespace chain {
       const entries = message.entries;
       for (let i = 0; i < entries.length; ++i) {
         writer.uint32(10);
-        writer.fork();
-        chain.compute_bandwidth_entry.encode(entries[i], writer);
-        writer.ldelim();
+        compute_bandwidth_entry.encode(entries[i], writer);
       }
     }
 
@@ -491,7 +489,7 @@ export namespace chain {
         switch (tag >>> 3) {
           case 1:
             message.entries.push(
-              chain.compute_bandwidth_entry.decode(
+              compute_bandwidth_entry.decode(
                 reader,
                 reader.uint32()
               )
@@ -507,9 +505,9 @@ export namespace chain {
       return message;
     }
 
-    entries: Array<chain.compute_bandwidth_entry>;
+    entries: Array<compute_bandwidth_entry>;
 
-    constructor(entries: Array<chain.compute_bandwidth_entry> = []) {
+    constructor(entries: Array<compute_bandwidth_entry> = []) {
       this.entries = entries;
     }
   }
@@ -520,7 +518,7 @@ export namespace chain {
       if (space !== null) {
         writer.uint32(10);
         writer.fork();
-        chain.object_space.encode(space, writer);
+        object_space.encode(space, writer);
         writer.ldelim();
       }
 
@@ -545,7 +543,7 @@ export namespace chain {
         const tag = reader.uint32();
         switch (tag >>> 3) {
           case 1:
-            message.space = chain.object_space.decode(
+            message.space = object_space.decode(
               reader,
               reader.uint32()
             );
@@ -568,12 +566,12 @@ export namespace chain {
       return message;
     }
 
-    space: chain.object_space | null;
+    space: object_space | null;
     key: Uint8Array | null;
     value: Uint8Array | null;
 
     constructor(
-      space: chain.object_space | null = null,
+      space: object_space | null = null,
       key: Uint8Array | null = null,
       value: Uint8Array | null = null
     ) {
@@ -588,9 +586,7 @@ export namespace chain {
       const entries = message.entries;
       for (let i = 0; i < entries.length; ++i) {
         writer.uint32(10);
-        writer.fork();
-        chain.genesis_entry.encode(entries[i], writer);
-        writer.ldelim();
+        genesis_entry.encode(entries[i], writer);
       }
     }
 
@@ -603,7 +599,7 @@ export namespace chain {
         switch (tag >>> 3) {
           case 1:
             message.entries.push(
-              chain.genesis_entry.decode(reader, reader.uint32())
+              genesis_entry.decode(reader, reader.uint32())
             );
             break;
 
@@ -616,9 +612,9 @@ export namespace chain {
       return message;
     }
 
-    entries: Array<chain.genesis_entry>;
+    entries: Array<genesis_entry>;
 
-    constructor(entries: Array<chain.genesis_entry> = []) {
+    constructor(entries: Array<genesis_entry> = []) {
       this.entries = entries;
     }
   }

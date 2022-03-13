@@ -26,12 +26,10 @@ export namespace protocol {
 
       const impacted = message.impacted;
       if (impacted.length !== 0) {
-        writer.uint32(42);
-        writer.fork();
         for (let i = 0; i < impacted.length; ++i) {
+          writer.uint32(42);
           writer.bytes(impacted[i]);
         }
-        writer.ldelim();
       }
     }
 
@@ -59,14 +57,7 @@ export namespace protocol {
             break;
 
           case 5:
-            if ((tag & 7) === 2) {
-              const repeatedEnd: usize = reader.ptr + reader.uint32();
-              while (reader.ptr < repeatedEnd) {
-                message.impacted.push(reader.bytes());
-              }
-            } else {
-              message.impacted.push(reader.bytes());
-            }
+            message.impacted.push(reader.bytes());
             break;
 
           default:
@@ -693,19 +684,15 @@ export namespace protocol {
       const operations = message.operations;
       for (let i = 0; i < operations.length; ++i) {
         writer.uint32(26);
-        writer.fork();
         operation.encode(operations[i], writer);
-        writer.ldelim();
       }
 
       const signatures = message.signatures;
       if (signatures.length !== 0) {
-        writer.uint32(34);
-        writer.fork();
         for (let i = 0; i < signatures.length; ++i) {
+          writer.uint32(34);
           writer.bytes(signatures[i]);
         }
-        writer.ldelim();
       }
     }
 
@@ -734,14 +721,7 @@ export namespace protocol {
             break;
 
           case 4:
-            if ((tag & 7) === 2) {
-              const repeatedEnd: usize = reader.ptr + reader.uint32();
-              while (reader.ptr < repeatedEnd) {
-                message.signatures.push(reader.bytes());
-              }
-            } else {
-              message.signatures.push(reader.bytes());
-            }
+            message.signatures.push(reader.bytes());
             break;
 
           default:
@@ -809,19 +789,15 @@ export namespace protocol {
       const events = message.events;
       for (let i = 0; i < events.length; ++i) {
         writer.uint32(82);
-        writer.fork();
         event_data.encode(events[i], writer);
-        writer.ldelim();
       }
 
       const logs = message.logs;
       if (logs.length !== 0) {
-        writer.uint32(90);
-        writer.fork();
         for (let i = 0; i < logs.length; ++i) {
+          writer.uint32(90);
           writer.string(logs[i]);
         }
-        writer.ldelim();
       }
     }
 
@@ -875,14 +851,7 @@ export namespace protocol {
             break;
 
           case 11:
-            if ((tag & 7) === 2) {
-              const repeatedEnd: usize = reader.ptr + reader.uint32();
-              while (reader.ptr < repeatedEnd) {
-                message.logs.push(reader.string());
-              }
-            } else {
-              message.logs.push(reader.string());
-            }
+            message.logs.push(reader.string());
             break;
 
           default:
@@ -1049,9 +1018,7 @@ export namespace protocol {
       const transactions = message.transactions;
       for (let i = 0; i < transactions.length; ++i) {
         writer.uint32(26);
-        writer.fork();
         transaction.encode(transactions[i], writer);
-        writer.ldelim();
       }
 
       const signature = message.signature;
@@ -1145,30 +1112,24 @@ export namespace protocol {
       const events = message.events;
       for (let i = 0; i < events.length; ++i) {
         writer.uint32(58);
-        writer.fork();
         event_data.encode(events[i], writer);
-        writer.ldelim();
       }
 
       const transaction_receipts = message.transaction_receipts;
       for (let i = 0; i < transaction_receipts.length; ++i) {
         writer.uint32(66);
-        writer.fork();
         transaction_receipt.encode(
           transaction_receipts[i],
           writer
         );
-        writer.ldelim();
       }
 
       const logs = message.logs;
       if (logs.length !== 0) {
-        writer.uint32(74);
-        writer.fork();
         for (let i = 0; i < logs.length; ++i) {
+          writer.uint32(74);
           writer.string(logs[i]);
         }
-        writer.ldelim();
       }
     }
 
@@ -1219,14 +1180,7 @@ export namespace protocol {
             break;
 
           case 9:
-            if ((tag & 7) === 2) {
-              const repeatedEnd: usize = reader.ptr + reader.uint32();
-              while (reader.ptr < repeatedEnd) {
-                message.logs.push(reader.string());
-              }
-            } else {
-              message.logs.push(reader.string());
-            }
+            message.logs.push(reader.string());
             break;
 
           default:

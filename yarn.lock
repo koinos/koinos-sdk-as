@@ -52,6 +52,15 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@roaminroe/as-proto-gen@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@roaminroe/as-proto-gen/-/as-proto-gen-0.3.0.tgz#7c2c4122be2e34d295ae66d5871db67bd74f29dd"
+  integrity sha512-ZQSLSmD0dHrIYxbVZ8AR9oZhdkbKM+2vc7+UjnZBRZID/BxvKIkEei7oX8DyRxsTh544DPSdIlRI2YInbaHLXw==
+  dependencies:
+    google-protobuf "^3.19.2"
+    prettier "^2.5.0"
+    ts-poet "^4.9.0"
+
 "@types/json-schema@^7.0.9":
   version "7.0.9"
   resolved "https://registry.npmjs.org/@types/json-schema/-/json-schema-7.0.9.tgz"
@@ -183,15 +192,6 @@ array-union@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/array-union/-/array-union-2.1.0.tgz"
   integrity sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==
-
-as-proto-gen@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.npmjs.org/as-proto-gen/-/as-proto-gen-0.1.0.tgz"
-  integrity sha512-+zRMlAJkwzkirlSGx5/aK5IBJl4ooNw/wyg5vzIF5KmEQmbWfeM2Z9tDfQXpfcv4JJ0FxBqCylNbS3gCVCjsrA==
-  dependencies:
-    google-protobuf "^3.19.2"
-    prettier "^2.5.0"
-    ts-poet "^4.9.0"
 
 as-proto@^0.2.0:
   version "0.2.0"

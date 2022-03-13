@@ -2450,12 +2450,10 @@ export namespace system_calls {
 
       const impacted = message.impacted;
       if (impacted.length !== 0) {
-        writer.uint32(26);
-        writer.fork();
         for (let i = 0; i < impacted.length; ++i) {
+          writer.uint32(26);
           writer.bytes(impacted[i]);
         }
-        writer.ldelim();
       }
     }
 
@@ -2475,14 +2473,7 @@ export namespace system_calls {
             break;
 
           case 3:
-            if ((tag & 7) === 2) {
-              const repeatedEnd: usize = reader.ptr + reader.uint32();
-              while (reader.ptr < repeatedEnd) {
-                message.impacted.push(reader.bytes());
-              }
-            } else {
-              message.impacted.push(reader.bytes());
-            }
+            message.impacted.push(reader.bytes());
             break;
 
           default:
@@ -2735,12 +2726,10 @@ export namespace system_calls {
 
       const hashes = message.hashes;
       if (hashes.length !== 0) {
-        writer.uint32(18);
-        writer.fork();
         for (let i = 0; i < hashes.length; ++i) {
+          writer.uint32(18);
           writer.bytes(hashes[i]);
         }
-        writer.ldelim();
       }
     }
 
@@ -2756,14 +2745,7 @@ export namespace system_calls {
             break;
 
           case 2:
-            if ((tag & 7) === 2) {
-              const repeatedEnd: usize = reader.ptr + reader.uint32();
-              while (reader.ptr < repeatedEnd) {
-                message.hashes.push(reader.bytes());
-              }
-            } else {
-              message.hashes.push(reader.bytes());
-            }
+            message.hashes.push(reader.bytes());
             break;
 
           default:

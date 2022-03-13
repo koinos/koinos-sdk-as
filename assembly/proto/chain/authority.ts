@@ -55,7 +55,7 @@ export namespace authority {
       if (call !== null) {
         writer.uint32(18);
         writer.fork();
-        authority.call_target.encode(call, writer);
+        call_target.encode(call, writer);
         writer.ldelim();
       }
     }
@@ -72,7 +72,7 @@ export namespace authority {
             break;
 
           case 2:
-            message.call = authority.call_target.decode(
+            message.call = call_target.decode(
               reader,
               reader.uint32()
             );
@@ -87,12 +87,12 @@ export namespace authority {
       return message;
     }
 
-    type: authority.authorization_type;
-    call: authority.call_target | null;
+    type: authorization_type;
+    call: call_target | null;
 
     constructor(
-      type: authority.authorization_type = 0,
-      call: authority.call_target | null = null
+      type: authorization_type = 0,
+      call: call_target | null = null
     ) {
       this.type = type;
       this.call = call;
