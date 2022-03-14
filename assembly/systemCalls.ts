@@ -2,8 +2,9 @@ import { env } from "./env";
 import { Protobuf, Reader, Writer } from 'as-proto';
 import { system_calls, system_call_id, chain, protocol, StringBytes, value, authority } from ".";
 
-const MAX_BUFFER_SIZE = 2 ** 10;
 export namespace System {
+  export let MAX_BUFFER_SIZE = 1024;
+
   // General Blockchain Management
 
   /**
