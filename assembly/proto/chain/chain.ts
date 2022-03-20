@@ -476,7 +476,9 @@ export namespace chain {
       const entries = message.entries;
       for (let i = 0; i < entries.length; ++i) {
         writer.uint32(10);
+        writer.fork();
         compute_bandwidth_entry.encode(entries[i], writer);
+        writer.ldelim();
       }
     }
 
@@ -586,7 +588,9 @@ export namespace chain {
       const entries = message.entries;
       for (let i = 0; i < entries.length; ++i) {
         writer.uint32(10);
+        writer.fork();
         genesis_entry.encode(entries[i], writer);
+        writer.ldelim();
       }
     }
 

@@ -52,10 +52,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@roaminroe/as-proto-gen@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@roaminroe/as-proto-gen/-/as-proto-gen-0.3.0.tgz#7c2c4122be2e34d295ae66d5871db67bd74f29dd"
-  integrity sha512-ZQSLSmD0dHrIYxbVZ8AR9oZhdkbKM+2vc7+UjnZBRZID/BxvKIkEei7oX8DyRxsTh544DPSdIlRI2YInbaHLXw==
+"@roaminroe/as-proto-gen@^0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@roaminroe/as-proto-gen/-/as-proto-gen-0.3.2.tgz#a742d4432ee0bfc31edd104251c9a69f4ec8147c"
+  integrity sha512-U4jbP9zlnNmK8nEI30mtAL09yH3OjeunQiA2u39A4VEqFYJAxvPK8ZVClHp5Qzt1fzMvWWgkuca7zCK4Vl02uA==
   dependencies:
     google-protobuf "^3.19.2"
     prettier "^2.5.0"

@@ -251,7 +251,9 @@ export namespace value {
       const values = message.values;
       for (let i = 0; i < values.length; ++i) {
         writer.uint32(10);
+        writer.fork();
         value_type.encode(values[i], writer);
+        writer.ldelim();
       }
     }
 

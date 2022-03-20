@@ -684,7 +684,9 @@ export namespace protocol {
       const operations = message.operations;
       for (let i = 0; i < operations.length; ++i) {
         writer.uint32(26);
+        writer.fork();
         operation.encode(operations[i], writer);
+        writer.ldelim();
       }
 
       const signatures = message.signatures;
@@ -789,7 +791,9 @@ export namespace protocol {
       const events = message.events;
       for (let i = 0; i < events.length; ++i) {
         writer.uint32(82);
+        writer.fork();
         event_data.encode(events[i], writer);
+        writer.ldelim();
       }
 
       const logs = message.logs;
@@ -1018,7 +1022,9 @@ export namespace protocol {
       const transactions = message.transactions;
       for (let i = 0; i < transactions.length; ++i) {
         writer.uint32(26);
+        writer.fork();
         transaction.encode(transactions[i], writer);
+        writer.ldelim();
       }
 
       const signature = message.signature;
@@ -1112,16 +1118,20 @@ export namespace protocol {
       const events = message.events;
       for (let i = 0; i < events.length; ++i) {
         writer.uint32(58);
+        writer.fork();
         event_data.encode(events[i], writer);
+        writer.ldelim();
       }
 
       const transaction_receipts = message.transaction_receipts;
       for (let i = 0; i < transaction_receipts.length; ++i) {
         writer.uint32(66);
+        writer.fork();
         transaction_receipt.encode(
           transaction_receipts[i],
           writer
         );
+        writer.ldelim();
       }
 
       const logs = message.logs;
