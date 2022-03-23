@@ -5,3 +5,5 @@ koinos
 \.vs/
 docs
 *.wasm
+*.wat
+*.map

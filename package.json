@@ -5,17 +5,18 @@
   "license": "MIT",
   "author": "Roamin Roe <roamin@tuta.io>",
   "repository": "https://github.com/roaminroe/koinos-as-sdk",
-  "dependencies": {
-    "as-proto": "^0.2.0"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@as-covers/core": "^0.2.1",
+    "@as-pect/cli": "^6.2.4",
     "@types/node": "^17.0.13",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
-    "@roaminroe/as-proto-gen": "^0.3.2",
+    "as-proto": "^0.2.2",
     "assemblyscript": "^0.19.22",
     "eslint": "^8.7.0",
-    "koinos-abi-proto-gen": "^0.1.1",
+    "koinos-abi-proto-gen": "^0.1.5",
+    "koinos-mock-vm": "^1.0.0",
     "source-map-support": "^0.5.21",
     "typedoc": "^0.22.12",
     "typescript": "^4.5.5"
@@ -27,14 +28,15 @@
     "lintSDK": "eslint --max-warnings 0 --ext ts \"assembly/**/*.ts\"",
     "compileTransform": "tsc tools/koinos-contract-transform.ts",
     "prepublishOnly": "yarn run compileTransform",
-    "generateKoinosProtoFiles": "protoc -I ./koinos-proto --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ./koinos-proto/koinos/*.proto ./koinos-proto/koinos/**/*.proto",
-    "generateGoogleProtoFiles": "protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ./google/protobuf/any.proto",
-    "generateTestABI": "protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=test/abi test/assembly/proto/foobar.proto",
-    "generateTestProtoFiles": "protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ./test/assembly/proto/*.proto",
-    "lintTest": "eslint --max-warnings 0 --ext ts \"test/assembly/**/*.ts\"",
-    "buildTest:debug": "asc test/assembly/index.ts --target debug --use abort= --config test/asconfig.json",
-    "buildTest:release": "asc test/assembly/index.ts --target release --use abort= --config test/asconfig.json",
-    "buildTest": "npm run lintTest && npm run buildTest:debug && npm run buildTest:release",
-    "buildDoc": "typedoc --includeVersion --tsconfig assembly/tsconfig.json"
+    "generateKoinosProtoFiles": "protoc -I ./koinos-proto --plugin=protoc-gen-as=./node_modules/.bin/as-proto --as_out=. ./koinos-proto/koinos/*.proto ./koinos-proto/koinos/**/*.proto",
+    "generateGoogleProtoFiles": "protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto --as_out=. ./google/protobuf/any.proto",
+    "generateTestABI": "protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=test-contract/abi test-contract/assembly/proto/foobar.proto",
+    "generateTestProtoFiles": "protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto --as_out=. ./test-contract/assembly/proto/*.proto",
+    "lintTestContract": "eslint --max-warnings 0 --ext ts \"test-contract/assembly/**/*.ts\"",
+    "buildTestContract:debug": "asc test-contract/assembly/index.ts --target debug --use abort= --config test-contract/asconfig.json",
+    "buildTestContract:release": "asc test-contract/assembly/index.ts --target release --use abort= --config test-contract/asconfig.json",
+    "buildTestContract": "npm run lintTestContract && npm run buildTestContract:debug && npm run buildTestContract:release",
+    "buildDoc": "typedoc --includeVersion --tsconfig assembly/tsconfig.json",
+    "test": "asp --verbose"
   }
 }
