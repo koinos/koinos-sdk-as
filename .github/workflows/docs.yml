@@ -2,23 +2,28 @@ name: Build & Deploy Docs
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest]
+
+    strategy:
+      matrix:
+        node-version: [16.x]
 
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
-          uses: actions/setup-node@v2
-          with:
-            node-version: ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
       - name: Install dependencies
-          run: yarn --frozen-lockfile
-      - uses: sterlingwes/gh-pages-deploy-action@v1.1
+        run: yarn --frozen-lockfile
+      - name: Build & Deploy Docs
+        uses: sterlingwes/gh-pages-deploy-action@v1.1
         with:
           access-token: ${{ secrets.ACCESS_TOKEN }}
           source-directory: docs
-          build-command: yarn docs
+          build-command: yarn doc
