@@ -269,7 +269,7 @@ export namespace MockVM {
     const logsBytes = System.getBytes(METADATA_SPACE, 'logs');
 
     if (logsBytes) {
-      const logsListType = Protobuf.decode(logsBytes, value.list_type.decode);
+      const logsListType = Protobuf.decode<value.list_type>(logsBytes, value.list_type.decode);
 
       for (let index = 0; index < logsListType.values.length; index++) {
         const log = logsListType.values[index];
@@ -302,7 +302,7 @@ export namespace MockVM {
     const eventsBytes = System.getBytes(METADATA_SPACE, 'events');
 
     if (eventsBytes) {
-      const eventsListType = Protobuf.decode(eventsBytes, value.list_type.decode);
+      const eventsListType = Protobuf.decode<value.list_type>(eventsBytes, value.list_type.decode);
 
       for (let index = 0; index < eventsListType.values.length; index++) {
         const eventBytes = eventsListType.values[index];
