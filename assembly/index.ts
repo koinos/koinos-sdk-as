@@ -15,4 +15,4 @@ export { protocol } from './proto/protocol/protocol';
 export { common } from './proto/common';
 export { options } from './proto/options';
 
-
+export { MockVM } from './mockVM';
