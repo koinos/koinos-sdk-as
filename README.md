@@ -3,6 +3,9 @@ AssemblyScript (AS) Software Development Toolkit (SDK) for the Koinos Blockchain
 
 See documentation: https://roaminroe.github.io/koinos-as-sdk/
 
+## Requirements:
+You need to install NodeJS v16 or higher [download](https://nodejs.org/en/download/)
+
 ## Installation
 
 ```sh
@@ -12,14 +15,22 @@ npm install koinos-as-sdk
 # with yarn
 yarn add koinos-as-sdk
 ```
+## Run unit tests
+```sh
+# with npm
+npm test
+
+# with yarn
+yarn test
+```
 
 ## Build test contract
 ```sh
 # with npm
-npm run buildTest
+npm run buildTestContract
 
 # with yarn
-yarn run buildTest
+yarn run buildTestContract
 ```
 
 ## Upload and trigger the test contract on a local devnet using [Local-Koinos](https://github.com/roaminroe/local-koinos)
