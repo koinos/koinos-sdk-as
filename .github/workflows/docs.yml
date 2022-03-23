@@ -26,4 +26,4 @@ jobs:
         with:
           access-token: ${{ secrets.ACCESS_TOKEN }}
           source-directory: docs
-          build-command: yarn doc
+          build-command: yarn docs
