@@ -1,3 +1,5 @@
+![Test](https://github.com/roaminroe/koinos-as-sdk/actions/workflows/test.yml/badge.svg)
+
 # koinos-as-sdk
 AssemblyScript (AS) Software Development Toolkit (SDK) for the Koinos Blockchain
 
