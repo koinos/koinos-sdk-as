@@ -1,4 +1,4 @@
-import { Base58, Base64, Crypto, StringBytes } from "../assembly";
+import { Arrays, Base58, Base64, Crypto, StringBytes } from "../assembly";
 
 describe('Base58', () => {
   it('should decode a Base58 string into a Uint8Array', () => {
@@ -205,7 +205,6 @@ describe('StringBytes', () => {
     expect(StringBytes.bytesToString(null)).toBeNull();
   });
 });
-// 
 
 describe('Crypto', () => {
   it('should convert a public key into an address', () => {
@@ -284,6 +283,26 @@ describe('Crypto', () => {
     }
 
     const calculatedB58 = Base58.encode(calculatedAddress);
-    // expect(calculatedB58).toBe(b58Address);
+    expect(calculatedB58).toBe(b58Address);
+  });
+});
+
+describe('Arrays', () => {
+  it('should compare two Uint8Array', () => {
+    let array1 = new Uint8Array(0);
+    let array2 = new Uint8Array(0);
+
+    expect(Arrays.Uint8ArrayEqual(array1, array2)).toBe(true);
+    expect(Arrays.Uint8ArrayEqual(null, null)).toBe(true);
+
+    array1 = new Uint8Array(10).fill(1);
+    array2 = new Uint8Array(10).fill(1);
+
+    expect(Arrays.Uint8ArrayEqual(array1, array2)).toBe(true);
+
+    array2 = new Uint8Array(10).fill(2);
+    expect(Arrays.Uint8ArrayEqual(array1, array2)).toBe(false);
+    expect(Arrays.Uint8ArrayEqual(null, array2)).toBe(false);
+    expect(Arrays.Uint8ArrayEqual(array1, null)).toBe(false);
   });
 });

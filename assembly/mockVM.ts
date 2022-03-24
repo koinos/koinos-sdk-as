@@ -85,7 +85,7 @@ export namespace MockVM {
     * ```
     */
   export function setHeadInfo(headInfo: chain.head_info): void {
-    System.putObject(METADATA_SPACE, 'authority', headInfo, chain.head_info.encode);
+    System.putObject(METADATA_SPACE, 'head_info', headInfo, chain.head_info.encode);
   }
 
   /**
@@ -181,8 +181,8 @@ export namespace MockVM {
     * @example
     * ```ts
     * const account = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
-    * const auth1 = new MockAuthority(authority.authorization_type.contract_call, account, true);
-    * const auth2 = new MockAuthority(authority.authorization_type.contract_upload, account, false)
+    * const auth1 = new MockVM.MockAuthority(authority.authorization_type.contract_call, account, true);
+    * const auth2 = new MockVM.MockAuthority(authority.authorization_type.contract_upload, account, false)
     * 
     * MockVM.setAuthorities([auth1, auth2]);
     *
@@ -216,8 +216,6 @@ export namespace MockVM {
 
     const callContractRes1 = Base64.decode('res1');
     const callContractRes2 = Base64.decode('res2');
-
-    const callContractResults: Uint8Array[] = 
 
     MockVM.setCallContractResults([callContractRes1, callContractRes2]);
 
