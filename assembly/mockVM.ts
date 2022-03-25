@@ -2,6 +2,7 @@ import { Protobuf } from "as-proto";
 import { System, value } from ".";
 import { authority } from "./proto/chain/authority";
 import { chain } from "./proto/chain/chain";
+import { system_calls } from "./proto/chain/system_calls";
 import { protocol } from "./proto/protocol/protocol";
 
 export namespace MockVM {
@@ -247,6 +248,51 @@ export namespace MockVM {
   }
 
   /**
+    * Get contract result set when calling System.setContractRsult()
+    * @returns { Uint8Array | null }
+    * @example
+    * ```ts
+    * System.setContractResult(Base64.decode('res1'));
+    *
+    * const contractRes = MockVM.getContractResult();
+    * 
+    * if (contractRes) {
+    *   System.log('contractRes: ' + (Base64.encode(contractRes as Uint8Array) as string));
+    * }
+    * ```
+    */
+  export function getContractResult(): Uint8Array | null {
+    const bytes = System.getBytes(METADATA_SPACE, 'contract_result');
+
+    return bytes;
+  }
+
+  /**
+    * Get exit code set when calling System.exitContract(...)
+    * @returns { string[] }
+    * @example
+    * ```ts
+    * System.exitContract(0);
+    *
+    * const exitCode = MockVM.getExitCode();
+    * 
+    * if (exitCode) {
+    *   System.log('exitCode: ' + exitCode.toString());
+    * }
+    * ```
+    */
+  export function getExitCode(): i32 {
+    const bytes = System.getBytes(METADATA_SPACE, 'exit_code');
+
+    if (bytes) {
+      const valueType =  Protobuf.decode<system_calls.exit_contract_arguments>(bytes, system_calls.exit_contract_arguments.decode);
+      return valueType.exit_code as i32;
+    }
+
+    return -1;
+  }
+
+  /**
     * Get logs set when calling System.log()
     * @returns { string[] }
     * @example
@@ -290,12 +336,19 @@ export namespace MockVM {
     * const events = MockVM.getEvents();
     * 
     * for (let index = 0; index < events.length; index++) {
-    *   const event = events;
+    *   const event = events[index];
+    * 
+    *   System.log(event.name)
+    *   System.log(event.data.toString())
+    * 
+    *   event.impacted.forEach(acct => {
+    *     System.log(Base58.encode(acct));
+    *   });
     * }
     * ```
     */
-  export function getEvents(): Uint8Array[] {
-    const events: Uint8Array[] = [];
+  export function getEvents(): system_calls.event_arguments[] {
+    const events: system_calls.event_arguments[] = [];
 
     const eventsBytes = System.getBytes(METADATA_SPACE, 'events');
 
@@ -304,8 +357,7 @@ export namespace MockVM {
 
       for (let index = 0; index < eventsListType.values.length; index++) {
         const eventBytes = eventsListType.values[index];
-
-        events.push(eventBytes.bytes_value as Uint8Array);
+        events.push(Protobuf.decode<system_calls.event_arguments>(eventBytes.bytes_value as Uint8Array, system_calls.event_arguments.decode));
       }
     }
 
