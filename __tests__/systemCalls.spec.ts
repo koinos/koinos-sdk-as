@@ -1,4 +1,5 @@
 import { Arrays, authority, Base58, chain, MockVM, protocol, StringBytes, System, Crypto, Base64 } from "../assembly";
+import { test as TestObject } from "./test";
 
 const mockAccount = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
 const mockAccount2 = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqE');
@@ -7,6 +8,10 @@ const mockStr = 'Hello World!';
 const mockStrBytes = StringBytes.stringToBytes(mockStr);
 
 describe('SystemCalls', () => {
+  beforeEach(() => {
+    MockVM.reset();
+  });
+
   it('should get the head info', () => {
     const setHeadInfo = new chain.head_info();
     setHeadInfo.head_block_time = 123456789;
@@ -272,7 +277,7 @@ describe('SystemCalls', () => {
     }).toThrow();
 
     let exitCode = MockVM.getExitCode();
-    
+
     expect(exitCode).toBe(0);
 
     expect(() => {
@@ -280,7 +285,90 @@ describe('SystemCalls', () => {
     }).toThrow();
 
     exitCode = MockVM.getExitCode();
-    
+
     expect(exitCode).toBe(1);
+  });
+
+  it('should put and get bytes', () => {
+    const objSpace = new chain.object_space(false, mockAccount, 1);
+
+    System.putBytes(objSpace, 'testKey1', StringBytes.stringToBytes('testValue1'));
+
+    let bytes = System.getBytes(objSpace, 'testKey1');
+
+    expect(bytes).not.toBeNull();
+    expect(StringBytes.bytesToString(bytes)!).toBe('testValue1');
+
+    const contractSpace2 = new chain.object_space(false, mockAccount, 2);
+    System.putBytes(contractSpace2, StringBytes.stringToBytes('testKey'), StringBytes.stringToBytes('testValue2'));
+
+    bytes = System.getBytes(contractSpace2, 'testKey');
+
+    expect(bytes).not.toBeNull();
+    expect(StringBytes.bytesToString(bytes)!).toBe('testValue2');
+
+    bytes = System.getBytes(contractSpace2, StringBytes.stringToBytes('testKey'));
+
+    expect(bytes).not.toBeNull();
+    expect(StringBytes.bytesToString(bytes)!).toBe('testValue2');
+
+    bytes = System.getBytes(contractSpace2, StringBytes.stringToBytes('testKey2'));
+
+    expect(bytes).toBeNull();
+
+    System.putBytes(objSpace, 'testKey3', StringBytes.stringToBytes('testValue3'));
+    System.putBytes(objSpace, 'testKey2', StringBytes.stringToBytes('testValue2'));
+
+    let obj = System.getPrevBytes(objSpace, 'testKey2');
+    expect(obj).not.toBeNull();
+    expect(StringBytes.bytesToString(obj!.key)!).toBe('testKey1');
+    expect(StringBytes.bytesToString(obj!.value)!).toBe('testValue1');
+
+    obj = System.getPrevBytes(objSpace, 'testKey1');
+    expect(obj).toBeNull();
+
+    obj = System.getNextBytes(objSpace, 'testKey2');
+    expect(obj).not.toBeNull();
+    expect(StringBytes.bytesToString(obj!.key)!).toBe('testKey3');
+    expect(StringBytes.bytesToString(obj!.value)!).toBe('testValue3');
+
+    obj = System.getNextBytes(objSpace, 'testKey3');
+    expect(obj).toBeNull();
+  });
+
+  it('should put and get objects', () => {
+    const objSpace = new chain.object_space(false, mockAccount, 1);
+    const obj200 = new TestObject.test_object(300);
+
+    System.putObject<string, TestObject.test_object>(objSpace, 'key3', obj200, TestObject.test_object.encode);
+    obj200.value = 100;
+    System.putObject<string, TestObject.test_object>(objSpace, 'key1', obj200, TestObject.test_object.encode);
+    obj200.value = 200;
+    System.putObject<string, TestObject.test_object>(objSpace, 'key2', obj200, TestObject.test_object.encode);
+
+    let obj201 = System.getObject<string, TestObject.test_object>(objSpace, 'key2', TestObject.test_object.decode);
+
+    expect(obj201).not.toBeNull();
+    expect(obj201!.value).toBe(200);
+
+    let obj202 = System.getNextObject<string, TestObject.test_object>(objSpace, 'key2', TestObject.test_object.decode);
+
+    expect(obj202).not.toBeNull();
+    expect(obj202!.value.value).toBe(300);
+    expect(StringBytes.bytesToString(obj202!.key)!).toBe('key3');
+
+    obj202 = System.getPrevObject<string, TestObject.test_object>(objSpace, 'key2', TestObject.test_object.decode);
+
+    expect(obj202).not.toBeNull();
+    expect(obj202!.value.value).toBe(100);
+    expect(StringBytes.bytesToString(obj202!.key)!).toBe('key1');
+
+    obj202 = System.getPrevObject<string, TestObject.test_object>(objSpace, 'key1', TestObject.test_object.decode);
+
+    expect(obj202).toBeNull();
+
+    obj202 = System.getNextObject<string, TestObject.test_object>(objSpace, 'key3', TestObject.test_object.decode);
+
+    expect(obj202).toBeNull();
   });
 });
