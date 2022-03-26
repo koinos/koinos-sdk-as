@@ -1,7 +1,7 @@
 import { System } from "../systemCalls";
 
 export namespace Arrays {
-  export function Uint8ArrayEqual(
+  export function equal(
     first: Uint8Array | null,
     second: Uint8Array | null
   ): bool {
@@ -32,7 +32,7 @@ export namespace Arrays {
 
   /**
    * Convert the string `hex` which must consist of an even number of
-   * hexadecimal digits to a `ByteArray`. The string `hex` can optionally
+   * hexadecimal digits to a `Uint8Array`. The string `hex` can optionally
    * start with '0x'
    */
   export function fromHexString(hex: string): Uint8Array {
@@ -43,8 +43,26 @@ export namespace Arrays {
     }
     let output = new Uint8Array(hex.length / 2);
     for (let i = 0; i < hex.length; i += 2) {
-      output[i / 2] = I8.parseInt(hex.substr(i, 2), 16);
+      output[i / 2] = U8.parseInt(hex.substr(i, 2), 16);
     }
+    return output;
+  }
+
+  /**
+   * Convert the Uint8Array `buffer` into a hexadecimal digits string. The string can optionally
+   * be appended with '0x'
+   */
+  export function toHexString(buffer: Uint8Array, prepend0x: bool = true): string {
+    let output = '';
+
+    if (prepend0x) {
+      output += '0x';
+    }
+
+    for (let i = 0; i < buffer.length; i += 1) {
+      output += `0${buffer[i].toString(16)}`.slice(-2);
+    }
+
     return output;
   }
 }

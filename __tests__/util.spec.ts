@@ -298,12 +298,12 @@ describe('Crypto', () => {
     
     expect(mh.code).toBe(18);
     expect(mh.digest.length).toBe(32);
-    expect(Arrays.Uint8ArrayEqual(mh.digest, mhdigest)).toBe(true);
+    expect(Arrays.equal(mh.digest, mhdigest)).toBe(true);
 
     const mhsha256digest = Arrays.fromHexString('0x12207f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069');
     const serializedMh = mh.serialize();
     
-    expect(Arrays.Uint8ArrayEqual(serializedMh, mhsha256digest)).toBe(true);
+    expect(Arrays.equal(serializedMh, mhsha256digest)).toBe(true);
   });
 });
 
@@ -312,20 +312,27 @@ describe('Arrays', () => {
     let array1 = new Uint8Array(0);
     let array2 = new Uint8Array(0);
 
-    expect(Arrays.Uint8ArrayEqual(array1, array2)).toBe(true);
-    expect(Arrays.Uint8ArrayEqual(null, null)).toBe(true);
+    expect(Arrays.equal(array1, array2)).toBe(true);
+    expect(Arrays.equal(null, null)).toBe(true);
 
     array1 = new Uint8Array(10).fill(1);
     array2 = new Uint8Array(10).fill(1);
 
-    expect(Arrays.Uint8ArrayEqual(array1, array2)).toBe(true);
+    expect(Arrays.equal(array1, array2)).toBe(true);
 
     array2 = new Uint8Array(10).fill(2);
-    expect(Arrays.Uint8ArrayEqual(array1, array2)).toBe(false);
-    expect(Arrays.Uint8ArrayEqual(null, array2)).toBe(false);
-    expect(Arrays.Uint8ArrayEqual(array1, null)).toBe(false);
+    expect(Arrays.equal(array1, array2)).toBe(false);
+    expect(Arrays.equal(null, array2)).toBe(false);
+    expect(Arrays.equal(array1, null)).toBe(false);
 
     array2 = new Uint8Array(11).fill(2);
-    expect(Arrays.Uint8ArrayEqual(array1, array2)).toBe(false);
+    expect(Arrays.equal(array1, array2)).toBe(false);
+  });
+
+  it('should convert hex strings', () => {
+    const hexString = '0x12207f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069';
+    const buff = Arrays.fromHexString(hexString);
+    const calculatedHexString = Arrays.toHexString(buff);
+    expect(calculatedHexString).toBe(hexString);
   });
 });

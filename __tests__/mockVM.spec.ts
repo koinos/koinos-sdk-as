@@ -19,7 +19,7 @@ describe('MockVM', () => {
 
     const getContractArgs = System.getContractArguments();
 
-    expect(Arrays.Uint8ArrayEqual(getContractArgs, mockAccount)).toBe(true);
+    expect(Arrays.equal(getContractArgs, mockAccount)).toBe(true);
   });
 
   it('should set the contract id', () => {
@@ -27,7 +27,7 @@ describe('MockVM', () => {
 
     const getContractId = System.getContractId();
 
-    expect(Arrays.Uint8ArrayEqual(getContractId, mockAccount)).toBe(true);
+    expect(Arrays.equal(getContractId, mockAccount)).toBe(true);
   });
 
   it('should set the head info', () => {
@@ -60,7 +60,7 @@ describe('MockVM', () => {
     const getCallerData = System.getCaller();
 
     expect(getCallerData.caller_privilege).toBe(setCallerData.caller_privilege);
-    expect(Arrays.Uint8ArrayEqual(getCallerData.caller, mockAccount)).toBe(true);
+    expect(Arrays.equal(getCallerData.caller, mockAccount)).toBe(true);
   });
 
   it('should set the transaction', () => {
@@ -70,7 +70,7 @@ describe('MockVM', () => {
 
     const getTransaction = System.getTransaction();
 
-    expect(Arrays.Uint8ArrayEqual(getTransaction.id, setTransaction.id)).toBe(true);
+    expect(Arrays.equal(getTransaction.id, setTransaction.id)).toBe(true);
   });
 
   it('should set the block', () => {
@@ -80,7 +80,7 @@ describe('MockVM', () => {
 
     const getBlock = System.getBlock();
 
-    expect(Arrays.Uint8ArrayEqual(getBlock.id, setBlock.id)).toBe(true);
+    expect(Arrays.equal(getBlock.id, setBlock.id)).toBe(true);
   });
 
   it('should set the authorities', () => {
@@ -122,11 +122,11 @@ describe('MockVM', () => {
     let callRes = System.callContract(mockAccount, 1, new Uint8Array(0));
 
     expect(callRes).not.toBeNull();
-    expect(Arrays.Uint8ArrayEqual(callRes, mockAccount)).toBe(true);
+    expect(Arrays.equal(callRes, mockAccount)).toBe(true);
 
     callRes = System.callContract(mockAccount, 1, new Uint8Array(0));
     expect(callRes).not.toBeNull();
-    expect(Arrays.Uint8ArrayEqual(callRes, mockAccount2)).toBe(true);
+    expect(Arrays.equal(callRes, mockAccount2)).toBe(true);
   });
 
   it('should reset the MockVM database', () => {
@@ -137,7 +137,7 @@ describe('MockVM', () => {
     let bytes = System.getBytes(space, 'key1');
 
     expect(bytes).not.toBeNull();
-    expect(Arrays.Uint8ArrayEqual(bytes, val)).toBe(true);
+    expect(Arrays.equal(bytes, val)).toBe(true);
 
     MockVM.reset();
 
@@ -154,7 +154,7 @@ describe('MockVM', () => {
     let bytes = System.getBytes(space, 'key1');
 
     expect(bytes).not.toBeNull();
-    expect(Arrays.Uint8ArrayEqual(bytes, val1)).toBe(true);
+    expect(Arrays.equal(bytes, val1)).toBe(true);
 
     MockVM.beginTransaction();
 
@@ -165,7 +165,7 @@ describe('MockVM', () => {
     bytes = System.getBytes(space, 'key1');
 
     expect(bytes).not.toBeNull();
-    expect(Arrays.Uint8ArrayEqual(bytes, val1)).toBe(true);
+    expect(Arrays.equal(bytes, val1)).toBe(true);
 
     MockVM.beginTransaction();
 
@@ -182,7 +182,7 @@ describe('MockVM', () => {
     bytes = System.getBytes(space, 'key1');
 
     expect(bytes).not.toBeNull();
-    expect(Arrays.Uint8ArrayEqual(bytes, val2)).toBe(true);
+    expect(Arrays.equal(bytes, val2)).toBe(true);
 
   });
 });

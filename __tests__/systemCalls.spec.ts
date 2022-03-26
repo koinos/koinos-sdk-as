@@ -32,7 +32,7 @@ describe('SystemCalls', () => {
 
     const getTransaction = System.getTransaction();
 
-    expect(Arrays.Uint8ArrayEqual(getTransaction.id, setTransaction.id)).toBe(true);
+    expect(Arrays.equal(getTransaction.id, setTransaction.id)).toBe(true);
   });
 
   it('should get the transaction field', () => {
@@ -42,7 +42,7 @@ describe('SystemCalls', () => {
 
     const getTransaction = System.getTransactionField('id');
 
-    expect(Arrays.Uint8ArrayEqual(getTransaction!.bytes_value, setTransaction.id)).toBe(true);
+    expect(Arrays.equal(getTransaction!.bytes_value, setTransaction.id)).toBe(true);
   });
 
   it('should get the block', () => {
@@ -52,7 +52,7 @@ describe('SystemCalls', () => {
 
     const getBlock = System.getBlock();
 
-    expect(Arrays.Uint8ArrayEqual(getBlock.id, setBlock.id)).toBe(true);
+    expect(Arrays.equal(getBlock.id, setBlock.id)).toBe(true);
   });
 
   it('should get the block field', () => {
@@ -63,7 +63,7 @@ describe('SystemCalls', () => {
     const getBlock = System.getBlockField('id');
 
     expect(getBlock).not.toBeNull();
-    expect(Arrays.Uint8ArrayEqual(getBlock!.bytes_value, setBlock.id)).toBe(true);
+    expect(Arrays.equal(getBlock!.bytes_value, setBlock.id)).toBe(true);
   });
 
   it('should get the last irreversible block', () => {
@@ -126,8 +126,8 @@ describe('SystemCalls', () => {
     });
 
     expect(events[0].name).toBe(mockStr);
-    expect(Arrays.Uint8ArrayEqual(events[0].data, eventData)).toBe(true);
-    expect(Arrays.Uint8ArrayEqual(events[0].impacted[0], mockAccount)).toBe(true);
+    expect(Arrays.equal(events[0].data, eventData)).toBe(true);
+    expect(Arrays.equal(events[0].impacted[0], mockAccount)).toBe(true);
   });
 
   it('should hash', () => {
@@ -136,7 +136,7 @@ describe('SystemCalls', () => {
 
     expect(sha1).not.toBeNull();
     if (sha1) {
-      expect(Arrays.Uint8ArrayEqual(sha1, expectedSha1)).toBe(true);
+      expect(Arrays.equal(sha1, expectedSha1)).toBe(true);
     }
 
     const expectedSha256 = Arrays.fromHexString('0x12207f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069');
@@ -144,7 +144,7 @@ describe('SystemCalls', () => {
 
     expect(sha256).not.toBeNull();
     if (sha256) {
-      expect(Arrays.Uint8ArrayEqual(sha256, expectedSha256)).toBe(true);
+      expect(Arrays.equal(sha256, expectedSha256)).toBe(true);
     }
 
     const expectedSha512 = Arrays.fromHexString('0x1240861844d6704e8573fec34d967e20bcfef3d424cf48be04e6dc08f2bd58c729743371015ead891cc3cf1c9d34b49264b510751b1ff9e537937bc46b5d6ff4ecc8');
@@ -152,7 +152,7 @@ describe('SystemCalls', () => {
 
     expect(sha512).not.toBeNull();
     if (sha512) {
-      expect(Arrays.Uint8ArrayEqual(sha512, expectedSha512)).toBe(true);
+      expect(Arrays.equal(sha512, expectedSha512)).toBe(true);
     }
 
     const expectedRipemd160 = Arrays.fromHexString('0x12148476ee4631b9b30ac2754b0ee0c47e161d3f724c');
@@ -160,7 +160,7 @@ describe('SystemCalls', () => {
 
     expect(ripemd160).not.toBeNull();
     if (ripemd160) {
-      expect(Arrays.Uint8ArrayEqual(ripemd160, expectedRipemd160)).toBe(true);
+      expect(Arrays.equal(ripemd160, expectedRipemd160)).toBe(true);
     }
 
     const expectedKeccak256 = Arrays.fromHexString('0x12203ea2f1d0abf3fc66cf29eebb70cbd4e7fe762ef8a09bcc06c8edf641230afec0');
@@ -168,7 +168,7 @@ describe('SystemCalls', () => {
 
     expect(keccak256).not.toBeNull();
     if (keccak256) {
-      expect(Arrays.Uint8ArrayEqual(keccak256, expectedKeccak256)).toBe(true);
+      expect(Arrays.equal(keccak256, expectedKeccak256)).toBe(true);
     }
   });
 
@@ -207,11 +207,11 @@ describe('SystemCalls', () => {
     let callRes = System.callContract(mockAccount, 1, new Uint8Array(0));
 
     expect(callRes).not.toBeNull();
-    expect(Arrays.Uint8ArrayEqual(callRes, mockAccount)).toBe(true);
+    expect(Arrays.equal(callRes, mockAccount)).toBe(true);
 
     callRes = System.callContract(mockAccount, 1, new Uint8Array(0));
     expect(callRes).not.toBeNull();
-    expect(Arrays.Uint8ArrayEqual(callRes, mockAccount2)).toBe(true);
+    expect(Arrays.equal(callRes, mockAccount2)).toBe(true);
   });
 
   it('should get the entry point', () => {
@@ -228,7 +228,7 @@ describe('SystemCalls', () => {
 
     const getContractArgs = System.getContractArguments();
 
-    expect(Arrays.Uint8ArrayEqual(getContractArgs, mockAccount)).toBe(true);
+    expect(Arrays.equal(getContractArgs, mockAccount)).toBe(true);
   });
 
   it('should get the contract id', () => {
@@ -236,7 +236,7 @@ describe('SystemCalls', () => {
 
     const getContractId = System.getContractId();
 
-    expect(Arrays.Uint8ArrayEqual(getContractId, mockAccount)).toBe(true);
+    expect(Arrays.equal(getContractId, mockAccount)).toBe(true);
   });
 
   it('should get the head info', () => {
@@ -260,7 +260,7 @@ describe('SystemCalls', () => {
     const getCallerData = System.getCaller();
 
     expect(getCallerData.caller_privilege).toBe(setCallerData.caller_privilege);
-    expect(Arrays.Uint8ArrayEqual(getCallerData.caller, mockAccount)).toBe(true);
+    expect(Arrays.equal(getCallerData.caller, mockAccount)).toBe(true);
   });
 
   it('should set the contract result', () => {
@@ -268,7 +268,7 @@ describe('SystemCalls', () => {
 
     const contractRes = MockVM.getContractResult();
 
-    expect(Arrays.Uint8ArrayEqual(contractRes, mockStrBytes)).toBe(true);
+    expect(Arrays.equal(contractRes, mockStrBytes)).toBe(true);
   });
 
   it('should exit a contract', () => {
