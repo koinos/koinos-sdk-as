@@ -346,10 +346,10 @@ describe('SystemCalls', () => {
     obj.value = 200;
     System.putObject<string, TestObject.test_object>(objSpace, 'key2', obj, TestObject.test_object.encode);
 
-    obj = System.getObject<string, TestObject.test_object>(objSpace, 'key2', TestObject.test_object.decode);
+    const obj1 = System.getObject<string, TestObject.test_object>(objSpace, 'key2', TestObject.test_object.decode);
 
-    expect(obj).not.toBeNull();
-    expect(obj!.value).toBe(200);
+    expect(obj1).not.toBeNull();
+    expect(obj1!.value).toBe(200);
 
     let obj2 = System.getNextObject<string, TestObject.test_object>(objSpace, 'key2', TestObject.test_object.decode);
 
