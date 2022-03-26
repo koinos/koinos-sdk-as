@@ -1,4 +1,4 @@
-import { Arrays, Base58, Base64, Crypto, StringBytes } from "../assembly";
+import { Arrays, Base58, Base64, Crypto, StringBytes, System } from "../assembly";
 
 describe('Base58', () => {
   it('should decode a Base58 string into a Uint8Array', () => {
@@ -285,6 +285,26 @@ describe('Crypto', () => {
     const calculatedB58 = Base58.encode(calculatedAddress);
     expect(calculatedB58).toBe(b58Address);
   });
+
+  test('Multihash class', () => {
+    const mockStr = 'Hello World!';
+    const mockStrBytes = StringBytes.stringToBytes(mockStr);
+    const mhdigest = Arrays.fromHexString('7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069');
+
+    const sha256digest = System.hash(Crypto.multicodec.sha2_256, mockStrBytes);
+
+    const mh = new Crypto.Multihash();
+    mh.deserialize(sha256digest!);
+    
+    expect(mh.code).toBe(18);
+    expect(mh.digest.length).toBe(32);
+    expect(Arrays.Uint8ArrayEqual(mh.digest, mhdigest)).toBe(true);
+
+    const mhsha256digest = Arrays.fromHexString('0x12207f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069');
+    const serializedMh = mh.serialize();
+    
+    expect(Arrays.Uint8ArrayEqual(serializedMh, mhsha256digest)).toBe(true);
+  });
 });
 
 describe('Arrays', () => {
@@ -304,5 +324,8 @@ describe('Arrays', () => {
     expect(Arrays.Uint8ArrayEqual(array1, array2)).toBe(false);
     expect(Arrays.Uint8ArrayEqual(null, array2)).toBe(false);
     expect(Arrays.Uint8ArrayEqual(array1, null)).toBe(false);
+
+    array2 = new Uint8Array(11).fill(2);
+    expect(Arrays.Uint8ArrayEqual(array1, array2)).toBe(false);
   });
 });

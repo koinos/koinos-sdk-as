@@ -53,7 +53,10 @@ module.exports = {
     returnOnExit: false,
   },
   /** Enable code coverage. */
-  // coverage: ["assembly/**/*.ts"],
+  coverage: [
+    "assembly/*.ts",
+    "assembly/util/*.ts"
+  ],
   /**
    * Specify if the binary wasm file should be written to the file system.
    */

@@ -14,17 +14,28 @@ export namespace Crypto {
   class Buffer {
     buffer: Uint8Array;
     ptr: usize;
+    len: i32;
+
     constructor(buf: Uint8Array) {
       this.buffer = buf;
+      this.len = 0;
       this.ptr = this.buffer.dataStart;
     }
 
     pop(): u8 {
+      this.len--;
       return load<u8>(this.ptr++);
     }
 
     push(val: u8): void {
+      this.len++;
       store<u8>(this.ptr++, val);
+    }
+
+    getData(): Uint8Array {
+      let bytes = new Uint8Array(this.len);
+      memory.copy(bytes.dataStart, this.buffer.dataStart, this.len);
+      return bytes;
     }
   }
 
@@ -102,7 +113,7 @@ export namespace Crypto {
         wb.push(this.digest[<i32>i]);
       }
 
-      return wb.buffer;
+      return wb.getData();
     }
   }
 
@@ -114,7 +125,7 @@ export namespace Crypto {
     * @example
     * ```ts
     * const recoveredKey = System.recoverPublicKey(signatureData, digest!);
-    * const addr = Crypto.addressFromPublicKey(recoveredKey as!);
+    * const addr = Crypto.addressFromPublicKey(recoveredKey!);
     * System.log('recoveredKey (b58): ' + Base58.encode(addr));
     * ```
     */

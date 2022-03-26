@@ -5,16 +5,24 @@ export namespace Arrays {
     first: Uint8Array | null,
     second: Uint8Array | null
   ): bool {
-    if (first == null || second == null) {
-      return first == second;
+    if (first == null && second == null) {
+      return true;
     }
 
-    if (first.length != second.length) {
+    if (first == null && second != null) {
       return false;
     }
 
-    for (let i = 0; i < first.length; ++i) {
-      if (first[i] != second[i]) {
+    if (first != null && second == null) {
+      return false;
+    }
+
+    if (first!.length != second!.length) {
+      return false;
+    }
+
+    for (let i = 0; i < first!.length; ++i) {
+      if (first![i] != second![i]) {
         return false;
       }
     }
