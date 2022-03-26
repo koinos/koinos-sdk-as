@@ -37,10 +37,7 @@ describe('SystemCalls', () => {
 
     const getTransaction = System.getTransactionField('id');
 
-    expect(getTransaction).not.toBeNull();
-    if (getTransaction) {
-      expect(Arrays.Uint8ArrayEqual(getTransaction.bytes_value as Uint8Array, setTransaction.id)).toBe(true);
-    }
+    expect(Arrays.Uint8ArrayEqual(getTransaction!.bytes_value, setTransaction.id)).toBe(true);
   });
 
   it('should get the block', () => {
@@ -61,10 +58,7 @@ describe('SystemCalls', () => {
     const getBlock = System.getBlockField('id');
 
     expect(getBlock).not.toBeNull();
-
-    if (getBlock) {
-      expect(Arrays.Uint8ArrayEqual(getBlock.bytes_value as Uint8Array, setBlock.id)).toBe(true);
-    }
+    expect(Arrays.Uint8ArrayEqual(getBlock!.bytes_value, setBlock.id)).toBe(true);
   });
 
   it('should get the last irreversible block', () => {
@@ -177,8 +171,8 @@ describe('SystemCalls', () => {
     const message = 'hello-world';
     const signatureData = Base64.decode('IHhJwlD7P-o6x7L38den1MnumUhnYmNhTZhIUQQhezvEMf7rx89NbIIioNCIQSk1PQYdQ9mOI4-rDYiwO2pLvM4=');
     const digest = System.hash(Crypto.multicodec.sha2_256, StringBytes.stringToBytes(message));
-    const recoveredKey = System.recoverPublicKey(signatureData, digest as Uint8Array);
-    const addr = Crypto.addressFromPublicKey(recoveredKey as Uint8Array);
+    const recoveredKey = System.recoverPublicKey(signatureData, digest!);
+    const addr = Crypto.addressFromPublicKey(recoveredKey!);
 
     expect(Base58.encode(addr)).toBe('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
   });
@@ -187,14 +181,14 @@ describe('SystemCalls', () => {
     const message = 'hello-world';
     const signatureData = Base64.decode('IHhJwlD7P-o6x7L38den1MnumUhnYmNhTZhIUQQhezvEMf7rx89NbIIioNCIQSk1PQYdQ9mOI4-rDYiwO2pLvM4=');
     let digest = System.hash(Crypto.multicodec.sha2_256, StringBytes.stringToBytes(message));
-    const recoveredKey = System.recoverPublicKey(signatureData, digest as Uint8Array);
+    const recoveredKey = System.recoverPublicKey(signatureData, digest!);
 
-    let verify = System.verifySignature(recoveredKey as Uint8Array, signatureData, digest as Uint8Array);
+    let verify = System.verifySignature(recoveredKey!, signatureData, digest!);
 
     expect(verify).toBe(true);
 
     digest = System.hash(Crypto.multicodec.sha2_256, StringBytes.stringToBytes('message'));
-    verify = System.verifySignature(recoveredKey as Uint8Array, signatureData, digest as Uint8Array);
+    verify = System.verifySignature(recoveredKey!, signatureData, digest!);
 
     expect(verify).toBe(false);
   });
@@ -261,7 +255,7 @@ describe('SystemCalls', () => {
     const getCallerData = System.getCaller();
 
     expect(getCallerData.caller_privilege).toBe(setCallerData.caller_privilege);
-    expect(Arrays.Uint8ArrayEqual(getCallerData.caller as Uint8Array, mockAccount)).toBe(true);
+    expect(Arrays.Uint8ArrayEqual(getCallerData.caller, mockAccount)).toBe(true);
   });
 
   it('should set the contract result', () => {
@@ -269,7 +263,7 @@ describe('SystemCalls', () => {
 
     const contractRes = MockVM.getContractResult();
 
-    expect(Arrays.Uint8ArrayEqual(contractRes as Uint8Array, mockStrBytes)).toBe(true);
+    expect(Arrays.Uint8ArrayEqual(contractRes, mockStrBytes)).toBe(true);
   });
 
   it('should exit a contract', () => {

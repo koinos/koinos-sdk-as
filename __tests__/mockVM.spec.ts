@@ -60,7 +60,7 @@ describe('MockVM', () => {
     const getCallerData = System.getCaller();
 
     expect(getCallerData.caller_privilege).toBe(setCallerData.caller_privilege);
-    expect(Arrays.Uint8ArrayEqual(getCallerData.caller as Uint8Array, mockAccount)).toBe(true);
+    expect(Arrays.Uint8ArrayEqual(getCallerData.caller, mockAccount)).toBe(true);
   });
 
   it('should set the transaction', () => {

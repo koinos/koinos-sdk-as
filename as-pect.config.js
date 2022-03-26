@@ -5,7 +5,8 @@ module.exports = {
    * A set of globs passed to the glob package that qualify typescript files for testing.
    */
   include: [
-    __dirname + "/__tests__/**/*.spec.ts"
+    __dirname + "/__tests__/**/*.spec.ts",
+    //__dirname + "/__tests__/**/systemCalls.spec.ts",
   ],
   /**
    * A set of globs passed to the glob package that quality files to be added to each test.

@@ -14,7 +14,7 @@ export namespace System {
     * ```ts
     *  const headInfo = System.getHeadInfo();
     *  System.log('headInfo.head_block_time: ' + headInfo.head_block_time.toString());
-    *  System.log('headInfo.head_topology.height: ' + (headInfo.head_topology as common.block_topology).height.toString());
+    *  System.log('headInfo.head_topology.height: ' + headInfo.head_topology!.height.toString());
     *  System.log('headInfo.last_irreversible_block.: ' + headInfo.last_irreversible_block.toString());
     * ```
     */
@@ -26,7 +26,7 @@ export namespace System {
     const len = env.invokeSystemCall(system_call_id.get_head_info, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
     const result = Protobuf.decode<system_calls.get_head_info_result>(readBuffer, system_calls.get_head_info_result.decode, len);
 
-    return result.value as chain.head_info;
+    return result.value!;
   }
 
   export function applyBlock(block: protocol.block): void {
@@ -96,8 +96,7 @@ export namespace System {
     * @example
     * ```ts
     *  const tx = System.getTransaction();
-    *  const header = tx.header as protocol.transaction_header;
-    *  System.log("payer: " + Base58.encode((header.payer) as Uint8Array));
+    *  System.log("payer: " + Base58.encode((tx.header!.payer!)));
     * ```
     */
   export function getTransaction(): protocol.transaction {
@@ -108,7 +107,7 @@ export namespace System {
     const len = env.invokeSystemCall(system_call_id.get_transaction, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
     const result = Protobuf.decode<system_calls.get_transaction_result>(readBuffer, system_calls.get_transaction_result.decode, len);
 
-    return result.value as protocol.transaction;
+    return result.value!;
   }
 
   /**
@@ -119,7 +118,7 @@ export namespace System {
     * ```ts
     *  const txField = System.getTransactionField('header.payer');
     *  if (txField) {
-    *    System.log("payer: " + Base58.encode(txField.bytes_value as Uint8Array));
+    *    System.log("payer: " + Base58.encode(txField.bytes_value!));
     *  }
     * ```
     */
@@ -140,8 +139,7 @@ export namespace System {
     * @example
     * ```ts
     *  const b = System.getBlock();
-    *  const blheader = b.header as protocol.block_header;
-    *  System.log("signer: " + Base58.encode((blheader.signer) as Uint8Array));
+    *  System.log("signer: " + Base58.encode((b.header!.signer!)));
     * ```
     */
   export function getBlock(): protocol.block {
@@ -152,7 +150,7 @@ export namespace System {
     const len = env.invokeSystemCall(system_call_id.get_block, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
     const result = Protobuf.decode<system_calls.get_block_result>(readBuffer, system_calls.get_block_result.decode, len);
 
-    return result.value as protocol.block;
+    return result.value!;
   }
 
   /**
@@ -165,7 +163,7 @@ export namespace System {
     * System.require(blField, `expected blField not "null", got "null"`);
     *
     * if (blField) {
-    *   System.log("signer: " + Base58.encode(blField.bytes_value as Uint8Array));
+    *   System.log("signer: " + Base58.encode(blField.bytes_value!));
     * }
     * ```
     */
@@ -271,7 +269,7 @@ export namespace System {
     const len = env.invokeSystemCall(system_call_id.get_resource_limits, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
     const result = Protobuf.decode<system_calls.get_resource_limits_result>(readBuffer, system_calls.get_resource_limits_result.decode, len);
 
-    return result.value as chain.resource_limit_data;
+    return result.value!;
   }
 
   export function consumeBlockResources(disk_storage_consumed: u64, network_bandwidth_consumed: u64, compute_bandwidth_consumed: u64): bool {
@@ -367,8 +365,8 @@ export namespace System {
     * const message = 'hello-world';
     * const signatureData = Base64.decode('IHhJwlD7P-o6x7L38den1MnumUhnYmNhTZhIUQQhezvEMf7rx89NbIIioNCIQSk1PQYdQ9mOI4-rDYiwO2pLvM4=');
     * const digest = System.hash(Crypto.multicodec.sha2_256, StringBytes.stringToBytes(message));
-    * const recoveredKey = System.recoverPublicKey(signatureData, digest as Uint8Array);
-    * const addr = Crypto.addressFromPublicKey(recoveredKey as Uint8Array);
+    * const recoveredKey = System.recoverPublicKey(signatureData, digest!);
+    * const addr = Crypto.addressFromPublicKey(recoveredKey!);
     * System.log('recoveredKey (b58): ' + Base58.encode(addr));
     * ```
     */
@@ -412,7 +410,7 @@ export namespace System {
     * @returns bool
     * @example
     * ```ts
-    * let verify = System.verifySignature(recoveredKey as Uint8Array, signatureData, digest as Uint8Array);
+    * let verify = System.verifySignature(recoveredKey!, signatureData, digest!);
     * System.require(verify == true, `expected "true", got "${verify}"`);
     * ```
     */
@@ -520,7 +518,7 @@ export namespace System {
     const result = Protobuf.decode<system_calls.get_contract_arguments_result>(readBuffer, system_calls.get_contract_arguments_result.decode, len);
 
     if (result.value) {
-      return result.value as Uint8Array;
+      return result.value!;
     }
 
     return new Uint8Array(0);
@@ -576,7 +574,7 @@ export namespace System {
     const len = env.invokeSystemCall(system_call_id.get_contract_id, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
     const result = Protobuf.decode<system_calls.get_contract_id_result>(readBuffer, system_calls.get_contract_id_result.decode, len);
 
-    return result.value as Uint8Array;
+    return result.value!;
   }
 
   /**
@@ -587,7 +585,7 @@ export namespace System {
     * const callerData = System.getCaller();
     * System.log('callerData.caller_privilege: ' + callerData.caller_privilege.toString());
     * if (callerData.caller) {
-    *   System.log('callerData.caller (b58): ' + Base58.encode(callerData.caller as Uint8Array));
+    *   System.log('callerData.caller (b58): ' + Base58.encode(callerData.caller!));
     * }
     * ```
     */
@@ -599,7 +597,7 @@ export namespace System {
     const len = env.invokeSystemCall(system_call_id.get_caller, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
     const result = Protobuf.decode<system_calls.get_caller_result>(readBuffer, system_calls.get_caller_result.decode, len);
 
-    return result.value as chain.caller_data;
+    return result.value!;
   }
 
   /**
@@ -747,7 +745,7 @@ export namespace System {
     * let obj = System.getBytes(contractSpace, StringBytes.stringToBytes('key2'));
     *
     * if (obj) {
-    *   const str = StringBytes.bytesToString(obj) as string;
+    *   const str = StringBytes.bytesToString(obj)!;
     *   System.log(str);
     * }
     * ```
@@ -778,7 +776,7 @@ export namespace System {
 
     const result = Protobuf.decode<system_calls.get_object_result>(readBuffer, system_calls.get_object_result.decode, len);
 
-    return (result.value as system_calls.database_object).value;
+    return (result.value!).value;
   }
 
   /**
@@ -809,7 +807,7 @@ export namespace System {
       return null;
     }
 
-    return Protobuf.decode<TMessage>(value as Uint8Array, decoder);
+    return Protobuf.decode<TMessage>(value, decoder);
   }
 
   export class ProtoDatabaseObject<TMessage> {
@@ -818,7 +816,7 @@ export namespace System {
 
     constructor(obj: system_calls.database_object, decoder: (reader: Reader, length: i32) => TMessage) {
       this.key = obj.key;
-      this.value = Protobuf.decode<TMessage>(obj.value as Uint8Array, decoder);
+      this.value = Protobuf.decode<TMessage>(obj.value!, decoder);
     }
   }
 
@@ -861,7 +859,7 @@ export namespace System {
     }
 
     const result = Protobuf.decode<system_calls.get_next_object_result>(readBuffer, system_calls.get_next_object_result.decode, len);
-    return result.value as system_calls.database_object;
+    return result.value!;
   }
 
 
@@ -935,7 +933,7 @@ export namespace System {
     }
 
     const result = Protobuf.decode<system_calls.get_prev_object_result>(readBuffer, system_calls.get_prev_object_result.decode, len);
-    return result.value as system_calls.database_object;
+    return result.value!;
   }
 
   /**

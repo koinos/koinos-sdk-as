@@ -47,7 +47,7 @@ export namespace MockVM {
     * MockVM.setContractArguments(contractArguments);
     *
     * contractArguments = System.getContractArguments();
-    * System.log('contractArguments: ' + (StringBytes.bytesToString(contractArguments) as string));
+    * System.log('contractArguments: ' + (StringBytes.bytesToString(contractArguments)!));
     * ```
     */
   export function setContractArguments(contractArguments: Uint8Array): void {
@@ -120,7 +120,7 @@ export namespace MockVM {
     * 
     * System.log('callerData.caller_privilege: ' + callerData.caller_privilege.toString());
     * if (callerData.caller) {
-    *   System.log('callerData.caller (b58): ' + Base58.encode(callerData.caller as Uint8Array));
+    *   System.log('callerData.caller (b58): ' + Base58.encode(callerData.caller!));
     * }
     * ```
     */
@@ -140,7 +140,7 @@ export namespace MockVM {
     *
     * transaction = System.getTransaction();
     * 
-    * System.log("transaction.id: " + (StringBytes.bytesToString((transaction.id) as Uint8Array) as string));
+    * System.log("transaction.id: " + (StringBytes.bytesToString((transaction.id)!)!));
     * 
     * let txField = System.getTransactionField('id');
     * if (txField) {
@@ -286,7 +286,7 @@ export namespace MockVM {
 
     if (bytes) {
       const valueType =  Protobuf.decode<system_calls.exit_contract_arguments>(bytes, system_calls.exit_contract_arguments.decode);
-      return valueType.exit_code as i32;
+      return valueType.exit_code;
     }
 
     return -1;
@@ -318,7 +318,7 @@ export namespace MockVM {
       for (let index = 0; index < logsListType.values.length; index++) {
         const log = logsListType.values[index];
 
-        logs.push(log.string_value as string);
+        logs.push(log.string_value!);
       }
     }
 
@@ -357,7 +357,7 @@ export namespace MockVM {
 
       for (let index = 0; index < eventsListType.values.length; index++) {
         const eventBytes = eventsListType.values[index];
-        events.push(Protobuf.decode<system_calls.event_arguments>(eventBytes.bytes_value as Uint8Array, system_calls.event_arguments.decode));
+        events.push(Protobuf.decode<system_calls.event_arguments>(eventBytes.bytes_value!, system_calls.event_arguments.decode));
       }
     }
 

@@ -78,7 +78,8 @@ module.exports = {
     {
       files: [
         "**/assembly/**/*.ts",
-        "**/tools/**/*.ts"
+        "**/tools/**/*.ts",
+        "**/__tests__/**/*.ts"
       ],
       rules: {
         // Enforcing to remove function parameters on stubs makes code less
@@ -111,7 +112,8 @@ module.exports = {
     {
       files: [
         "**/assembly/**/*.ts",
-        "**/tools/**/*.ts"
+        "**/tools/**/*.ts",
+        "**/__tests__/**/*.ts"
       ],
       rules: {
         // There is an actual codegen difference here - TODO: revisit
@@ -134,7 +136,8 @@ module.exports = {
     {
       files: [
         "**/assembly/**/*.ts",
-        "**/tools/**/*.ts"
+        "**/tools/**/*.ts",
+        "**/__tests__/**/*.ts"
       ],
       rules: {
         // We are implementing with --noLib, so we shadow all the time
@@ -150,7 +153,8 @@ module.exports = {
     {
       files: [
         "**/assembly/**/*.d.ts",
-        "**/tools/**/*.ts"
+        "**/tools/**/*.ts",
+        "**/__tests__/**/*.ts"
       ],
       rules: {
         // Often required to achieve compatibility with TypeScript
@@ -171,7 +175,8 @@ module.exports = {
     {
       files: [
         "**/assembly/__tests__/**/*.ts",
-        "**/tools/**/*.ts"
+        "**/tools/**/*.ts",
+        "**/__tests__/**/*.ts"
       ],
       rules: {
         // Tests typically include unusual code patterns on purpose. This is

@@ -113,8 +113,8 @@ export namespace Crypto {
     * @returns Uint8Array
     * @example
     * ```ts
-    * const recoveredKey = System.recoverPublicKey(signatureData, digest as Uint8Array);
-    * const addr = Crypto.addressFromPublicKey(recoveredKey as Uint8Array);
+    * const recoveredKey = System.recoverPublicKey(signatureData, digest!);
+    * const addr = Crypto.addressFromPublicKey(recoveredKey as!);
     * System.log('recoveredKey (b58): ' + Base58.encode(addr));
     * ```
     */
@@ -127,15 +127,15 @@ export namespace Crypto {
     const sha256 = new Multihash();
     const ripemd160 = new Multihash();
 
-    sha256.deserialize(System.hash(multicodec.sha2_256, pubKey) as Uint8Array);
-    ripemd160.deserialize(System.hash(multicodec.ripemd_160, sha256.digest) as Uint8Array);
+    sha256.deserialize(System.hash(multicodec.sha2_256, pubKey)!);
+    ripemd160.deserialize(System.hash(multicodec.ripemd_160, sha256.digest)!);
 
     let tmpAddr = new Uint8Array(ripemd160.digest.byteLength + 1);
     tmpAddr[0] = prefix;
     memory.copy(tmpAddr.dataStart + 1, ripemd160.digest.dataStart, ripemd160.digest.byteLength);
  
-    sha256.deserialize(System.hash(multicodec.sha2_256, tmpAddr) as Uint8Array);
-    sha256.deserialize(System.hash(multicodec.sha2_256, sha256.digest) as Uint8Array);
+    sha256.deserialize(System.hash(multicodec.sha2_256, tmpAddr)!);
+    sha256.deserialize(System.hash(multicodec.sha2_256, sha256.digest)!);
 
     let address = new Uint8Array(tmpAddr.byteLength + 4);
     memory.copy(address.dataStart, tmpAddr.dataStart, tmpAddr.byteLength);
