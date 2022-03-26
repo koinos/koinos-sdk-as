@@ -30,21 +30,20 @@ describe('Base58', () => {
     decoded[24] = 77;
 
     let calculatedDecoded = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
-
-    expect(calculatedDecoded.length).toBe(decoded.length);
-
-    for (let index = 0; index < calculatedDecoded.length; index++) {
-      const element = calculatedDecoded[index];
-
-      expect(element).toBe(decoded[index]);
-    }
+    expect(Arrays.equal(calculatedDecoded, decoded)).toBe(true);
+    calculatedDecoded = Base58.decode(' 1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
+    expect(Arrays.equal(calculatedDecoded, decoded)).toBe(true);
+    calculatedDecoded = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe ');
+    expect(Arrays.equal(calculatedDecoded, decoded)).toBe(true);
+    calculatedDecoded = Base58.decode(' 1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe ');
+    expect(Arrays.equal(calculatedDecoded, decoded)).toBe(true);
 
     calculatedDecoded = Base58.decode('');
     expect(calculatedDecoded.length).toBe(0);
   });
 
   it('should encode a Uint8Array into a Base58 string', () => {
-    const decoded = new Uint8Array(25);
+    let decoded = new Uint8Array(25);
     decoded[0] = 0;
     decoded[1] = 136;
     decoded[2] = 43;
@@ -71,14 +70,23 @@ describe('Base58', () => {
     decoded[23] = 71;
     decoded[24] = 77;
 
-    const encoded = '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe';
+    let encoded = '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe';
 
     let calculatedEncoded = Base58.encode(decoded);
-
     expect(calculatedEncoded).toBe(encoded);
 
     calculatedEncoded = Base58.encode(new Uint8Array(0));
     expect(calculatedEncoded).toBe('');
+
+    decoded = new Uint8Array(3);
+    decoded[0] = 255;
+    decoded[1] = 0;
+    decoded[2] = 43;
+
+    encoded = '1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe';
+
+    calculatedEncoded = Base58.encode(decoded);
+    // expect(calculatedEncoded).toBe(encoded);
   });
 });
 
@@ -99,16 +107,25 @@ describe('Base64', () => {
 
     let calculatedDecoded = Base64.decode('SSdtIGJhc2UgNjQ=');
 
-    expect(calculatedDecoded.length).toBe(decoded.length);
-
-    for (let index = 0; index < calculatedDecoded.length; index++) {
-      const element = calculatedDecoded[index];
-
-      expect(element).toBe(decoded[index]);
-    }
+    expect(Arrays.equal(calculatedDecoded, decoded)).toBe(true);
 
     calculatedDecoded = Base64.decode('');
     expect(calculatedDecoded.length).toBe(0);
+
+    let str = 'SSBhbSBiYXNlNjQhIQ==';
+    let b64 = Base64.decode(str);
+
+    expect(Base64.encode(b64)).toBe(str);
+
+    str = 'SSBhbSBiYXNlNjQh';
+    b64 = Base64.decode(str);
+
+    expect(Base64.encode(b64)).toBe(str);
+
+    str = 'SSA=';
+    b64 = Base64.decode(str);
+
+    expect(Base64.encode(b64)).toBe(str);
   });
 
   it('should encode a Uint8Array into a Base64 string', () => {
@@ -160,13 +177,7 @@ describe('StringBytes', () => {
 
     let calculatedBytes = StringBytes.stringToBytes('Koinos is Awesome!');
 
-    expect(calculatedBytes.length).toBe(bytes.length);
-
-    for (let index = 0; index < calculatedBytes.length; index++) {
-      const element = calculatedBytes[index];
-
-      expect(element).toBe(bytes[index]);
-    }
+    expect(Arrays.equal(calculatedBytes, bytes)).toBe(true);
 
     calculatedBytes = StringBytes.stringToBytes('');
     expect(calculatedBytes.length).toBe(0);
@@ -274,13 +285,7 @@ describe('Crypto', () => {
 
     let calculatedAddress = Crypto.addressFromPublicKey(publicKey);
 
-    expect(calculatedAddress.length).toBe(address.length);
-
-    for (let index = 0; index < calculatedAddress.length; index++) {
-      const element = calculatedAddress[index];
-
-      expect(element).toBe(address[index]);
-    }
+    expect(Arrays.equal(calculatedAddress, address)).toBe(true);
 
     const calculatedB58 = Base58.encode(calculatedAddress);
     expect(calculatedB58).toBe(b58Address);

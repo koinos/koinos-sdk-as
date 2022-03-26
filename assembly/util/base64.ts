@@ -41,7 +41,7 @@ export namespace Base64 {
       imax -= 4;
     }
 
-    let main_chunk = imax % 4 == 0 ? (imax / 4) * 3 : (imax / 4 + 1) * 3;
+    let main_chunk = (imax / 4) * 3;
     let pad_size = pads > 0 ? 3 - pads : 0;
     let size = main_chunk + pad_size;
 

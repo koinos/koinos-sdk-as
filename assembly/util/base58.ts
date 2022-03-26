@@ -1,4 +1,16 @@
 export namespace Base58 {
+  // @ts-ignore: decorator
+  @lazy
+    const ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+
+  // @ts-ignore: decorator
+  @lazy
+    const BASE = 58;
+  
+  // @ts-ignore: decorator
+  @lazy
+    const BASE_MAP = StaticArray.fromArray<u8>([255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,0,1,2,3,4,5,6,7,8,255,255,255,255,255,255,255,9,10,11,12,13,14,15,16,255,17,18,19,20,21,255,22,23,24,25,26,27,28,29,30,31,32,255,255,255,255,255,255,33,34,35,36,37,38,39,40,41,42,43,255,44,45,46,47,48,49,50,51,52,53,54,55,56,57,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255]);
+
   /**
     * Encode Uint8Array as a base58 string.
     * @param bytes Byte array of type Uint8Array.
@@ -12,10 +24,8 @@ export namespace Base58 {
     // Code converted from:
     // https://github.com/cryptocoinjs/base-x/blob/master/index.js
     const iFACTOR = 2; // TODO: Calculate precise value to avoid overallocating
-    const ALPHABET =
-      "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-    let BASE = ALPHABET.length;
-    let LEADER = ALPHABET.charAt(0);
+    
+    const LEADER = ALPHABET.charAt(0);
 
     // Skip & count leading zeroes.
     let zeroes = 0;
@@ -23,7 +33,7 @@ export namespace Base58 {
     let pbegin = 0;
     let pend = source.length;
 
-    while (pbegin !== pend && source[pbegin] === 0) {
+    while (pbegin != pend && source[pbegin] == 0) {
       pbegin++;
       zeroes++;
     }
@@ -33,14 +43,14 @@ export namespace Base58 {
     let b58 = new Uint8Array(size);
 
     // Process the bytes.
-    while (pbegin !== pend) {
+    while (pbegin != pend) {
       let carry = i32(source[pbegin]);
 
       // Apply "b58 = b58 * 256 + ch".
       let i = 0;
       for (
         let it = size - 1;
-        (carry !== 0 || i < length) && it !== -1;
+        (carry != 0 || i < length) && it != -1;
         it--, i++
       ) {
         carry += (256 * b58[it]) >>> 0;
@@ -55,7 +65,7 @@ export namespace Base58 {
 
     // Skip leading zeroes in base58 result.
     let it = size - length;
-    while (it !== size && b58[it] === 0) {
+    while (it != size && b58[it] == 0) {
       it++;
     }
 
@@ -81,90 +91,71 @@ export namespace Base58 {
     }
     throw new Error("Non-base58 character");
   }
-}
 
-function decodeUnsafe(source: string): Uint8Array {
-  if (source.length === 0) {
-    return new Uint8Array(0);
-  }
-
-  const ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-  const BASE = ALPHABET.length;
-  const LEADER = ALPHABET.charAt(0);
-  // const FACTOR = Math.log(BASE) / Math.log(256) // log(BASE) / log(256), rounded up
-  const FACTOR = 1; // no floating point operations allowed so round up
-  let BASE_MAP = new Uint8Array(256);
-
-  for (let j = 0; j < BASE_MAP.length; j++) {
-    BASE_MAP[j] = 255;
-  }
-
-  for (let i = 0; i < ALPHABET.length; i++) {
-    let x = ALPHABET.charAt(i);
-    let xc = x.charCodeAt(0);
-    if (BASE_MAP[xc] !== 255) {
-      throw new TypeError(x + " is ambiguous");
+  function decodeUnsafe(source: string): Uint8Array {
+    if (source.length == 0) {
+      return new Uint8Array(0);
     }
-    BASE_MAP[xc] = i;
-    // log(BASE_MAP.subarray(xc - 1, xc + 2))
-  }
-
-  let psz = 0;
-  // Skip leading spaces.
-  while (source.charAt(psz) === " ") {
-    psz++;
-  }
-
-  // Skip and count leading '1's.
-  let length = 0;
-
-  while (source.charAt(psz) === LEADER) {
-    psz++;
-  }
-
-  // Allocate enough space in big-endian base256 representation.
-  let size = i32((source.length - psz) * FACTOR + 1) >>> 0; // log(58) / log(256), rounded up.
-  let b256 = new Uint8Array(size - 1);
-
-  // Process the characters.
-  while (source.charAt(psz)) {
-    // Decode character
-    let bmIdx = source.charCodeAt(psz);
-
-    if (bmIdx < 0) break;
-    let carry = i32(BASE_MAP[bmIdx]);
-
-    // Invalid character
-    if (carry === 255) {
-      break;
+    const LEADER = ALPHABET.charAt(0);
+    const FACTOR = 1; // no floating point operations allowed so round up
+  
+    let psz = 0;
+    // Skip leading spaces.
+    while (source.charAt(psz) == " ") {
+      psz++;
     }
+  
+    // Skip and count leading '1's.
+    let length = 0;
+  
+    while (source.charAt(psz) == LEADER) {
+      psz++;
+    }
+  
+    // Allocate enough space in big-endian base256 representation.
+    let size = i32((source.length - psz) * FACTOR + 1) >>> 0; // log(58) / log(256), rounded up.
+    let b256 = new Uint8Array(size - 1);
+  
+    // Process the characters.
+    while (source.charAt(psz)) {
+      // Decode character
+      let bmIdx = source.charCodeAt(psz);
+  
+      if (bmIdx < 0) break;
+      let carry = i32(BASE_MAP[bmIdx]);
+  
+      // Invalid character
+      if (carry == 255) {
+        break;
+      }
+      let i = 0;
+      for (
+        let it = size - 2;
+        (carry != 0 || i < length) && it != -1;
+        it--, i++
+      ) {
+        carry += (BASE * b256[it]) >>> 0;
+        b256[it] = carry % 256 >>> 0;
+        carry = (carry / 256) >>> 0;
+      }
+      if (carry != 0) {
+        throw new Error("Non-zero carry");
+      }
+      length = i;
+      psz++;
+    }
+    // Skip trailing spaces.
+    while (source.charAt(psz) == " ") {
+      psz++;
+    }
+  
+    // Skip leading zeroes in b256.
     let i = 0;
-    for (
-      let it = size - 2;
-      (carry !== 0 || i < length) && it !== -1;
-      it--, i++
-    ) {
-      carry += (BASE * b256[it]) >>> 0;
-      b256[it] = carry % 256 >>> 0;
-      carry = (carry / 256) >>> 0;
+    while (b256[i] == 0) {
+      i++;
     }
-    if (carry !== 0) {
-      throw new Error("Non-zero carry");
-    }
-    length = i;
-    psz++;
+    i--; // keep the leading zero since that marked ed25519 (won't work with secp256k1)
+  
+    return <Uint8Array>b256.slice(i);
   }
-  // Skip trailing spaces.
-  while (source.charAt(psz) === " ") {
-    psz++;
-  }
-
-  // Skip leading zeroes in b256.
-  let i = 0;
-  while (b256[i] === 0) {
-    i++;
-  }
-  i--; // keep the leading zero since that marked ed25519 (won't work with secp256k1)
-
-  return <Uint8Array>b256.slice(i);
 }

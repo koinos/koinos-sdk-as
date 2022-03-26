@@ -659,7 +659,7 @@ export namespace System {
     let finalKey: Uint8Array;
     if (key instanceof Uint8Array) {
       finalKey = key;
-    } else if (typeof key === "string") {
+    } else if (typeof key == "string") {
       finalKey = StringBytes.stringToBytes(key);
     } else {
       exitContract(1);
@@ -719,7 +719,7 @@ export namespace System {
     let finalKey: Uint8Array;
     if (key instanceof Uint8Array) {
       finalKey = key;
-    } else if (typeof key === "string") {
+    } else if (typeof key == "string") {
       finalKey = StringBytes.stringToBytes(key);
     } else {
       exitContract(1);
