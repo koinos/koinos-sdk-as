@@ -1,6 +1,7 @@
 import 'wasi';
 export { Protobuf } from 'as-proto';
 export { System } from './systemCalls';
+export { Token } from './token';
 export * from './util';
 
 export { google } from './proto/any';
@@ -14,5 +15,6 @@ export { value } from './proto/chain/value';
 export { protocol } from './proto/protocol/protocol';
 export { common } from './proto/common';
 export { options } from './proto/options';
+export { token } from './proto/token';
 
 export { MockVM } from './mockVM';
