@@ -18,3 +18,4 @@ export { options } from './proto/options';
 export { token } from './proto/token';
 
 export { MockVM } from './mockVM';
+export { SafeMath } from './safeMath';
