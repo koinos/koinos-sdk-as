@@ -1,6 +1,10 @@
 import { System } from "../systemCalls";
 
 export namespace Arrays {
+  /**
+   * Checks if 2 Uint8Array are equal.
+   * Note: if both first and second are null, then they are considered equal
+   */
   export function equal(
     first: Uint8Array | null,
     second: Uint8Array | null
