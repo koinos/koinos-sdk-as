@@ -29,10 +29,12 @@ export namespace SafeMath {
     */
   export function tryAdd<T>(a: T, b: T): SafeInteger<T> {
     if (isInteger<T>()) {
+      // @ts-ignore valid in AS
       const c = a + b;
 
       if (isSigned<T>()) {
         // signed integers
+        // @ts-ignore valid in AS
         if ((b >= 0 && c >= a) || (b < 0 && c < a)) {
           return new SafeInteger<T>(c, false);
         }
@@ -44,6 +46,7 @@ export namespace SafeMath {
       }
     }
 
+    // @ts-ignore valid in AS
     return new SafeInteger<T>(0, true);
   }
 
@@ -64,6 +67,7 @@ export namespace SafeMath {
     const result = tryAdd(a, b);
 
     if (result.error) {
+      // @ts-ignore valid in AS
       System.log(message != '' ? message : `could not add ${a.toString()} to ${b.toString()}`);
       System.exitContract(1);
     }
@@ -91,18 +95,23 @@ export namespace SafeMath {
     if (isInteger<T>()) {
       if (isSigned<T>()) {
         // signed integers
+        // @ts-ignore valid in AS
         const c = a - b;
+        // @ts-ignore valid in AS
         if ((b >= 0 && c <= a) || (b < 0 && c > a)) {
+          // @ts-ignore valid in AS
           return new SafeInteger<T>(c, false);
         }
       } else {
         // unsigned integers
         if (b <= a) {
+          // @ts-ignore valid in AS
           return new SafeInteger<T>(a - b, false);
         }
       }
     }
 
+    // @ts-ignore valid in AS
     return new SafeInteger<T>(0, true);
   }
 
@@ -123,6 +132,7 @@ export namespace SafeMath {
     const result = trySub(a, b);
 
     if (result.error) {
+      // @ts-ignore valid in AS
       System.log(message != '' ? message : `could not subtract ${b.toString()} from ${a.toString()}`);
       System.exitContract(1);
     }
@@ -148,16 +158,22 @@ export namespace SafeMath {
     */
   export function tryMul<T>(a: T, b: T): SafeInteger<T> {
     if (isInteger<T>() && !isSigned<T>()) {
+      // @ts-ignore valid in AS
       if (a == 0) {
+        // @ts-ignore valid in AS
         return new SafeInteger<T>(0, false);
       }
   
+      // @ts-ignore valid in AS
       const c = a * b;
+      // @ts-ignore valid in AS
       if (c / a == b) {
+        // @ts-ignore valid in AS
         return new SafeInteger<T>(c, false);
       }
     }
 
+    // @ts-ignore valid in AS
     return new SafeInteger<T>(0, true);
   }
 
@@ -178,6 +194,7 @@ export namespace SafeMath {
     const result = tryMul(a, b);
 
     if (result.error) {
+      // @ts-ignore valid in AS
       System.log(message != '' ? message : `could not multiply ${a.toString()} by ${b.toString()}`);
       System.exitContract(1);
     }
@@ -203,11 +220,14 @@ export namespace SafeMath {
     */
   export function tryDiv<T>(a: T, b: T): SafeInteger<T> {
     if (isInteger<T>() && !isSigned<T>()) {
+      // @ts-ignore valid in AS
       if (b > 0) {
+        // @ts-ignore valid in AS
         return new SafeInteger<T>(a / b, false);
       }
     }
 
+    // @ts-ignore valid in AS
     return new SafeInteger<T>(0, true);
   }
 
@@ -228,6 +248,7 @@ export namespace SafeMath {
     const result = tryDiv(a, b);
 
     if (result.error) {
+      // @ts-ignore valid in AS
       System.log(message != '' ? message : `could not divide ${a.toString()} by ${b.toString()}`);
       System.exitContract(1);
     }
@@ -253,11 +274,14 @@ export namespace SafeMath {
     */
   export function tryMod<T>(a: T, b: T): SafeInteger<T> {
     if (isInteger<T>() && !isSigned<T>()) {
+      // @ts-ignore valid in AS
       if (b != 0) {
+        // @ts-ignore valid in AS
         return new SafeInteger<T>(a % b, false);
       }
     }
 
+    // @ts-ignore valid in AS
     return new SafeInteger<T>(0, true);
   }
 
@@ -278,6 +302,7 @@ export namespace SafeMath {
     const result = tryMod(a, b);
 
     if (result.error) {
+      // @ts-ignore valid in AS
       System.log(message != '' ? message : `could not calulate ${a.toString()} modulo ${b.toString()}`);
       System.exitContract(1);
     }
