@@ -141,9 +141,9 @@ export namespace SafeMath {
   }
 
   /**
-    * Try to multiply 2 unsigned integers
-    * @param { T } a unsigned integer
-    * @param { T } b unsigned integer
+    * Try to multiply 2 integers (unsigned or signed)
+    * @param { T } a unsigned or signed integer
+    * @param { T } b unsigned or signed integer
     * @returns SafeInteger
     * @example
     * ```ts
@@ -157,13 +157,30 @@ export namespace SafeMath {
     * ```
     */
   export function tryMul<T>(a: T, b: T): SafeInteger<T> {
-    if (isInteger<T>() && !isSigned<T>()) {
+    if (isInteger<T>()) {
       // @ts-ignore valid in AS
       if (a == 0) {
         // @ts-ignore valid in AS
         return new SafeInteger<T>(0, false);
       }
-  
+
+      // @ts-ignore valid in AS
+      if (isSigned<T>() && a == -1) {
+        if (
+          // @ts-ignore valid in AS
+          (b instanceof i64 && b == i64.MIN_VALUE) ||
+          // @ts-ignore valid in AS
+          (b instanceof i32 && b == i32.MIN_VALUE) ||
+          // @ts-ignore valid in AS
+          (b instanceof i16 && b == i16.MIN_VALUE) ||
+          // @ts-ignore valid in AS
+          (b instanceof i8 && b == i8.MIN_VALUE)
+        ) {
+          // @ts-ignore valid in AS
+          return new SafeInteger<T>(0, true);
+        }
+      }
+
       // @ts-ignore valid in AS
       const c = a * b;
       // @ts-ignore valid in AS
@@ -178,9 +195,9 @@ export namespace SafeMath {
   }
 
   /**
-    * Multiply 2 unsigned integers
-    * @param { T } a unsigned integer
-    * @param { T } b unsigned integer
+    * Multiply 2  integers (unsigned or signed)
+    * @param { T } a unsigned or signed integer
+    * @param { T } b unsigned or signed integer
     * @param { string } message message that will be logged if the calculation reverts
     * @returns reverts if overflow/underflow, result otherwise
     * @example
@@ -203,9 +220,9 @@ export namespace SafeMath {
   }
 
   /**
-    * Try to divide 2 unsigned integers
-    * @param { T } a unsigned integer
-    * @param { T } b unsigned integer
+    * Try to divide 2 integers (unsigned or signed)
+    * @param { T } a unsigned or signed integer
+    * @param { T } b unsigned or signed integer
     * @returns SafeInteger
     * @example
     * ```ts
@@ -219,9 +236,26 @@ export namespace SafeMath {
     * ```
     */
   export function tryDiv<T>(a: T, b: T): SafeInteger<T> {
-    if (isInteger<T>() && !isSigned<T>()) {
+    if (isInteger<T>()) {
       // @ts-ignore valid in AS
-      if (b > 0) {
+      if (isSigned<T>() && b == -1) {
+        if (
+          // @ts-ignore valid in AS
+          (a instanceof i64 && a == i64.MIN_VALUE) ||
+          // @ts-ignore valid in AS
+          (a instanceof i32 && a == i32.MIN_VALUE) ||
+          // @ts-ignore valid in AS
+          (a instanceof i16 && a == i16.MIN_VALUE) ||
+          // @ts-ignore valid in AS
+          (a instanceof i8 && a == i8.MIN_VALUE)
+        ) {
+          // @ts-ignore valid in AS
+          return new SafeInteger<T>(0, true);
+        }
+      }
+
+      // @ts-ignore valid in AS
+      if (b != 0) {
         // @ts-ignore valid in AS
         return new SafeInteger<T>(a / b, false);
       }
@@ -232,7 +266,7 @@ export namespace SafeMath {
   }
 
   /**
-    * Divide 2 unsigned integers
+    * Divide 2 integers (unsigned or signed)
     * @param { T } a unsigned or signed integer
     * @param { T } b unsigned or signed integer
     * @param { string } message message that will be logged if the calculation reverts
@@ -257,9 +291,9 @@ export namespace SafeMath {
   }
 
   /**
-    * Try to calculate the modulo of 2 unsigned integers
-    * @param { T } a unsigned integer
-    * @param { T } b unsigned integer
+    * Try to calculate the modulo of 2 integers (unsigned or signed)
+    * @param { T } a unsigned or signed integer
+    * @param { T } b unsigned or signed integer
     * @returns SafeInteger
     * @example
     * ```ts
@@ -273,7 +307,24 @@ export namespace SafeMath {
     * ```
     */
   export function tryMod<T>(a: T, b: T): SafeInteger<T> {
-    if (isInteger<T>() && !isSigned<T>()) {
+    if (isInteger<T>()) {
+      // @ts-ignore valid in AS
+      if (isSigned<T>() && b == -1) {
+        if (
+          // @ts-ignore valid in AS
+          (a instanceof i64 && a == i64.MIN_VALUE) ||
+          // @ts-ignore valid in AS
+          (a instanceof i32 && a == i32.MIN_VALUE) ||
+          // @ts-ignore valid in AS
+          (a instanceof i16 && a == i16.MIN_VALUE) ||
+          // @ts-ignore valid in AS
+          (a instanceof i8 && a == i8.MIN_VALUE)
+        ) {
+          // @ts-ignore valid in AS
+          return new SafeInteger<T>(0, true);
+        }
+      }
+
       // @ts-ignore valid in AS
       if (b != 0) {
         // @ts-ignore valid in AS
@@ -286,9 +337,9 @@ export namespace SafeMath {
   }
 
   /**
-    * Calculate the modulo of 2 unsigned integers
-    * @param { T } a unsigned integer
-    * @param { T } b unsigned integer
+    * Calculate the modulo of 2 integers (unsigned or signed)
+    * @param { T } a unsigned or signed integer
+    * @param { T } b unsigned or signed integer
     * @param { string } message message that will be logged if the calculation reverts
     * @returns reverts if overflow/underflow, result otherwise
     * @example

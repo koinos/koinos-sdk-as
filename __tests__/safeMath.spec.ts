@@ -317,6 +317,28 @@ describe('SafeMath', () => {
       expect(c.error).toBe(false);
     });
 
+    it('multiplies correctly', () => {
+      let a: i64 = 1234;
+      let b: i64 = 5678;
+      let c = SafeMath.tryMul(a, b);
+      expect(c.value).toBe(7006652);
+      expect(c.error).toBe(false);
+
+      c = SafeMath.tryMul(b, a);
+      expect(c.value).toBe(7006652);
+      expect(c.error).toBe(false);
+
+      let e: i32 = 1234;
+      let f: i32 = 5678;
+      let g = SafeMath.tryMul(e, f);
+      expect(c.value).toBe(7006652);
+      expect(c.error).toBe(false);
+
+      g = SafeMath.tryMul(f, e);
+      expect(c.value).toBe(7006652);
+      expect(c.error).toBe(false);
+    });
+
     it('multiplies by zero correctly', () => {
       let a: u64 = 0;
       let b: u64 = 5678;
@@ -329,9 +351,81 @@ describe('SafeMath', () => {
       expect(c.error).toBe(false);
     });
 
+    it('multiplies by zero correctly', () => {
+      let a: i64 = 0;
+      let b: i64 = 5678;
+      let c = SafeMath.tryMul(a, b);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(false);
+
+      c = SafeMath.tryMul(b, a);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(false);
+    });
+
     it('reverts on multiplication overflow', () => {
+      let a: u64 = u64.MAX_VALUE;
+      let b: u64 = 2;
+      let c = SafeMath.tryMul(a, b);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+
+      c = SafeMath.tryMul(b, a);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+    });
+
+    it('reverts on multiplication overflow, positive operands', () => {
       let a: i64 = i64.MAX_VALUE;
       let b: i64 = 2;
+      let c = SafeMath.tryMul(a, b);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+
+      c = SafeMath.tryMul(b, a);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+    });
+
+    it('reverts when minimum integer is multiplied by -1', () => {
+      let a: i64 = i64.MIN_VALUE;
+      let b: i64 = -1;
+      let c = SafeMath.tryMul(a, b);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+
+      c = SafeMath.tryMul(b, a);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+    });
+
+    it('reverts when minimum integer is multiplied by -1', () => {
+      let a: i32 = i32.MIN_VALUE;
+      let b: i32 = -1;
+      let c = SafeMath.tryMul(a, b);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+
+      c = SafeMath.tryMul(b, a);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+    });
+
+    it('reverts when minimum integer is multiplied by -1', () => {
+      let a: i16 = i16.MIN_VALUE;
+      let b: i16 = -1;
+      let c = SafeMath.tryMul(a, b);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+
+      c = SafeMath.tryMul(b, a);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+    });
+
+    it('reverts when minimum integer is multiplied by -1', () => {
+      let a: i8 = i8.MIN_VALUE;
+      let b: i8 = -1;
       let c = SafeMath.tryMul(a, b);
       expect(c.value).toBe(0);
       expect(c.error).toBe(true);
@@ -409,9 +503,25 @@ describe('SafeMath', () => {
       expect(c.error).toBe(false);
     });
 
+    it('divides correctly', () => {
+      let a: i64 = -5678;
+      let b: i64 = 5678;
+      let c = SafeMath.tryDiv(a, b);
+      expect(c.value).toBe(-1);
+      expect(c.error).toBe(false);
+    });
+
     it('divides zero correctly', () => {
       let a: u64 = 0;
       let b: u64 = 5678;
+      let c = SafeMath.tryDiv(a, b);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(false);
+    });
+
+    it('divides zero correctly', () => {
+      let a: i64 = 0;
+      let b: i64 = 5678;
       let c = SafeMath.tryDiv(a, b);
       expect(c.value).toBe(0);
       expect(c.error).toBe(false);
@@ -426,9 +536,58 @@ describe('SafeMath', () => {
       expect(c.error).toBe(false);
     });
 
+    it('returns complete number result on non-even division', () => {
+      let a: i64 = 7000;
+      let b: i64 = 5678;
+      let c = SafeMath.tryDiv(a, b);
+
+      expect(c.value).toBe(1);
+      expect(c.error).toBe(false);
+    });
+
     it('reverts on division by zero', () => {
       let a: u64 = 5678;
       let b: u64 = 0;
+      let c = SafeMath.tryDiv(a, b);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+    });
+
+    it('reverts on division by zero', () => {
+      let a: i64 = 5678;
+      let b: i64 = 0;
+      let c = SafeMath.tryDiv(a, b);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+    });
+
+    it('reverts on overflow, negative second', () => {
+      let a: i64 = i64.MIN_VALUE;
+      let b: i64 = -1;
+      let c = SafeMath.tryDiv(a, b);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+    });
+
+    it('reverts on overflow, negative second', () => {
+      let a: i32 = i32.MIN_VALUE;
+      let b: i32 = -1;
+      let c = SafeMath.tryDiv(a, b);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+    });
+
+    it('reverts on overflow, negative second', () => {
+      let a: i16 = i16.MIN_VALUE;
+      let b: i16 = -1;
+      let c = SafeMath.tryDiv(a, b);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+    });
+
+    it('reverts on overflow, negative second', () => {
+      let a: i8 = i8.MIN_VALUE;
+      let b: i8 = -1;
       let c = SafeMath.tryDiv(a, b);
       expect(c.value).toBe(0);
       expect(c.error).toBe(true);
@@ -493,9 +652,27 @@ describe('SafeMath', () => {
         expect(c.error).toBe(false);
       });
 
+      test('when the dividend is smaller than the divisor', () => {
+        let a: i64 = 284;
+        let b: i64 = 5678;
+        let c = SafeMath.tryMod(a, b);
+
+        expect(c.value).toBe(284);
+        expect(c.error).toBe(false);
+      });
+
       test('when the dividend is equal to the divisor', () => {
         let a: u64 = 5678;
         let b: u64 = 5678;
+        let c = SafeMath.tryMod(a, b);
+
+        expect(c.value).toBe(0);
+        expect(c.error).toBe(false);
+      });
+
+      test('when the dividend is equal to the divisor', () => {
+        let a: i64 = 5678;
+        let b: i64 = 5678;
         let c = SafeMath.tryMod(a, b);
 
         expect(c.value).toBe(0);
@@ -511,9 +688,27 @@ describe('SafeMath', () => {
         expect(c.error).toBe(false);
       });
 
+      test('when the dividend is larger than the divisor', () => {
+        let a: i64 = 7000;
+        let b: i64 = 5678;
+        let c = SafeMath.tryMod(a, b);
+
+        expect(c.value).toBe(1322);
+        expect(c.error).toBe(false);
+      });
+
       test('when the dividend is a multiple of the divisor', () => {
         let a: u64 = 17034; // 17034 == 5678 * 3
         let b: u64 = 5678;
+        let c = SafeMath.tryMod(a, b);
+
+        expect(c.value).toBe(0);
+        expect(c.error).toBe(false);
+      });
+
+      test('when the dividend is a multiple of the divisor', () => {
+        let a: i64 = 17034; // 17034 == 5678 * 3
+        let b: i64 = 5678;
         let c = SafeMath.tryMod(a, b);
 
         expect(c.value).toBe(0);
@@ -524,6 +719,46 @@ describe('SafeMath', () => {
     it('reverts with a 0 divisor', () => {
       let a: u64 = 5678;
       let b: u64 = 0;
+      let c = SafeMath.tryMod(a, b);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+    });
+
+    it('reverts with a 0 divisor', () => {
+      let a: i64 = 5678;
+      let b: i64 = 0;
+      let c = SafeMath.tryMod(a, b);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+    });
+
+    it('reverts on overflow, negative second', () => {
+      let a: i64 = i64.MIN_VALUE;
+      let b: i64 = -1;
+      let c = SafeMath.tryMod(a, b);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+    });
+
+    it('reverts on overflow, negative second', () => {
+      let a: i32 = i32.MIN_VALUE;
+      let b: i32 = -1;
+      let c = SafeMath.tryMod(a, b);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+    });
+
+    it('reverts on overflow, negative second', () => {
+      let a: i16 = i16.MIN_VALUE;
+      let b: i16 = -1;
+      let c = SafeMath.tryMod(a, b);
+      expect(c.value).toBe(0);
+      expect(c.error).toBe(true);
+    });
+
+    it('reverts on overflow, negative second', () => {
+      let a: i8 = i8.MIN_VALUE;
+      let b: i8 = -1;
       let c = SafeMath.tryMod(a, b);
       expect(c.value).toBe(0);
       expect(c.error).toBe(true);
