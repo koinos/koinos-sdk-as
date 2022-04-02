@@ -40,7 +40,7 @@
     "buildTestContract:debug": "asc test-contract/assembly/index.ts --target debug --use abort= --config test-contract/asconfig.json",
     "buildTestContract:release": "asc test-contract/assembly/index.ts --target release --use abort= --config test-contract/asconfig.json",
     "buildTestContract": "npm run lintTestContract && npm run buildTestContract:debug && npm run buildTestContract:release",
-    "docs": "typedoc --includeVersion --tsconfig assembly/tsconfig.json",
+    "docs": "node docs.js",
     "test": "asp --verbose",
     "ci": "yarn buildSDK && yarn buildTestContract && yarn test"
   }
