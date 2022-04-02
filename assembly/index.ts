@@ -1,8 +1,12 @@
 import 'wasi';
 export { Protobuf } from 'as-proto';
+export { u128, u128Safe } from 'as-bignum';
+
 export { System } from './systemCalls';
 export { Token } from './token';
 export * from './util';
+export { MockVM } from './mockVM';
+export { SafeMath } from './safeMath';
 
 export { google } from './proto/any';
 
@@ -16,6 +20,3 @@ export { protocol } from './proto/protocol/protocol';
 export { common } from './proto/common';
 export { options } from './proto/options';
 export { token } from './proto/token';
-
-export { MockVM } from './mockVM';
-export { SafeMath } from './safeMath';

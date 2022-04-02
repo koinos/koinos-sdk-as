@@ -1,4 +1,5 @@
 import { System } from "./systemCalls";
+import { u128 } from "as-bignum";
 
 export namespace SafeMath {
 
@@ -44,6 +45,16 @@ export namespace SafeMath {
           return new SafeInteger<T>(c, false);
         }
       }
+    } else if (a instanceof u128) {
+      // @ts-ignore valid in AS
+      const c = a + b;
+
+      if (c >= a) {
+        return new SafeInteger(c, false);
+      }
+
+      // @ts-ignore valid in AS
+      return new SafeInteger(u128.Zero, true);
     }
 
     // @ts-ignore valid in AS
@@ -109,6 +120,14 @@ export namespace SafeMath {
           return new SafeInteger<T>(a - b, false);
         }
       }
+    } else if (a instanceof u128) {
+      if (b <= a) {
+        // @ts-ignore valid in AS
+        return new SafeInteger(a - b, false);
+      }
+
+      // @ts-ignore valid in AS
+      return new SafeInteger(u128.Zero, true);
     }
 
     // @ts-ignore valid in AS
@@ -188,6 +207,23 @@ export namespace SafeMath {
         // @ts-ignore valid in AS
         return new SafeInteger<T>(c, false);
       }
+    } else if (a instanceof u128) {
+      // @ts-ignore valid in AS
+      if (a == u128.Zero) {
+        // @ts-ignore valid in AS
+        return new SafeInteger(u128.Zero, false);
+      }
+      
+      // @ts-ignore valid in AS
+      const c = a * b;
+      // @ts-ignore valid in AS
+      if (c / a == b) {
+        // @ts-ignore valid in AS
+        return new SafeInteger(c, false);
+      }
+
+      // @ts-ignore valid in AS
+      return new SafeInteger(u128.Zero, true);
     }
 
     // @ts-ignore valid in AS
@@ -259,6 +295,15 @@ export namespace SafeMath {
         // @ts-ignore valid in AS
         return new SafeInteger<T>(a / b, false);
       }
+    } else if (a instanceof u128) {
+      // @ts-ignore valid in AS
+      if (b != u128.Zero) {
+        // @ts-ignore valid in AS
+        return new SafeInteger(a / b, false);
+      }
+
+      // @ts-ignore valid in AS
+      return new SafeInteger(u128.Zero, true);
     }
 
     // @ts-ignore valid in AS
@@ -330,6 +375,15 @@ export namespace SafeMath {
         // @ts-ignore valid in AS
         return new SafeInteger<T>(a % b, false);
       }
+    } else if (a instanceof u128) {
+      // @ts-ignore valid in AS
+      if (b != u128.Zero) {
+        // @ts-ignore valid in AS
+        return new SafeInteger(a % b, false);
+      }
+
+      // @ts-ignore valid in AS
+      return new SafeInteger(u128.Zero, true);
     }
 
     // @ts-ignore valid in AS
