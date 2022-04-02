@@ -1,4 +1,6 @@
-![Test Ubuntu](https://github.com/roaminroe/koinos-as-sdk/actions/workflows/test-ubuntu.yml/badge.svg) ![Test Windows](https://github.com/roaminroe/koinos-as-sdk/actions/workflows/test-windows.yml/badge.svg) ![Test MacOS](https://github.com/roaminroe/koinos-as-sdk/actions/workflows/test-macos.yml/badge.svg)
+Ubuntu: ![Test Ubuntu](https://github.com/roaminroe/koinos-as-sdk/actions/workflows/test-ubuntu.yml/badge.svg)
+Windows: ![Test Windows](https://github.com/roaminroe/koinos-as-sdk/actions/workflows/test-windows.yml/badge.svg)
+MacOS: ![Test MacOS](https://github.com/roaminroe/koinos-as-sdk/actions/workflows/test-macos.yml/badge.svg)
 
 # koinos-as-sdk
 AssemblyScript (AS) Software Development Toolkit (SDK) for the Koinos Blockchain
