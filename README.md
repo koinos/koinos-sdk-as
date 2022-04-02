@@ -5,6 +5,8 @@ AssemblyScript (AS) Software Development Toolkit (SDK) for the Koinos Blockchain
 
 See documentation: https://roaminroe.github.io/koinos-as-sdk/
 
+Learn how to create smart contracts by looking at the examples repo: https://github.com/roaminroe/koinos-as-sdk-examples
+
 ## Requirements:
 You need to install NodeJS v16 or higher [download](https://nodejs.org/en/download/)
 
