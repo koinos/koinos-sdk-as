@@ -1,11 +1,11 @@
 import { env } from "./env";
 import { Protobuf, Reader, Writer } from 'as-proto';
-import * as system_calls from '../koinos-proto-as/koinos/chain/system_calls';
-import { system_call_id } from '../koinos-proto-as/koinos/chain/system_call_ids';
-import * as chain from '../koinos-proto-as/koinos/chain/chain';
-import * as protocol from '../koinos-proto-as/koinos/protocol/protocol';
-import * as authority from '../koinos-proto-as/koinos/chain/authority';
-import * as value from '../koinos-proto-as/koinos/chain/value';
+import * as system_calls from './koinos-proto-as/koinos/chain/system_calls';
+import { system_call_id } from './koinos-proto-as/koinos/chain/system_call_ids';
+import * as chain from './koinos-proto-as/koinos/chain/chain';
+import * as protocol from './koinos-proto-as/koinos/protocol/protocol';
+import * as authority from './koinos-proto-as/koinos/chain/authority';
+import * as value from './koinos-proto-as/koinos/chain/value';
 import {  StringBytes } from ".";
 export namespace System {
   export let MAX_BUFFER_SIZE = 1024;

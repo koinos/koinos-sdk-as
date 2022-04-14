@@ -1,9 +1,9 @@
 import * as test from "./proto/test";
 import * as foobar from "./proto/foobar";
 import { System, Protobuf, Base58, Base64, Crypto, StringBytes } from "../../assembly";
-import * as chain from "../../koinos-proto-as/koinos/chain/chain";
-import * as authority from "../../koinos-proto-as/koinos/chain/authority";
-import * as token from "../../koinos-proto-as/koinos/contracts/token/token";
+import * as chain from "../../assembly/koinos-proto-as/koinos/chain/chain";
+import * as authority from "../../assembly/koinos-proto-as/koinos/chain/authority";
+import * as token from "../../assembly/koinos-proto-as/koinos/contracts/token/token";
 
 export function main(): i32 {
   const entryPoint = System.getEntryPoint();

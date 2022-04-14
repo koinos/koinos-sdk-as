@@ -1,6 +1,6 @@
 {
   "name": "koinos-as-sdk",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "main": "assembly/index.ts",
   "license": "MIT",
   "author": "Roamin Roe <roamin@tuta.io>",
@@ -9,6 +9,10 @@
     "as-bignum": "^0.2.18",
     "as-proto": "^0.2.2"
   },
+  "files": [
+    "assembly",
+    "koinos-proto-as"
+  ],
   "devDependencies": {
     "@as-covers/core": "^0.2.1",
     "@as-pect/cli": "^6.2.4",

@@ -7,4 +7,3 @@ export { Token } from './token';
 export * from './util';
 export { MockVM } from './mockVM';
 export { SafeMath } from './safeMath';
-
