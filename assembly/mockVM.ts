@@ -1,9 +1,10 @@
 import { Protobuf } from "as-proto";
-import { System, value } from ".";
-import { authority } from "./proto/chain/authority";
-import { chain } from "./proto/chain/chain";
-import { system_calls } from "./proto/chain/system_calls";
-import { protocol } from "./proto/protocol/protocol";
+import { System } from ".";
+import * as authority from "../koinos-proto-as/koinos/chain/authority";
+import * as chain from "../koinos-proto-as/koinos/chain/chain";
+import * as system_calls from "../koinos-proto-as/koinos/chain/system_calls";
+import * as protocol from "../koinos-proto-as/koinos/protocol/protocol";
+import * as value from "../koinos-proto-as/koinos/chain/value";
 
 export namespace MockVM {
   export const METADATA_SPACE = new chain.object_space(true, null, 0);
