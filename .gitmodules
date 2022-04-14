@@ -1,3 +1,6 @@
 [submodule "koinos-proto"]
 	path = koinos-proto
 	url = https://github.com/koinos/koinos-proto
+[submodule "koinos-proto-as"]
+	path = koinos-proto-as
+	url = https://github.com/roaminroe/koinos-proto-as
