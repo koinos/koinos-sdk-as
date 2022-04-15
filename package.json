@@ -1,10 +1,10 @@
 {
-  "name": "koinos-as-sdk",
+  "name": "koinos-sdk-as",
   "version": "0.4.3",
   "main": "assembly/index.ts",
   "license": "MIT",
   "author": "Roamin Roe <roamin@tuta.io>",
-  "repository": "https://github.com/roaminroe/koinos-as-sdk",
+  "repository": "https://github.com/roaminroe/koinos-sdk-as",
   "dependencies": {
     "as-bignum": "^0.2.18",
     "as-proto": "^0.2.2"
