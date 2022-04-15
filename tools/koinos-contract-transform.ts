@@ -8,7 +8,7 @@ const { CONTRACT_PATH } = process.env;
 const CONTRACT_DECORATOR = 'contract';
 const ENTRY_POINT_DECORATOR = 'entry_point';
 const INDEX_TS_FILE_PATH = CONTRACT_PATH + '/assembly/index.ts';
-const CONTRACT_ENTRY_POINT_TEMPLATE_PATH = './node_modules/koinos-as-sdk/templates/template.ts';
+const CONTRACT_ENTRY_POINT_TEMPLATE_PATH = './node_modules/koinos-sdk-astemplates/template.ts';
 let nbContractClass = 0;
 let entryPoints: DeclaredElement[] = [];
 
