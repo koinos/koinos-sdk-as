@@ -1,13 +1,13 @@
-![Test Ubuntu](https://github.com/roaminroe/koinos-as-sdk/actions/workflows/test-ubuntu.yml/badge.svg)
-![Test Windows](https://github.com/roaminroe/koinos-as-sdk/actions/workflows/test-windows.yml/badge.svg)
-![Test MacOS](https://github.com/roaminroe/koinos-as-sdk/actions/workflows/test-macos.yml/badge.svg)
+![Test Ubuntu](https://github.com/roaminroe/koinos-sdk-as/actions/workflows/test-ubuntu.yml/badge.svg)
+![Test Windows](https://github.com/roaminroe/koinos-sdk-as/actions/workflows/test-windows.yml/badge.svg)
+![Test MacOS](https://github.com/roaminroe/koinos-sdk-as/actions/workflows/test-macos.yml/badge.svg)
 
-# koinos-as-sdk
+# koinos-sdk-as
 AssemblyScript (AS) Software Development Toolkit (SDK) for the Koinos Blockchain
 
-See documentation: https://roaminroe.github.io/koinos-as-sdk/
+See documentation: https://roaminroe.github.io/koinos-sdk-as/
 
-Learn how to create smart contracts by looking at the examples repo: https://github.com/roaminroe/koinos-as-sdk-examples
+Learn how to create smart contracts by looking at the examples repo: https://github.com/roaminroe/koinos-sdk-as-examples
 
 ## Requirements:
 You need to install NodeJS v16 or higher [download](https://nodejs.org/en/download/)
@@ -16,10 +16,10 @@ You need to install NodeJS v16 or higher [download](https://nodejs.org/en/downlo
 
 ```sh
 # with npm
-npm install koinos-as-sdk
+npm install koinos-sdk-as
 
 # with yarn
-yarn add koinos-as-sdk
+yarn add koinos-sdk-as
 ```
 ## Run unit tests
 ```sh
