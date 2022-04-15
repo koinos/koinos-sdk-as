@@ -1,7 +1,12 @@
 import { env } from "./env";
 import { Protobuf, Reader, Writer } from 'as-proto';
-import { system_calls, system_call_id, chain, protocol, StringBytes, value, authority } from ".";
-
+import * as system_calls from './koinos-proto-as/koinos/chain/system_calls';
+import { system_call_id } from './koinos-proto-as/koinos/chain/system_call_ids';
+import * as chain from './koinos-proto-as/koinos/chain/chain';
+import * as protocol from './koinos-proto-as/koinos/protocol/protocol';
+import * as authority from './koinos-proto-as/koinos/chain/authority';
+import * as value from './koinos-proto-as/koinos/chain/value';
+import {  StringBytes } from ".";
 export namespace System {
   export let MAX_BUFFER_SIZE = 1024;
 
@@ -370,7 +375,7 @@ export namespace System {
     * System.log('recoveredKey (b58): ' + Base58.encode(addr));
     * ```
     */
-  export function recoverPublicKey(signatureData: Uint8Array, digest: Uint8Array, type: system_calls.dsa = system_calls.dsa.ecdsa_secp256k1): Uint8Array | null {
+  export function recoverPublicKey(signatureData: Uint8Array, digest: Uint8Array, type: chain.dsa = chain.dsa.ecdsa_secp256k1): Uint8Array | null {
     const args = new system_calls.recover_public_key_arguments(type, signatureData, digest);
     const encodedArgs = Protobuf.encode(args, system_calls.recover_public_key_arguments.encode);
     const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
@@ -414,7 +419,7 @@ export namespace System {
     * System.require(verify == true, `expected "true", got "${verify}"`);
     * ```
     */
-  export function verifySignature(publicKey: Uint8Array, signature: Uint8Array, digest: Uint8Array, type: system_calls.dsa = system_calls.dsa.ecdsa_secp256k1): bool {
+  export function verifySignature(publicKey: Uint8Array, signature: Uint8Array, digest: Uint8Array, type: chain.dsa = chain.dsa.ecdsa_secp256k1): bool {
     const args = new system_calls.verify_signature_arguments(type, publicKey, signature, digest);
     const encodedArgs = Protobuf.encode(args, system_calls.verify_signature_arguments.encode);
     const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);

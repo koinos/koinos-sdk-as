@@ -14,7 +14,10 @@ module.exports = {
     sourceType: "module",
     ecmaFeatures: {}
   },
-  ignorePatterns: ["**/assembly/proto/*.ts"],
+  ignorePatterns: [
+    "**/assembly/proto/*.ts",
+    "**/assembly/koinos-proto-as/**/*.ts"
+  ],
   // === General rules =========================================================
 
   rules: {

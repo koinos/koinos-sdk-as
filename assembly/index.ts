@@ -8,15 +8,21 @@ export * from './util';
 export { MockVM } from './mockVM';
 export { SafeMath } from './safeMath';
 
-export { google } from './proto/any';
+export * from './koinos-proto-as/google/protobuf/any';
 
-export { authority } from './proto/chain/authority';
-export { chain } from './proto/chain/chain';
-export { object_spaces } from './proto/chain/object_spaces';
-export { system_call_id } from './proto/chain/system_call_id';
-export { system_calls } from './proto/chain/system_calls';
-export { value } from './proto/chain/value';
-export { protocol } from './proto/protocol/protocol';
-export { common } from './proto/common';
-export { options } from './proto/options';
-export { token } from './proto/token';
+export * from './koinos-proto-as/koinos/chain/authority';
+export * from './koinos-proto-as/koinos/chain/chain';
+export * from './koinos-proto-as/koinos/chain/events';
+export * from './koinos-proto-as/koinos/chain/object_spaces';
+export * from './koinos-proto-as/koinos/chain/system_call_ids';
+export * from './koinos-proto-as/koinos/chain/system_calls';
+export * from './koinos-proto-as/koinos/chain/value';
+
+export * from './koinos-proto-as/koinos/protocol/protocol';
+
+export * from './koinos-proto-as/koinos/contracts/pow/pow';
+export * from './koinos-proto-as/koinos/contracts/resources/resources';
+export * from './koinos-proto-as/koinos/contracts/token/token';
+
+export * from './koinos-proto-as/koinos/common';
+export * from './koinos-proto-as/koinos/options';

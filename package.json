@@ -1,6 +1,6 @@
 {
   "name": "koinos-as-sdk",
-  "version": "0.3.10",
+  "version": "0.4.3",
   "main": "assembly/index.ts",
   "license": "MIT",
   "author": "Roamin Roe <roamin@tuta.io>",
@@ -9,13 +9,17 @@
     "as-bignum": "^0.2.18",
     "as-proto": "^0.2.2"
   },
+  "files": [
+    "assembly"
+  ],
   "devDependencies": {
     "@as-covers/core": "^0.2.1",
     "@as-pect/cli": "^6.2.4",
+    "@roaminroe/as-proto-gen": "^0.3.3",
+    "@roaminroe/protoc": "^2.4.0",
     "@types/node": "^17.0.13",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
-    "as-proto-gen": "^0.2.2",
     "assemblyscript": "^0.19.22",
     "eslint": "^8.7.0",
     "koinos-abi-proto-gen": "^0.1.5",
@@ -32,10 +36,10 @@
     "lintSDK": "eslint --max-warnings 0 --ext ts \"assembly/**/*.ts\"",
     "compileTransform": "tsc tools/koinos-contract-transform.ts",
     "prepublishOnly": "yarn run compileTransform",
-    "generateKoinosProtoFiles": "protoc -I ./koinos-proto --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ./koinos-proto/koinos/*.proto ./koinos-proto/koinos/**/*.proto",
-    "generateGoogleProtoFiles": "protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ./google/protobuf/any.proto",
-    "generateTestABI": "protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=test-contract/abi test-contract/assembly/proto/foobar.proto",
-    "generateTestProtoFiles": "protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ./test-contract/assembly/proto/*.proto",
+    "generateKoinosProtoFiles": "yarn protoc -I ./koinos-proto --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ./koinos-proto/koinos/*.proto ./koinos-proto/koinos/**/*.proto ./koinos-proto/koinos/**/**/*.proto",
+    "generateGoogleProtoFiles": "yarn protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ./google/protobuf/any.proto",
+    "generateTestABI": "yarn protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=test-contract/abi test-contract/assembly/proto/foobar.proto",
+    "generateTestProtoFiles": "yarn protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ./test-contract/assembly/proto/*.proto",
     "lintTestContract": "eslint --max-warnings 0 --ext ts \"test-contract/assembly/**/*.ts\"",
     "buildTestContract:debug": "asc test-contract/assembly/index.ts --target debug --use abort= --config test-contract/asconfig.json",
     "buildTestContract:release": "asc test-contract/assembly/index.ts --target release --use abort= --config test-contract/asconfig.json",

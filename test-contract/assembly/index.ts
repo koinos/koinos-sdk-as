@@ -1,7 +1,9 @@
-import { test } from "./proto/test";
-import { foobar } from "./proto/foobar";
-import { token as koin, token } from "./proto/token";
-import { System, Protobuf, Base58, Base64, Crypto, StringBytes, chain, authority } from "../../assembly";
+import * as test from "./proto/test";
+import * as foobar from "./proto/foobar";
+import { System, Protobuf, Base58, Base64, Crypto, StringBytes } from "../../assembly";
+import * as chain from "../../assembly/koinos-proto-as/koinos/chain/chain";
+import * as authority from "../../assembly/koinos-proto-as/koinos/chain/authority";
+import * as token from "../../assembly/koinos-proto-as/koinos/contracts/token/token";
 
 export function main(): i32 {
   const entryPoint = System.getEntryPoint();
@@ -218,16 +220,16 @@ export function main(): i32 {
   const to = Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe");
   const amount = 10 * 10 ** 8; // needs to be multiplied by 10^8 because Koin is 8 decimals
 
-  const koinTransferArgs = new koin.transfer_arguments();
+  const koinTransferArgs = new token.transfer_arguments();
   koinTransferArgs.from = from;
   koinTransferArgs.to = to;
   koinTransferArgs.value = amount;
 
-  const resBuf = System.callContract(koinContractId, tranferEntryPoint, Protobuf.encode(koinTransferArgs, koin.transfer_arguments.encode));
+  const resBuf = System.callContract(koinContractId, tranferEntryPoint, Protobuf.encode(koinTransferArgs, token.transfer_arguments.encode));
   System.require(resBuf, `expected resBuf not "null", got "null"`);
 
   if (resBuf) {
-    const transferRes = Protobuf.decode<koin.transfer_result>(resBuf, koin.transfer_result.decode);
+    const transferRes = Protobuf.decode<token.transfer_result>(resBuf, token.transfer_result.decode);
     System.require(transferRes.value, `expected transfer not "true", got "false"`);
 
     const impacted: Uint8Array[] = [];
@@ -239,7 +241,7 @@ export function main(): i32 {
     transferEvent.to = to;
     transferEvent.value = amount;
 
-    System.event('koin.transfer', Protobuf.encode(transferEvent, token.transfer_event.encode), impacted);
+    System.event('token.transfer', Protobuf.encode(transferEvent, token.transfer_event.encode), impacted);
 
     System.log(`transfered ${amount / 10 ** 8} tKoin from ${Base58.encode(from)} to ${Base58.encode(to)}`);
   }

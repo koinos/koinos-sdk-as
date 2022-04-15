@@ -1,4 +1,7 @@
-import { Arrays, authority, Base58, chain, MockVM, protocol, StringBytes, System, Crypto, Base64 } from "../assembly";
+import { Arrays, Base58, MockVM, StringBytes, System, Crypto, Base64 } from "../assembly";
+import * as chain from '../assembly/koinos-proto-as/koinos/chain/chain';
+import * as protocol from '../assembly/koinos-proto-as/koinos/protocol/protocol';
+import * as authority from '../assembly/koinos-proto-as/koinos/chain/authority';
 import { test as TestObject } from "./test";
 
 const mockAccount = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
