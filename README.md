@@ -1,11 +1,11 @@
-![Test Ubuntu](https://github.com/roaminroe/koinos-sdk-as/actions/workflows/test-ubuntu.yml/badge.svg)
-![Test Windows](https://github.com/roaminroe/koinos-sdk-as/actions/workflows/test-windows.yml/badge.svg)
-![Test MacOS](https://github.com/roaminroe/koinos-sdk-as/actions/workflows/test-macos.yml/badge.svg)
+![Test Ubuntu](https://github.com/koinos/koinos-sdk-as/actions/workflows/test-ubuntu.yml/badge.svg)
+![Test Windows](https://github.com/koinos/koinos-sdk-as/actions/workflows/test-windows.yml/badge.svg)
+![Test MacOS](https://github.com/koinos/koinos-sdk-as/actions/workflows/test-macos.yml/badge.svg)
 
 # koinos-sdk-as
 AssemblyScript (AS) Software Development Toolkit (SDK) for the Koinos Blockchain
 
-See documentation: https://roaminroe.github.io/koinos-sdk-as/
+See documentation: https://koinos.github.io/koinos-sdk-as/
 
 Learn how to create smart contracts by looking at the examples repo: https://github.com/roaminroe/koinos-sdk-as-examples
 
