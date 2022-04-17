@@ -1,4 +1,4 @@
-import { System } from "./systemCalls";
+import { System } from "../systemCalls";
 import { u128 } from "as-bignum";
 
 export namespace SafeMath {
