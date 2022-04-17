@@ -87,7 +87,7 @@ export namespace Space {
     * for (let index = 0; index < objs.length; index++) {
     *   const obj = objs[index];
     * } 
-    ** ```
+    * ```
     */
     getMany(offsetKey: TKey, limit: i32 = i32.MAX_VALUE, direction: Direction = Direction.Ascending): System.ProtoDatabaseObject<TValue>[] {
       const result: System.ProtoDatabaseObject<TValue>[] = [];
@@ -253,11 +253,11 @@ export namespace Space {
     * @returns an array with the objects retrieved
     * @example
     * ```ts
-    * const obj = Objects.get(new test_key(1));
+    * const objs = Objects.getMany('key1', 10, Space.Direction.Descending);
     * 
-    * if (obj != null) {
-    *   ...
-    * }
+    * for (let index = 0; index < objs.length; index++) {
+    *   const obj = objs[index];
+    * } 
     * ```
     */
     getManyObj(offsetKey: TKey, limit: i32 = i32.MAX_VALUE, direction: Direction = Direction.Ascending): System.ProtoDatabaseObject<TValue>[] {
