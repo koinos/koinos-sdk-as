@@ -625,13 +625,13 @@ export namespace System {
 
   /**
     * Require an expression to be true, log a message and exit the contract otherise
-    * @returns T
+    * @returns T it is Trueish, will exit the code with `exitCode` otherwise
     * @example
     * ```ts
     * System.require(1 + 1 == 11, `expected "11", got "2"`);
     * ```
     */
-  export function require<T>(isTrueish: T, message: string = "", exitCode: i32 = 0): T {
+  export function require<T>(isTrueish: T, message: string = "", exitCode: i32 = 1): T {
 
     if (!isTrueish) {
       if (message != "") {
