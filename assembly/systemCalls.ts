@@ -625,7 +625,7 @@ export namespace System {
 
   /**
     * Require an expression to be true, log a message and exit the contract otherise
-    * @returns T it is Trueish, will exit the code with `exitCode` otherwise
+    * @returns T it is Trueish, will exit the contract with `exitCode` otherwise
     * @example
     * ```ts
     * System.require(1 + 1 == 11, `expected "11", got "2"`);
