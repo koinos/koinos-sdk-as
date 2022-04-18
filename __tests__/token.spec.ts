@@ -99,4 +99,24 @@ describe('token', () => {
 
     expect(mint).toBe(mintResult);
   });
+
+  it('should/not burn a token', () => {
+    let burnResult = true;
+    let burnRes = new token.burn_result(burnResult);
+    MockVM.setCallContractResults([Protobuf.encode(burnRes, token.burn_result.encode)]);
+
+    const tkn = new Token(mockTokenContractIdAccount);
+    let burn = tkn.burn(mockAccount1, 167);
+
+    expect(burn).toBe(burnResult);
+
+    burnResult = false;
+    burnRes.value = burnResult;
+
+    MockVM.setCallContractResults([Protobuf.encode(burnRes, token.burn_result.encode)]);
+
+    burn = tkn.burn(mockAccount1, 76);
+
+    expect(burn).toBe(burnResult);
+  });
 });
