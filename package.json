@@ -1,5 +1,5 @@
 {
-  "name": "koinos-sdk-as",
+  "name": "koinos-sdk",
   "version": "0.4.6",
   "main": "assembly/index.ts",
   "license": "MIT",
