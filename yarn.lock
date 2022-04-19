@@ -1447,9 +1447,10 @@ koinos-mock-vm@1.0.3:
     protobufjs "^6.11.2"
     somap "^0.5.14"
 
-koinos-proto-as@koinos/koinos-proto-as#new-as-gen:
-  version "0.3.2"
-  resolved "https://codeload.github.com/koinos/koinos-proto-as/tar.gz/2f310497a5c3c71f5bb6e9a476b3dbcafcb85af0"
+koinos-proto-as@0.4.0:
+  version "0.4.0"
+  resolved "https://registry.npmjs.org/koinos-proto-as/-/koinos-proto-as-0.4.0.tgz"
+  integrity sha512-rLvRlSz+CaiDsXi23w2oghopBeC9OeYr4w7Mt/ON/v6FUcZ5EHdV81K3utGGwC+HmnYi0Ul/3GQgWU5vDXk8Rg==
   dependencies:
     as-proto "^0.2.2"
 
