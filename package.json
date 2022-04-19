@@ -8,6 +8,7 @@
   "dependencies": {
     "as-bignum": "^0.2.18",
     "as-proto": "^0.2.2",
+    "koinos-as-gen": "0.4.8",
     "koinos-proto-as": "0.4.0"
   },
   "files": [

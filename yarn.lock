@@ -1435,6 +1435,13 @@ koinos-abi-proto-gen@^0.1.5:
     google-protobuf "^3.19.4"
     protobufjs "^6.11.2"
 
+koinos-as-gen@0.4.8:
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/koinos-as-gen/-/koinos-as-gen-0.4.8.tgz#b20893f1c6870ced7e48fa65a81d3e0b2676a670"
+  integrity sha512-Bbpp9Wr4SgFxP4QfoXAW3BRY3hBOH/+jgJAXlFlleJ9RYW9b96x0eM+gs9X/hsu1jBqAcVdXVK52y3VeNO0qmQ==
+  dependencies:
+    google-protobuf "^3.19.4"
+
 koinos-mock-vm@1.0.3:
   version "1.0.3"
   resolved "https://registry.npmjs.org/koinos-mock-vm/-/koinos-mock-vm-1.0.3.tgz"
