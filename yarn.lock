@@ -1447,6 +1447,12 @@ koinos-mock-vm@1.0.3:
     protobufjs "^6.11.2"
     somap "^0.5.14"
 
+koinos-proto-as@koinos/koinos-proto-as#new-as-gen:
+  version "0.3.2"
+  resolved "https://codeload.github.com/koinos/koinos-proto-as/tar.gz/2f310497a5c3c71f5bb6e9a476b3dbcafcb85af0"
+  dependencies:
+    as-proto "^0.2.2"
+
 levn@^0.4.1:
   version "0.4.1"
   resolved "https://registry.npmjs.org/levn/-/levn-0.4.1.tgz"
