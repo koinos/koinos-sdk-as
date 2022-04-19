@@ -1,5 +1,5 @@
 import { Protobuf, System } from "..";
-import * as token from "../koinos-proto-as/koinos/contracts/token/token";
+import { token } from "koinos-proto-as";
 
 enum entries {
   name_entry = 0x82a3537f,

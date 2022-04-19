@@ -1,5 +1,5 @@
 import { System } from '../systemCalls';
-import { object_space } from '../koinos-proto-as/koinos/chain/chain';
+import { chain } from 'koinos-proto-as';
 import { Protobuf, Reader, Writer } from 'as-proto';
 import { StringBytes } from './stringBytes';
 
@@ -10,7 +10,7 @@ export namespace Space {
   }
 
   export class Space<TKey, TValue> {
-    private space: object_space;
+    private space: chain.object_space;
     private valueDecoder: (reader: Reader, length: i32) => TValue;
     private valueEncoder: (message: TValue, writer: Writer) => void;
 
@@ -34,7 +34,7 @@ export namespace Space {
       valueDecoder: (reader: Reader, length: i32) => TValue,
       valueEncoder: (message: TValue, writer: Writer) => void,
       system: bool = false) {
-      this.space = new object_space(system, contractId, spaceId);
+      this.space = new chain.object_space(system, contractId, spaceId);
       this.valueDecoder = valueDecoder;
       this.valueEncoder = valueEncoder;
     }

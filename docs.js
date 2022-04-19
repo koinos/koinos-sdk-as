@@ -12,7 +12,7 @@ app.options.addReader(new td.TSConfigReader());
 app.bootstrap({
   // can put other options here too, or in typedoc.json/tsconfig.json
   tsconfig: "assembly/tsconfig.json",
-  entryPoints: ["assembly/index.ts", "assembly/koinos-proto-as/**/*.ts"],
+  entryPoints: ["assembly/index.ts"],
   includeVersion: true
 });
 
