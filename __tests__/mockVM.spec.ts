@@ -188,4 +188,14 @@ describe('MockVM', () => {
     expect(Arrays.equal(bytes, val2)).toBe(true);
 
   });
+
+  it("should handle logs", () => {
+    System.log("log 1");
+    expect(MockVM.getLogs()).toStrictEqual(["log 1"]);
+    System.log("log 2");
+    expect(MockVM.getLogs()).toStrictEqual(["log 1", "log 2"]);
+    MockVM.clearLogs();
+    System.log("log 3");
+    expect(MockVM.getLogs()).toStrictEqual(["log 3"]);
+  });
 });
