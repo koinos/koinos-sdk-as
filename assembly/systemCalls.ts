@@ -3,7 +3,8 @@ import { Protobuf, Reader, Writer } from 'as-proto';
 import { system_calls, system_call_ids, chain, protocol, authority, value } from 'koinos-proto-as';
 import {  StringBytes } from ".";
 export namespace System {
-  export let MAX_BUFFER_SIZE = 1024;
+  export const DEFAULT_MAX_BUFFER_SIZE = 1024;
+  export let MAX_BUFFER_SIZE = DEFAULT_MAX_BUFFER_SIZE;
 
   // General Blockchain Management
 
@@ -303,7 +304,7 @@ export namespace System {
 
   /**
     * Emit an event
-    * @param name name of the event 
+    * @param name name of the event
     * @param data data associated to the event
     * @param impacted accounts impacted by the event
     * @example
@@ -542,7 +543,7 @@ export namespace System {
   }
 
   /**
-    * Exit a contract 
+    * Exit a contract
     * @param exitCode 0 (success) or 1 (failed, will revert the transaction)
     * @example
     * ```ts
