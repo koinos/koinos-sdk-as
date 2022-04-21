@@ -324,6 +324,23 @@ export namespace MockVM {
   }
 
   /**
+   * Remove the current logs
+   * @example
+   * ```ts
+   * System.log('log 1');
+   * System.log('log 2');
+   * MockVM.clearLogs();
+   * System.log('log 3');
+   * System.log('log 4');
+   * console.log(MockVM.getLogs().join(","));
+   * // log 3,log 4
+   * ```
+   */
+  export function clearLogs(): void {
+    System.putBytes(METADATA_SPACE, 'logs', new Uint8Array(0));
+  }
+
+  /**
     * Get logs set when calling System.log()
     * @returns { string[] }
     * @example
