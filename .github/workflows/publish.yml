@@ -1,0 +1,15 @@
+name: Publish NPM
+
+on:
+  workflow_run:
+    branches: [ master ]
+    workflows: [Test MacOS, Test Ubuntu, Test Windows]
+    types:
+      - completed
+
+jobs:
+  publish:
+    runs-on: [ ubuntu-latest ]
+    if: ${{ github.event.workflow_run.conclussion == 'success' }}
+    steps:
+      - run: echo 'publish'
