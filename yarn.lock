@@ -1442,10 +1442,10 @@ koinos-as-gen@0.4.8:
   dependencies:
     google-protobuf "^3.19.4"
 
-koinos-mock-vm@1.0.3:
-  version "1.0.3"
-  resolved "https://registry.npmjs.org/koinos-mock-vm/-/koinos-mock-vm-1.0.3.tgz"
-  integrity sha512-mA3ZZx0euNn3Nqu3G0/X4U/LLk56ekI9aWlvCtM6KJRr5LMdlOm97FitRwoJ7mc0G1rpKLJbTy/Ba8SM7bRlvA==
+koinos-mock-vm@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/koinos-mock-vm/-/koinos-mock-vm-1.1.0.tgz#bd8d94c87bc0e592cf76819016eedbae189cbdc0"
+  integrity sha512-BC7nZkSaCRWKD4dKFwAP9h0bvs3Hrz6oy67+NAyK8RgGqfxAWYU5HwIire7xx7MZRReEHpKuJN5FzxijXNbUQQ==
   dependencies:
     "@noble/hashes" "^1.0.0"
     "@noble/secp256k1" "^1.5.5"

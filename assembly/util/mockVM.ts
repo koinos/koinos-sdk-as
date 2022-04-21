@@ -324,6 +324,23 @@ export namespace MockVM {
   }
 
   /**
+   * Remove the current logs
+   * @example
+   * ```ts
+   * System.log('log 1');
+   * System.log('log 2');
+   * MockVM.clearLogs();
+   * System.log('log 3');
+   * System.log('log 4');
+   * console.log(MockVM.getLogs().join(","));
+   * // log 3,log 4
+   * ```
+   */
+  export function clearLogs(): void {
+    System.putBytes(METADATA_SPACE, 'logs', new Uint8Array(0));
+  }
+
+  /**
     * Get logs set when calling System.log()
     * @returns { string[] }
     * @example
@@ -374,18 +391,7 @@ export namespace MockVM {
   }
 
   /**
-    * Backup the database so that it can be rolledback to the backedup state if the transaction reverts
-    * @example
-    * ```ts
-    * MockVM.beginTransaction();
-    * ```
-    */
-  export function beginTransaction(): void {
-    System.putBytes(METADATA_SPACE, 'begin_transaction', new Uint8Array(0));
-  }
-
-  /**
-    * Rrestore the backup made via MockVM.beginTransaction()
+    * Rrestore the backup made via MockVM.commitTransaction()
     * @example
     * ```ts
     * MockVM.rollbackTransaction();
@@ -396,7 +402,7 @@ export namespace MockVM {
   }
 
   /**
-    * Clear the backup made via MockVM.beginTransaction() (hence make it impossible to rollback)
+    * Backup the database so that it can be rolledback to the backedup state if the transaction reverts
     * @example
     * ```ts
     * MockVM.commitTransaction();

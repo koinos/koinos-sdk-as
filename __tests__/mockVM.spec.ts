@@ -92,9 +92,9 @@ describe('MockVM', () => {
 
     MockVM.setAuthorities([auth1, auth2, auth3]);
 
-    // the System.requireAuthority that will fail will revert the database's VM, so we need to begin a transaction
+    // the System.requireAuthority that will fail will revert the database's VM, so we need to commit the transaction
     // this will backup the database
-    MockVM.beginTransaction();
+    MockVM.commitTransaction();
 
     expect(() => {
       System.requireAuthority(authority.authorization_type.contract_call, mockAccount);
@@ -158,7 +158,7 @@ describe('MockVM', () => {
     expect(bytes).not.toBeNull();
     expect(Arrays.equal(bytes, val1)).toBe(true);
 
-    MockVM.beginTransaction();
+    MockVM.commitTransaction();
 
     System.putBytes(space, 'key1', val2);
 
@@ -169,13 +169,11 @@ describe('MockVM', () => {
     expect(bytes).not.toBeNull();
     expect(Arrays.equal(bytes, val1)).toBe(true);
 
-    MockVM.beginTransaction();
+    MockVM.commitTransaction();
 
     System.putBytes(space, 'key1', val2);
 
     MockVM.commitTransaction();
-
-    MockVM.beginTransaction();
 
     System.putBytes(space, 'key1', val1);
 
@@ -186,5 +184,15 @@ describe('MockVM', () => {
     expect(bytes).not.toBeNull();
     expect(Arrays.equal(bytes, val2)).toBe(true);
 
+  });
+
+  it("should handle logs", () => {
+    System.log("log 1");
+    expect(MockVM.getLogs()).toStrictEqual(["log 1"]);
+    System.log("log 2");
+    expect(MockVM.getLogs()).toStrictEqual(["log 1", "log 2"]);
+    MockVM.clearLogs();
+    System.log("log 3");
+    expect(MockVM.getLogs()).toStrictEqual(["log 3"]);
   });
 });
