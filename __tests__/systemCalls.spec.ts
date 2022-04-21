@@ -84,9 +84,9 @@ describe('SystemCalls', () => {
 
     MockVM.setAuthorities([auth1, auth2, auth3]);
 
-    // the System.requireAuthority that will fail will revert the database's VM, so we need to begin a transaction
+    // the System.requireAuthority that will fail will revert the database's VM, so we need to commit the transaction
     // this will backup the database
-    MockVM.beginTransaction();
+    MockVM.commitTransaction();
 
     expect(() => {
       System.requireAuthority(authority.authorization_type.contract_call, mockAccount);
