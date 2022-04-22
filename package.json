@@ -1,6 +1,6 @@
 {
   "name": "koinos-sdk-as",
-  "version": "0.4.9",
+  "version": "0.4.10",
   "main": "assembly/index.ts",
   "license": "MIT",
   "author": "Koinos Group <contact@koinos.group>",
@@ -9,7 +9,7 @@
     "as-bignum": "^0.2.18",
     "as-proto": "^0.2.2",
     "koinos-as-gen": "0.4.8",
-    "koinos-proto-as": "0.4.0"
+    "koinos-proto-as": "^0.4.1"
   },
   "files": [
     "assembly"
