@@ -231,9 +231,16 @@ describe('SafeMath', () => {
         SafeMath.add(b, a, 'my message1');
       }).toThrow();
 
+      expect(() => {
+        let a: u128 = u128.Max;
+        let b: u128 = u128.One;
+        SafeMath.add(b, a, 'my message1');
+      }).toThrow();
+
       const logs = MockVM.getLogs();
       expect(logs[0]).toBe('my message');
       expect(logs[1]).toBe('my message1');
+      expect(logs[2]).toBe('my message1');
     });
   });
 
@@ -387,8 +394,15 @@ describe('SafeMath', () => {
         SafeMath.sub(a, b, 'my message');
       }).toThrow();
 
+      expect(() => {
+        let a: u128 = u128.Min;
+        let b: u128 = u128.One;
+        SafeMath.sub(a, b, 'my message1');
+      }).toThrow();
+
       const logs = MockVM.getLogs();
       expect(logs[0]).toBe('my message');
+      expect(logs[1]).toBe('my message');
     });
   });
 
@@ -863,8 +877,15 @@ describe('SafeMath', () => {
         SafeMath.div(a, b, 'my message');
       }).toThrow();
 
+      expect(() => {
+        let a: u128 = u128.Min;
+        let b: u128 = u128.Zero;
+        SafeMath.div(a, b, 'my message1');
+      }).toThrow();
+
       const logs = MockVM.getLogs();
       expect(logs[0]).toBe('my message');
+      expect(logs[1]).toBe('my message');
     });
   });
 
