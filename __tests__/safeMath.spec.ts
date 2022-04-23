@@ -397,7 +397,7 @@ describe('SafeMath', () => {
       expect(() => {
         let a: u128 = u128.Min;
         let b: u128 = u128.One;
-        SafeMath.sub(a, b, 'my message1');
+        SafeMath.sub(a, b, 'my message');
       }).toThrow();
 
       const logs = MockVM.getLogs();
@@ -880,7 +880,7 @@ describe('SafeMath', () => {
       expect(() => {
         let a: u128 = u128.Min;
         let b: u128 = u128.Zero;
-        SafeMath.div(a, b, 'my message1');
+        SafeMath.div(a, b, 'my message');
       }).toThrow();
 
       const logs = MockVM.getLogs();
