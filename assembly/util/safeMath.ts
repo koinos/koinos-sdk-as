@@ -78,8 +78,12 @@ export namespace SafeMath {
     const result = tryAdd(a, b);
 
     if (result.error) {
-      // @ts-ignore valid in AS
-      System.log(message != '' ? message : `could not add ${a.toString()} to ${b.toString()}`);
+      if (isInteger<T>()) {
+        // @ts-ignore valid in AS
+        System.log(message != '' ? message : `could not add ${a.toString()} to ${b.toString()}`);
+      } else {
+        System.log(message != '' ? message : 'could not add');
+      } 
       System.exitContract(1);
     }
 
@@ -151,8 +155,12 @@ export namespace SafeMath {
     const result = trySub(a, b);
 
     if (result.error) {
-      // @ts-ignore valid in AS
-      System.log(message != '' ? message : `could not subtract ${b.toString()} from ${a.toString()}`);
+      if (isInteger<T>()) {
+        // @ts-ignore valid in AS
+        System.log(message != '' ? message : `could not subtract ${b.toString()} from ${a.toString()}`);
+      } else {
+        System.log(message != '' ? message : 'could not subtract');
+      } 
       System.exitContract(1);
     }
 
@@ -247,8 +255,12 @@ export namespace SafeMath {
     const result = tryMul(a, b);
 
     if (result.error) {
-      // @ts-ignore valid in AS
-      System.log(message != '' ? message : `could not multiply ${a.toString()} by ${b.toString()}`);
+      if (isInteger<T>()) {
+        // @ts-ignore valid in AS
+        System.log(message != '' ? message : `could not multiply ${a.toString()} by ${b.toString()}`);
+      } else {
+        System.log(message != '' ? message : 'could not multiply');
+      } 
       System.exitContract(1);
     }
 
@@ -327,8 +339,12 @@ export namespace SafeMath {
     const result = tryDiv(a, b);
 
     if (result.error) {
-      // @ts-ignore valid in AS
-      System.log(message != '' ? message : `could not divide ${a.toString()} by ${b.toString()}`);
+      if (isInteger<T>()) {
+        // @ts-ignore valid in AS
+        System.log(message != '' ? message : `could not divide ${a.toString()} by ${b.toString()}`);
+      } else {
+        System.log(message != '' ? message : 'could not divide');
+      } 
       System.exitContract(1);
     }
 
@@ -407,8 +423,12 @@ export namespace SafeMath {
     const result = tryMod(a, b);
 
     if (result.error) {
-      // @ts-ignore valid in AS
-      System.log(message != '' ? message : `could not calulate ${a.toString()} modulo ${b.toString()}`);
+      if (isInteger<T>()) {
+        // @ts-ignore valid in AS
+        System.log(message != '' ? message : `could not calulate ${a.toString()} modulo ${b.toString()}`);
+      } else {
+        System.log(message != '' ? message : 'could not calulate modulo');
+      } 
       System.exitContract(1);
     }
 
