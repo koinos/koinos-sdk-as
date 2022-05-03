@@ -1,5 +1,6 @@
 import { System } from "../systemCalls";
 import { u128 } from "as-bignum";
+import { StringBytes } from './stringBytes';
 
 export namespace SafeMath {
 
@@ -20,7 +21,7 @@ export namespace SafeMath {
     * @example
     * ```ts
     * const res = SafeMath.tryAdd(1, 2);
-    * 
+    *
     * if (!res.error) {
     *   System.Log('1 + 2 = ' + c.value.toString());
     * } else {
@@ -70,7 +71,7 @@ export namespace SafeMath {
     * @example
     * ```ts
     * const res = SafeMath.add(1, 2);
-    * 
+    *
     * // code here is not executed if the calculation above overflows/underflows
     * ```
     */
@@ -80,11 +81,11 @@ export namespace SafeMath {
     if (result.error) {
       if (isInteger<T>()) {
         // @ts-ignore valid in AS
-        System.log(message != '' ? message : `could not add ${a.toString()} to ${b.toString()}`);
+        message = message != '' ? message : `could not add ${a.toString()} to ${b.toString()}`;
       } else {
-        System.log(message != '' ? message : 'could not add');
-      } 
-      System.exitContract(1);
+        message = message != '' ? message : 'could not add';
+      }
+      System.exit(1, StringBytes.stringToBytes(message));
     }
 
     return result.value;
@@ -98,7 +99,7 @@ export namespace SafeMath {
     * @example
     * ```ts
     * const res = SafeMath.trySub(2, 1);
-    * 
+    *
     * if (!res.error) {
     *   System.Log('2 - 1 = ' + c.value.toString());
     * } else {
@@ -147,7 +148,7 @@ export namespace SafeMath {
     * @example
     * ```ts
     * const res = SafeMath.sub(1, 2);
-    * 
+    *
     * // code here is not executed if the calculation above overflows/underflows
     * ```
     */
@@ -157,11 +158,11 @@ export namespace SafeMath {
     if (result.error) {
       if (isInteger<T>()) {
         // @ts-ignore valid in AS
-        System.log(message != '' ? message : `could not subtract ${b.toString()} from ${a.toString()}`);
+        message = message != '' ? message : `could not subtract ${b.toString()} from ${a.toString()}`;
       } else {
-        System.log(message != '' ? message : 'could not subtract');
-      } 
-      System.exitContract(1);
+        message = message != '' ? message : 'could not subtract';
+      }
+      System.exit(1, StringBytes.stringToBytes(message));
     }
 
     return result.value;
@@ -175,7 +176,7 @@ export namespace SafeMath {
     * @example
     * ```ts
     * const res = SafeMath.tryMul(2, 1);
-    * 
+    *
     * if (!res.error) {
     *   System.Log('2 * 1 = ' + c.value.toString());
     * } else {
@@ -221,7 +222,7 @@ export namespace SafeMath {
         // @ts-ignore valid in AS
         return new SafeInteger(u128.Zero, false);
       }
-      
+
       // @ts-ignore valid in AS
       const c = a * b;
       // @ts-ignore valid in AS
@@ -247,7 +248,7 @@ export namespace SafeMath {
     * @example
     * ```ts
     * const res = SafeMath.mul(1, 2);
-    * 
+    *
     * // code here is not executed if the calculation above overflows/underflows
     * ```
     */
@@ -257,11 +258,11 @@ export namespace SafeMath {
     if (result.error) {
       if (isInteger<T>()) {
         // @ts-ignore valid in AS
-        System.log(message != '' ? message : `could not multiply ${a.toString()} by ${b.toString()}`);
+        message = message != '' ? message : `could not multiply ${a.toString()} by ${b.toString()}`;
       } else {
-        System.log(message != '' ? message : 'could not multiply');
-      } 
-      System.exitContract(1);
+        message = message != '' ? message : 'could not multiply';
+      }
+      System.exit(1, StringBytes.stringToBytes(message));
     }
 
     return result.value;
@@ -275,7 +276,7 @@ export namespace SafeMath {
     * @example
     * ```ts
     * const res = SafeMath.tryDiv(2, 1);
-    * 
+    *
     * if (!res.error) {
     *   System.Log('2 / 1 = ' + c.value.toString());
     * } else {
@@ -331,7 +332,7 @@ export namespace SafeMath {
     * @example
     * ```ts
     * const res = SafeMath.div(1, 2);
-    * 
+    *
     * // code here is not executed if the calculation above overflows/underflows
     * ```
     */
@@ -341,11 +342,11 @@ export namespace SafeMath {
     if (result.error) {
       if (isInteger<T>()) {
         // @ts-ignore valid in AS
-        System.log(message != '' ? message : `could not divide ${a.toString()} by ${b.toString()}`);
+        message = message != '' ? message : `could not divide ${a.toString()} by ${b.toString()}`;
       } else {
-        System.log(message != '' ? message : 'could not divide');
-      } 
-      System.exitContract(1);
+        message = message != '' ? message : 'could not divide';
+      }
+      System.exit(1, StringBytes.stringToBytes(message));
     }
 
     return result.value;
@@ -359,7 +360,7 @@ export namespace SafeMath {
     * @example
     * ```ts
     * const res = SafeMath.tryMod(2, 1);
-    * 
+    *
     * if (!res.error) {
     *   System.Log('2 % 1 = ' + c.value.toString());
     * } else {
@@ -415,7 +416,7 @@ export namespace SafeMath {
     * @example
     * ```ts
     * const res = SafeMath.mod(10, 2);
-    * 
+    *
     * // code here is not executed if the calculation above overflows/underflows
     * ```
     */
@@ -425,11 +426,11 @@ export namespace SafeMath {
     if (result.error) {
       if (isInteger<T>()) {
         // @ts-ignore valid in AS
-        System.log(message != '' ? message : `could not calulate ${a.toString()} modulo ${b.toString()}`);
+        message = message != '' ? message : `could not calulate ${a.toString()} modulo ${b.toString()}`;
       } else {
-        System.log(message != '' ? message : 'could not calulate modulo');
-      } 
-      System.exitContract(1);
+        message =message != '' ? message : 'could not calulate modulo';
+      }
+      System.exit(1, StringBytes.stringToBytes(message));
     }
 
     return result.value;

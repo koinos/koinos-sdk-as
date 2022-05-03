@@ -539,7 +539,10 @@ export namespace System {
     * System.exitContract(0);
     * ```
     */
-  export function exit(result: chain.result): void {
+  export function exit(code: i32, value: Uint8Array | null = null): void {
+    let result = new chain.result();
+    result.code = code;
+    result.value = value;
     const args = new system_calls.exit_arguments(result);
     const encodedArgs = Protobuf.encode(args, system_calls.exit_arguments.encode);
     const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
@@ -635,14 +638,7 @@ export namespace System {
   export function require<T>(isTrueish: T, message: string = "", code: i32 = 1): T {
 
     if (!isTrueish) {
-      let result = new chain.result();
-      result.code = code;
-
-      if (message != "") {
-        result.value = StringBytes.stringToBytes(message);
-      }
-
-      exit(result);
+      exit(code, StringBytes.stringToBytes(message));
     }
 
     return isTrueish;
@@ -665,17 +661,14 @@ export namespace System {
     * System.log('nbBytesWritten: ' + nbBytesWritten.toString());
     * ```
    */
-  export function putBytes<K>(space: chain.object_space, key: K, obj: Uint8Array) {
+  export function putBytes<K>(space: chain.object_space, key: K, obj: Uint8Array): void {
     let finalKey: Uint8Array;
     if (key instanceof Uint8Array) {
       finalKey = key;
     } else if (typeof key == "string") {
       finalKey = StringBytes.stringToBytes(key);
     } else {
-      let result = new chain.result();
-      result.code = 1;
-      result.value = StringBytes.stringToBytes("An invalid key was passed to putBytes");
-      exit(result);
+      exit(1, StringBytes.stringToBytes("An invalid key was passed to putBytes"));
     }
 
     // @ts-ignore
@@ -732,10 +725,7 @@ export namespace System {
     } else if (typeof key == "string") {
       finalKey = StringBytes.stringToBytes(key);
     } else {
-      let result = new chain.result();
-      result.code = 1;
-      result.value = StringBytes.stringToBytes("An invalid key was passed to removeObject");
-      exit(result);
+      exit(1, StringBytes.stringToBytes("An invalid key was passed to removeObject"));
     }
 
     // @ts-ignore
@@ -773,10 +763,7 @@ export namespace System {
     } else if (typeof key == 'string') {
       finalKey = StringBytes.stringToBytes(key);
     } else {
-      let result = new chain.result();
-      result.code = 1;
-      result.value = StringBytes.stringToBytes("An invalid key was passed to getBytes");
-      exit(result);
+      exit(1, StringBytes.stringToBytes("An invalid key was passed to getBytes"));
     }
 
     // @ts-ignore
@@ -861,10 +848,7 @@ export namespace System {
     } else if (typeof key == 'string') {
       finalKey = StringBytes.stringToBytes(key);
     } else {
-      let result = new chain.result();
-      result.code = 1;
-      result.value = StringBytes.stringToBytes("An invalid key was passed to getNextBytes");
-      exit(result);
+      exit(1, StringBytes.stringToBytes("An invalid key was passed to getNextBytes"));
     }
 
     // @ts-ignore
@@ -937,10 +921,7 @@ export namespace System {
     } else if (typeof key == 'string') {
       finalKey = StringBytes.stringToBytes(key);
     } else {
-      let result = new chain.result();
-      result.code = 1;
-      result.value = StringBytes.stringToBytes("An invalid key was passed to getPrevBytes");
-      exit(result);
+      exit(1, StringBytes.stringToBytes("An invalid key was passed to getPrevBytes"));
     }
 
     // @ts-ignore

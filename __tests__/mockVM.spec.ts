@@ -19,7 +19,7 @@ describe('MockVM', () => {
   it('should set the contract arguments', () => {
     MockVM.setContractArguments(mockAccount);
 
-    const getContractArgs = System.getContractArguments();
+    const getContractArgs = System.getArguments();
 
     expect(Arrays.equal(getContractArgs, mockAccount)).toBe(true);
   });

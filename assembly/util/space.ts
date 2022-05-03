@@ -45,7 +45,7 @@ export namespace Space {
     * @example
     * ```ts
     * const exists = Objects.has('key1');
-    * 
+    *
     * if (exists) {
     *   ...
     * }
@@ -64,7 +64,7 @@ export namespace Space {
     * @example
     * ```ts
     * const obj = Objects.get('key1');
-    * 
+    *
     * if (obj != null) {
     *   ...
     * }
@@ -83,10 +83,10 @@ export namespace Space {
     * @example
     * ```ts
     * const objs = Objects.getMany('key1', 10, Space.Direction.Descending);
-    * 
+    *
     * for (let index = 0; index < objs.length; index++) {
     *   const obj = objs[index];
-    * } 
+    * }
     * ```
     */
     getMany(offsetKey: TKey, limit: i32 = i32.MAX_VALUE, direction: Direction = Direction.Ascending): System.ProtoDatabaseObject<TValue>[] {
@@ -123,10 +123,10 @@ export namespace Space {
     * @example
     * ```ts
     * const keys = Objects.getManyKeys('key1', 10, Space.Direction.Descending);
-    * 
+    *
     * for (let index = 0; index < keys.length; index++) {
     *   const key = keys[index];
-    * } 
+    * }
     * ```
     */
     getManyKeys(offsetKey: TKey, limit: i32 = i32.MAX_VALUE, direction: Direction = Direction.Ascending): TKey[] {
@@ -169,10 +169,10 @@ export namespace Space {
     * @example
     * ```ts
     * const values = Objects.getManyValues('key1', 10, Space.Direction.Descending);
-    * 
+    *
     * for (let index = 0; index < values.length; index++) {
     *   const values = values[index];
-    * } 
+    * }
     * ```
     */
     getManyValues(offsetKey: TKey, limit: i32 = i32.MAX_VALUE, direction: Direction = Direction.Ascending): TValue[] {
@@ -207,7 +207,7 @@ export namespace Space {
     * @example
     * ```ts
     * const obj = Objects.getNext('key1');
-    * 
+    *
     * if (obj != null) {
     *   const key = obj.key;
     *   const val = obj.value;
@@ -225,7 +225,7 @@ export namespace Space {
     * @example
     * ```ts
     * const obj = Objects.getPrev('key1');
-    * 
+    *
     * if (obj != null) {
     *   const key = obj.key;
     *   const val = obj.value;
@@ -244,12 +244,12 @@ export namespace Space {
     * @example
     * ```ts
     * const nbBytesWritten = Objects.put('key1', new test_object(42));
-    * 
+    *
     * System.log(nbBytesWritten.toString());
     * ```
     */
-    put(key: TKey, object: TValue): i32 {
-      return System.putObject(this.space, key, object, this.valueEncoder);
+    put(key: TKey, object: TValue): void {
+      System.putObject(this.space, key, object, this.valueEncoder);
     }
 
     /**
@@ -303,7 +303,7 @@ export namespace Space {
     * @example
     * ```ts
     * const exists = Objects.has(new test_key(1));
-    * 
+    *
     * if (exists) {
     *   ...
     * }
@@ -324,7 +324,7 @@ export namespace Space {
     * @example
     * ```ts
     * const obj = Objects.get(new test_key(1));
-    * 
+    *
     * if (obj != null) {
     *   ...
     * }
@@ -345,10 +345,10 @@ export namespace Space {
     * @example
     * ```ts
     * const objs = Objects.getManyObj(new test_key(1), 10, Space.Direction.Descending);
-    * 
+    *
     * for (let index = 0; index < objs.length; index++) {
     *   const obj = objs[index];
-    * } 
+    * }
     * ```
     */
     getManyObj(offsetKey: TKey, limit: i32 = i32.MAX_VALUE, direction: Direction = Direction.Ascending): System.ProtoDatabaseObject<TValue>[] {
@@ -365,10 +365,10 @@ export namespace Space {
     * @example
     * ```ts
     * const values = Objects.getManyObjValues(new test_key(1), 10, Space.Direction.Descending);
-    * 
+    *
     * for (let index = 0; index < values.length; index++) {
     *   const value = values[index];
-    * } 
+    * }
     * ```
     */
     getManyObjValues(offsetKey: TKey, limit: i32 = i32.MAX_VALUE, direction: Direction = Direction.Ascending): TValue[] {
@@ -385,10 +385,10 @@ export namespace Space {
     * @example
     * ```ts
     * const keys = Objects.getManyObjKeys(new test_key(1), 10, Space.Direction.Descending);
-    * 
+    *
     * for (let index = 0; index < keys.length; index++) {
     *   const key = keys[index];
-    * } 
+    * }
     * ```
     */
     getManyObjKeys(offsetKey: TKey, limit: i32 = i32.MAX_VALUE, direction: Direction = Direction.Ascending): TKey[] {
@@ -418,7 +418,7 @@ export namespace Space {
     * @example
     * ```ts
     * const obj = Objects.getNext(new test_key(1));
-    * 
+    *
     * if (obj != null) {
     *   const key = obj.key;
     *   const val = obj.value;
@@ -438,7 +438,7 @@ export namespace Space {
     * @example
     * ```ts
     * const obj = Objects.getPrev(new test_key(1));
-    * 
+    *
     * if (obj != null) {
     *   const key = obj.key;
     *   const val = obj.value;
@@ -459,14 +459,14 @@ export namespace Space {
     * @example
     * ```ts
     * const nbBytesWritten = Objects.put(new test_key(1), new test_object(42));
-    * 
+    *
     * System.log(nbBytesWritten.toString());
     * ```
     */
     // @ts-ignore valid in AS
     put(key: TKey, object: TValue): i32 {
       const finalKey = Protobuf.encode(key, this.keyEncoder);
-      return super.put(finalKey, object);
+      super.put(finalKey, object);
     }
 
     /**
@@ -484,4 +484,3 @@ export namespace Space {
     }
   }
 }
-

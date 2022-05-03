@@ -24,7 +24,7 @@ export namespace MockVM {
     * @example
     * ```ts
     * MockVM.setEntryPoint(0xc3ab8ff1);
-    * 
+    *
     * const entryPoint = System.getEntryPoint();
     * System.log('entryPoint: ' + entryPoint.toString());
     * ```
@@ -111,11 +111,11 @@ export namespace MockVM {
     * @example
     * ```ts
     * let callerData = new chain.caller_data(Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe'), chain.privilege.user_mode);
-    * 
+    *
     * MockVM.setCaller(callerData);
     *
     * callerData = System.getCaller();
-    * 
+    *
     * System.log('callerData.caller_privilege: ' + callerData.caller_privilege.toString());
     * if (callerData.caller) {
     *   System.log('callerData.caller (b58): ' + Base58.encode(callerData.caller!));
@@ -133,13 +133,13 @@ export namespace MockVM {
     * ```ts
     * let transaction = new protocol.transaction();
     * transaction.id = StringBytes.stringToBytes("0x12345");
-    * 
+    *
     * MockVM.setTransaction(transaction);
     *
     * transaction = System.getTransaction();
-    * 
+    *
     * System.log("transaction.id: " + (StringBytes.bytesToString((transaction.id)!)!));
-    * 
+    *
     * let txField = System.getTransactionField('id');
     * if (txField) {
     *   System.log("transaction.id: " + (StringBytes.bytesToString((txField.bytes_value) as Uint8Array) as string));
@@ -157,13 +157,13 @@ export namespace MockVM {
     * ```ts
     * let block = new protocol.block();
     * block.id = StringBytes.stringToBytes("0x12345");
-    * 
+    *
     * MockVM.setBlock(block);
     *
     * block = System.getBlock();
-    * 
+    *
     * System.log("block.id: " + (StringBytes.bytesToString((block.id) as Uint8Array) as string));
-    * 
+    *
     * let blField = System.getBlockField('id');
     * if (blField) {
     *   System.log("block.id: " + (StringBytes.bytesToString((blField.bytes_value) as Uint8Array) as string));
@@ -182,7 +182,7 @@ export namespace MockVM {
     * const account = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
     * const auth1 = new MockVM.MockAuthority(authority.authorization_type.contract_call, account, true);
     * const auth2 = new MockVM.MockAuthority(authority.authorization_type.contract_upload, account, false)
-    * 
+    *
     * MockVM.setAuthorities([auth1, auth2]);
     *
     * System.requireAuthority(authority.authorization_type.contract_call, account);
@@ -253,7 +253,7 @@ export namespace MockVM {
     * System.setContractResult(Base64.decode('res1'));
     *
     * const contractRes = MockVM.getContractResult();
-    * 
+    *
     * if (contractRes) {
     *   System.log('contractRes: ' + (Base64.encode(contractRes as Uint8Array) as string));
     * }
@@ -270,10 +270,10 @@ export namespace MockVM {
     * @returns { string[] }
     * @example
     * ```ts
-    * System.exitContract(0);
+    * System.exit(0);
     *
     * const exitCode = MockVM.getExitCode();
-    * 
+    *
     * if (exitCode) {
     *   System.log('exitCode: ' + exitCode.toString());
     * }
@@ -283,8 +283,8 @@ export namespace MockVM {
     const bytes = System.getBytes(METADATA_SPACE, 'exit_code');
 
     if (bytes) {
-      const valueType =  Protobuf.decode<system_calls.exit_contract_arguments>(bytes, system_calls.exit_contract_arguments.decode);
-      return valueType.exit_code;
+      const valueType =  Protobuf.decode<system_calls.exit_arguments>(bytes, system_calls.exit_arguments.decode);
+      return valueType.retval!.code;
     }
 
     return -1;
@@ -297,9 +297,9 @@ export namespace MockVM {
     * ```ts
     * System.log('log 1');
     * System.log('log 2');
-    * 
+    *
     * const logs = MockVM.getLogs();
-    * 
+    *
     * for (let index = 0; index < logs.length; index++) {
     *   const log = logs;
     * }
@@ -347,15 +347,15 @@ export namespace MockVM {
     * ```ts
     * System.Event('my-event-1', Base64.decode('event data'), [Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe')]);
     * System.Event('my-event-2', Base64.decode('event data 2'), [Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe')]);
-    * 
+    *
     * const events = MockVM.getEvents();
-    * 
+    *
     * for (let index = 0; index < events.length; index++) {
     *   const event = events[index];
-    * 
+    *
     *   System.log(event.name)
     *   System.log(event.data.toString())
-    * 
+    *
     *   event.impacted.forEach(acct => {
     *     System.log(Base58.encode(acct));
     *   });

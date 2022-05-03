@@ -33,7 +33,7 @@ export function main(): i32 {
   System.log('lastIrreversibleBlock: ' + lastIrreversibleBlock.toString());
 
   const contractSpace = new chain.object_space(false, contractId, 1);
- 
+
   const putRes = System.putBytes(contractSpace, 'testKey', StringBytes.stringToBytes('testValue'));
   System.log('putRes: ' + putRes.toString());
 
@@ -259,9 +259,8 @@ export function main(): i32 {
   }
 
   const contractRes = new foobar.foobar_result(42);
-  System.setContractResult(Protobuf.encode(contractRes, foobar.foobar_result.encode));
 
-  System.exitContract(0);
+  System.exit(0, Protobuf.encode(contractRes, foobar.foobar_result.encode));
   return 0;
 }
 

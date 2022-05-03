@@ -228,7 +228,7 @@ describe('SystemCalls', () => {
   it('should get the contract arguments', () => {
     MockVM.setContractArguments(mockAccount);
 
-    const getContractArgs = System.getContractArguments();
+    const getContractArgs = System.getArguments();
 
     expect(Arrays.equal(getContractArgs, mockAccount)).toBe(true);
   });
@@ -275,7 +275,7 @@ describe('SystemCalls', () => {
 
   it('should exit a contract', () => {
     expect(() => {
-      System.exitContract(0);
+      System.exit(0);
     }).toThrow();
 
     let exitCode = MockVM.getExitCode();
@@ -283,7 +283,7 @@ describe('SystemCalls', () => {
     expect(exitCode).toBe(0);
 
     expect(() => {
-      System.exitContract(1);
+      System.exit(1);
     }).toThrow();
 
     exitCode = MockVM.getExitCode();
