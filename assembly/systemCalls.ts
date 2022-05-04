@@ -476,15 +476,15 @@ export namespace System {
     * }
     * ```
     */
-  export function call(contractId: Uint8Array, entryPoint: u32, contractArgs: Uint8Array): Uint8Array {
+  export function call(contractId: Uint8Array, entryPoint: u32, contractArgs: Uint8Array): [i32, Uint8Array] {
     const args = new system_calls.call_arguments(contractId, entryPoint, contractArgs);
     const encodedArgs = Protobuf.encode(args, system_calls.call_arguments.encode);
     const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const _retcode = env.invokeSystemCall(system_call_ids.system_call_id.call, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.call, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
     const result = Protobuf.decode<system_calls.call_result>(readBuffer, system_calls.call_result.decode);
 
-    return result.value!;
+    return [retcode, result.value!];
   }
 
   /**
