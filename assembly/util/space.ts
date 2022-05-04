@@ -464,7 +464,7 @@ export namespace Space {
     * ```
     */
     // @ts-ignore valid in AS
-    put(key: TKey, object: TValue): i32 {
+    put(key: TKey, object: TValue): void {
       const finalKey = Protobuf.encode(key, this.keyEncoder);
       super.put(finalKey, object);
     }

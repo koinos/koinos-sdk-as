@@ -1456,7 +1456,7 @@ koinos-mock-vm@1.1.0:
 
 "koinos-proto-as@https://github.com/koinos/koinos-proto-as.git#testnet-4":
   version "0.4.2"
-  resolved "https://github.com/koinos/koinos-proto-as.git#131fa7b8808fd67ee30c4b8a8b75c8b966bfa122"
+  resolved "https://github.com/koinos/koinos-proto-as.git#bd481cdabbce13cc7d97c8f45e287428b03034bc"
   dependencies:
     as-proto "^0.2.2"
 
