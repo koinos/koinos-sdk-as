@@ -434,6 +434,11 @@ export namespace System {
 
   // Contract Management
 
+  export class callReturn {
+    code: i32;
+    value: Uint8Array;
+  }
+
   /**
     * Call a contract
     * @param contractId id of the contract to call
@@ -476,7 +481,7 @@ export namespace System {
     * }
     * ```
     */
-  export function call(contractId: Uint8Array, entryPoint: u32, contractArgs: Uint8Array): [i32, Uint8Array] {
+  export function call(contractId: Uint8Array, entryPoint: u32, contractArgs: Uint8Array): callReturn {
     const args = new system_calls.call_arguments(contractId, entryPoint, contractArgs);
     const encodedArgs = Protobuf.encode(args, system_calls.call_arguments.encode);
     const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
@@ -484,7 +489,12 @@ export namespace System {
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.call, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
     const result = Protobuf.decode<system_calls.call_result>(readBuffer, system_calls.call_result.decode);
 
-    return [retcode, result.value!];
+    return {code: retcode, value: result.value!};
+  }
+
+  export class getArgumentsReturn {
+    entry_point: u32;
+    args: Uint8Array;
   }
 
   /**
@@ -497,7 +507,7 @@ export namespace System {
     * System.log('contractArgs: ' + contractArgs.value.toString());
     * ```
     */
-  export function getArguments(): [u32, Uint8Array] {
+  export function getArguments(): getArgumentsReturn {
     const args = new system_calls.get_arguments_arguments();
     const encodedArgs = Protobuf.encode(args, system_calls.get_arguments_arguments.encode);
     const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
@@ -505,7 +515,7 @@ export namespace System {
     const _retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_arguments, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
     const result = Protobuf.decode<system_calls.get_arguments_result>(readBuffer, system_calls.get_arguments_result.decode);
 
-    return [result.value!.entry_point, result.value!.arguments!];
+    return {entry_point: result.value!.entry_point, args: result.value!.arguments!};
   }
 
   /**
