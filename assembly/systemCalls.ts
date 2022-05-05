@@ -527,14 +527,14 @@ export namespace System {
     * ```
     */
   export function exit(code: i32, value: Uint8Array | null = null): void {
-    let result = new chain.result();
-    result.code = code;
-    result.value = value;
-    const args = new system_calls.exit_arguments(result);
-    const encodedArgs = Protobuf.encode(args, system_calls.exit_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
+    // let result = new chain.result();
+    // result.code = code;
+    // result.value = value;
+    // const args = new system_calls.exit_arguments(result);
+    // const encodedArgs = Protobuf.encode(args, system_calls.exit_arguments.encode);
+    // const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    env.invokeSystemCall(system_call_ids.system_call_id.exit, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    // env.invokeSystemCall(system_call_ids.system_call_id.exit, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
   }
 
   export function revert(msg: string = ""): void {
