@@ -1,7 +1,7 @@
 import { env } from "./env";
 import { Protobuf, Reader, Writer } from 'as-proto';
 import { system_calls, system_call_ids, chain, protocol, authority, value, resources } from 'koinos-proto-as';
-import {  StringBytes } from ".";
+import { StringBytes } from ".";
 
 export namespace System {
   export const DEFAULT_MAX_BUFFER_SIZE = 1024;
@@ -535,6 +535,10 @@ export namespace System {
     const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
     env.invokeSystemCall(system_call_ids.system_call_id.exit, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+  }
+
+  export function revert(msg: string = ""): void {
+    exit(1, StringBytes.stringToBytes(msg))
   }
 
   /**
