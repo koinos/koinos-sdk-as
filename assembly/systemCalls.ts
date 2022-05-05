@@ -816,7 +816,7 @@ export namespace System {
 
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_object, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, returnBytes.dataStart as u32);
 
-    if (retcode) {
+    if (!returnBytes[0]) {
       return null;
     }
 
