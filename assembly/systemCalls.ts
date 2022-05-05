@@ -521,6 +521,11 @@ export namespace System {
   }
 
   export class getArgumentsReturn {
+    constructor() {
+      this.entry_point = 0;
+      this.args = new Uint8Array(0);
+    }
+
     entry_point: u32;
     args: Uint8Array;
   }
@@ -551,9 +556,6 @@ export namespace System {
 
       if ( result.value!.arguments ) {
         ret.args = result.value!.arguments!;
-      } else {
-        // Maybe not needed
-        ret.args = new Uint8Array(0);
       }
     }
 
