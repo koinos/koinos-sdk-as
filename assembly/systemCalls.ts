@@ -301,11 +301,11 @@ export namespace System {
     * ```
     */
   export function log(s: string): void {
-    const args = new system_calls.log_arguments(s);
-    const encodedArgs = Protobuf.encode(args, system_calls.log_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
+    // const args = new system_calls.log_arguments(s);
+    // const encodedArgs = Protobuf.encode(args, system_calls.log_arguments.encode);
+    // const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    env.invokeSystemCall(system_call_ids.system_call_id.log, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    // env.invokeSystemCall(system_call_ids.system_call_id.log, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
   }
 
   /**
