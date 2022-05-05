@@ -544,7 +544,20 @@ export namespace System {
     const _retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_arguments, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, returnBytes.dataStart as u32);
     const result = Protobuf.decode<system_calls.get_arguments_result>(readBuffer, system_calls.get_arguments_result.decode, returnBytes[0]);
 
-    return {entry_point: result.value!.entry_point, args: result.value!.arguments!};
+    let ret = new getArgumentsReturn()
+
+    if ( result.value ) {
+      ret.entry_point = result.value!.entry_point;
+
+      if ( result.value!.arguments ) {
+        ret.args = result.value!.arguments!;
+      } else {
+        // Maybe not needed
+        ret.args = new Uint8Array(0);
+      }
+    }
+
+    return ret;
   }
 
   /**
