@@ -586,6 +586,8 @@ export namespace System {
     const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
     const returnBytes = new Uint32Array(1);
 
+    log(returnBytes[0].toString())
+
     const _retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_contract_id, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, returnBytes.dataStart as u32);
 
     log(returnBytes[0].toString())
