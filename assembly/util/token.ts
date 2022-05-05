@@ -38,9 +38,9 @@ export class Token {
   name(): string {
     const args = new token.name_arguments();
 
-    const callres = System.call(this._contractId, entries.name_entry, Protobuf.encode(args, token.name_arguments.encode));
-    System.require(callres.code != 0, "failed to retrieve token name");
-    const res = Protobuf.decode<token.name_result>(callres.value! as Uint8Array, token.name_result.decode);
+    const callRes = System.call(this._contractId, entries.name_entry, Protobuf.encode(args, token.name_arguments.encode));
+    System.require(callRes.code != 0, "failed to retrieve token name");
+    const res = Protobuf.decode<token.name_result>(callRes.value as Uint8Array, token.name_result.decode);
 
     return res.value!;
   }
@@ -57,9 +57,9 @@ export class Token {
   symbol(): string {
     const args = new token.symbol_arguments();
 
-    const callres = System.call(this._contractId, entries.symbol_entry, Protobuf.encode(args, token.symbol_arguments.encode));
-    System.require(callres.code != 0, "failed to retrieve token symbol");
-    const res = Protobuf.decode<token.symbol_result>(callres.value! as Uint8Array, token.symbol_result.decode);
+    const callRes = System.call(this._contractId, entries.symbol_entry, Protobuf.encode(args, token.symbol_arguments.encode));
+    System.require(callRes.code != 0, "failed to retrieve token symbol");
+    const res = Protobuf.decode<token.symbol_result>(callRes.value as Uint8Array, token.symbol_result.decode);
 
     return res.value!;
   }
@@ -76,9 +76,9 @@ export class Token {
   decimals(): u32 {
     const args = new token.decimals_arguments();
 
-    const callres = System.call(this._contractId, entries.decimals_entry, Protobuf.encode(args, token.decimals_arguments.encode));
-    System.require(callres.code != 0, "failed to retrieve token decimals");
-    const res = Protobuf.decode<token.decimals_result>(callres.value! as Uint8Array, token.decimals_result.decode);
+    const callRes = System.call(this._contractId, entries.decimals_entry, Protobuf.encode(args, token.decimals_arguments.encode));
+    System.require(callRes.code != 0, "failed to retrieve token decimals");
+    const res = Protobuf.decode<token.decimals_result>(callRes.value as Uint8Array, token.decimals_result.decode);
 
     return res.value;
   }
@@ -95,9 +95,9 @@ export class Token {
   totalSupply(): u64 {
     const args = new token.total_supply_arguments();
 
-    const callres = System.call(this._contractId, entries.total_supply_entry, Protobuf.encode(args, token.total_supply_arguments.encode));
-    System.require(callres.code != 0, "failed to retrieve token supply");
-    const res = Protobuf.decode<token.total_supply_result>(callres.value! as Uint8Array, token.total_supply_result.decode);
+    const callRes = System.call(this._contractId, entries.total_supply_entry, Protobuf.encode(args, token.total_supply_arguments.encode));
+    System.require(callRes.code != 0, "failed to retrieve token supply");
+    const res = Protobuf.decode<token.total_supply_result>(callRes.value as Uint8Array, token.total_supply_result.decode);
 
     return res.value;
   }
@@ -116,9 +116,9 @@ export class Token {
   balanceOf(owner: Uint8Array): u64 {
     const args = new token.balance_of_arguments(owner);
 
-    const callres = System.call(this._contractId, entries.balance_of_entry, Protobuf.encode(args, token.balance_of_arguments.encode));
-    System.require(callres.code != 0, "failed to retrieve token balancce");
-    const res = Protobuf.decode<token.balance_of_result>(callres.value! as Uint8Array, token.balance_of_result.decode);
+    const callRes = System.call(this._contractId, entries.balance_of_entry, Protobuf.encode(args, token.balance_of_arguments.encode));
+    System.require(callRes.code != 0, "failed to retrieve token balancce");
+    const res = Protobuf.decode<token.balance_of_result>(callRes.value as Uint8Array, token.balance_of_result.decode);
 
     return res.value;
   }
@@ -149,7 +149,7 @@ export class Token {
 
     const callRes = System.call(this._contractId, entries.transfer_entry, Protobuf.encode(args, token.transfer_arguments.encode));
     System.require(callRes.code != 0, "failed to transfer token");
-    const res = Protobuf.decode<token.transfer_result>(callRes.value!, token.transfer_result.decode);
+    const res = Protobuf.decode<token.transfer_result>(callRes.value, token.transfer_result.decode);
     return res.value;
   }
 
@@ -177,7 +177,7 @@ export class Token {
 
     const callRes = System.call(this._contractId, entries.mint_entry, Protobuf.encode(args, token.mint_arguments.encode));
     System.require(callRes.code != 0, "failed to mint token");
-    const res = Protobuf.decode<token.mint_result>(callRes.value!, token.mint_result.decode);
+    const res = Protobuf.decode<token.mint_result>(callRes.value, token.mint_result.decode);
     return res.value;
   }
 
@@ -205,7 +205,7 @@ export class Token {
 
     const callRes = System.call(this._contractId, entries.burn_entry, Protobuf.encode(args, token.burn_arguments.encode));
     System.require(callRes.code != 0, "failed to retrieve token name");
-    const res = Protobuf.decode<token.burn_result>(callRes.value!, token.burn_result.decode);
+    const res = Protobuf.decode<token.burn_result>(callRes.value, token.burn_result.decode);
     return res.value;
   }
 }
