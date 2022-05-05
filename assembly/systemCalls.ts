@@ -906,7 +906,7 @@ export namespace System {
     }
 
     const result = Protobuf.decode<system_calls.get_next_object_result>(readBuffer, system_calls.get_next_object_result.decode, returnBytes[0]);
-    return result.value!;
+    return result.value;
   }
 
 
@@ -981,7 +981,7 @@ export namespace System {
     }
 
     const result = Protobuf.decode<system_calls.get_prev_object_result>(readBuffer, system_calls.get_prev_object_result.decode, returnBytes[0]);
-    return result.value!;
+    return result.value;
   }
 
   /**
