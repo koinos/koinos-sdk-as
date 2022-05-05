@@ -587,6 +587,9 @@ export namespace System {
     const returnBytes = new Uint32Array(1);
 
     const _retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_contract_id, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, returnBytes.dataStart as u32);
+
+    log(returnBytes[0].toString())
+
     const result = Protobuf.decode<system_calls.get_contract_id_result>(readBuffer, system_calls.get_contract_id_result.decode, returnBytes[0]);
 
     return result.value!;
