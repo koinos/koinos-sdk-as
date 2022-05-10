@@ -206,31 +206,27 @@ describe('SystemCalls', () => {
 
     MockVM.setCallContractResults([callRes1, callRes2]);
 
-    let callRes = System.callContract(mockAccount, 1, new Uint8Array(0));
 
-    expect(callRes).not.toBeNull();
-    expect(Arrays.equal(callRes, mockAccount)).toBe(true);
+    let callRes = System.call(mockAccount, 1, new Uint8Array(0));
 
-    callRes = System.callContract(mockAccount, 1, new Uint8Array(0));
-    expect(callRes).not.toBeNull();
-    expect(Arrays.equal(callRes, mockAccount2)).toBe(true);
-  });
+    expect(callRes.code).toBe(0);
+    expect(Arrays.equal(callRes.value, mockAccount)).toBe(true);
 
-  it('should get the entry point', () => {
-    const setEntryPoint = 0xc3ab8ff1;
-    MockVM.setEntryPoint(0xc3ab8ff1);
+    callRes = System.call(mockAccount, 1, new Uint8Array(0));
 
-    const getEntryPoint = System.getEntryPoint();
-
-    expect(getEntryPoint).toBe(setEntryPoint);
+    expect(callRes.code).toBe(0);
+    expect(Arrays.equal(callRes.value, mockAccount2)).toBe(true);
   });
 
   it('should get the contract arguments', () => {
+    const setEntryPoint = 0xc3ab8ff1;
+    MockVM.setEntryPoint(0xc3ab8ff1);
     MockVM.setContractArguments(mockAccount);
 
     const getContractArgs = System.getArguments();
 
-    expect(Arrays.equal(getContractArgs, mockAccount)).toBe(true);
+    expect(Arrays.equal(getContractArgs.args, mockAccount)).toBe(true);
+    expect(getContractArgs.entry_point).toBe(setEntryPoint)
   });
 
   it('should get the contract id', () => {
@@ -263,14 +259,6 @@ describe('SystemCalls', () => {
 
     expect(getCallerData.caller_privilege).toBe(setCallerData.caller_privilege);
     expect(Arrays.equal(getCallerData.caller, mockAccount)).toBe(true);
-  });
-
-  it('should set the contract result', () => {
-    System.setContractResult(mockStrBytes);
-
-    const contractRes = MockVM.getContractResult();
-
-    expect(Arrays.equal(contractRes, mockStrBytes)).toBe(true);
   });
 
   it('should exit a contract', () => {

@@ -283,8 +283,8 @@ export namespace MockVM {
     const bytes = System.getBytes(METADATA_SPACE, 'exit_code');
 
     if (bytes) {
-      const valueType =  Protobuf.decode<system_calls.exit_arguments>(bytes, system_calls.exit_arguments.decode);
-      return valueType.retval!.code;
+      const valueType = Protobuf.decode<value.value_type>(bytes, value.value_type.decode);
+      return valueType.int32_value;
     }
 
     return -1;

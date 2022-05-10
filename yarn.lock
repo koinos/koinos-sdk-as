@@ -1456,7 +1456,7 @@ koinos-as-gen@0.4.8:
 
 "koinos-mock-vm@https://github.com/koinos/koinos-mock-vm#json-descriptors-package":
   version "1.1.1"
-  resolved "https://github.com/koinos/koinos-mock-vm#5f41c1e1885cdcb6d1f5768eeab22ecdfc2b4447"
+  resolved "https://github.com/koinos/koinos-mock-vm#c560c1add146706ec8e04a0a9bc441d8deeb2619"
   dependencies:
     "@noble/hashes" "^1.0.0"
     "@noble/secp256k1" "^1.5.5"
