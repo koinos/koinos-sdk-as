@@ -7,21 +7,16 @@ const mockAccount2 = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqE');
 const mockId = StringBytes.stringToBytes("0x12345");
 
 describe('MockVM', () => {
-  it('should set the entry point', () => {
-    const setEntryPoint = 0xc3ab8ff1;
-    MockVM.setEntryPoint(0xc3ab8ff1);
-
-    const getEntryPoint = System.getEntryPoint();
-
-    expect(getEntryPoint).toBe(setEntryPoint);
-  });
 
   it('should set the contract arguments', () => {
+    const setEntryPoint = 0xc3ab8ff1;
+    MockVM.setEntryPoint(0xc3ab8ff1);
     MockVM.setContractArguments(mockAccount);
 
     const getContractArgs = System.getArguments();
 
-    expect(Arrays.equal(getContractArgs, mockAccount)).toBe(true);
+    expect(Arrays.equal(getContractArgs.args, mockAccount)).toBe(true);
+    expect(getContractArgs.entry_point).toBe(setEntryPoint)
   });
 
   it('should set the contract id', () => {
@@ -96,23 +91,10 @@ describe('MockVM', () => {
     // this will backup the database
     MockVM.commitTransaction();
 
-    expect(() => {
-      System.requireAuthority(authority.authorization_type.contract_call, mockAccount);
-    }).not.toThrow();
-
-    expect(() => {
-      System.requireAuthority(authority.authorization_type.contract_upload, mockAccount2);
-    }).not.toThrow();
-
-    expect(() => {
-      // will print "account 1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe has not authorized action"
-      System.requireAuthority(authority.authorization_type.contract_upload, mockAccount);
-    }).toThrow();
-
-    expect(() => {
-      // will print "account 1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe has not authorized action"
-      System.requireAuthority(authority.authorization_type.transaction_application, mockAccount);
-    }).toThrow();
+    expect(System.checkAuthority(authority.authorization_type.contract_call, mockAccount)).toBe(true);
+    expect(System.checkAuthority(authority.authorization_type.contract_upload, mockAccount2)).toBe(true);
+    expect(System.checkAuthority(authority.authorization_type.contract_upload, mockAccount)).toBe(false);
+    expect(System.checkAuthority(authority.authorization_type.transaction_application, mockAccount)).toBe(false);
   });
 
   it('should set the call contract results', () => {
@@ -121,14 +103,14 @@ describe('MockVM', () => {
 
     MockVM.setCallContractResults([callRes1, callRes2]);
 
-    let callRes = System.callContract(mockAccount, 1, new Uint8Array(0));
+    let callRes = System.call(mockAccount, 1, new Uint8Array(0));
 
     expect(callRes).not.toBeNull();
-    expect(Arrays.equal(callRes, mockAccount)).toBe(true);
+    expect(Arrays.equal(callRes.value, mockAccount)).toBe(true);
 
-    callRes = System.callContract(mockAccount, 1, new Uint8Array(0));
+    callRes = System.call(mockAccount, 1, new Uint8Array(0));
     expect(callRes).not.toBeNull();
-    expect(Arrays.equal(callRes, mockAccount2)).toBe(true);
+    expect(Arrays.equal(callRes.value, mockAccount2)).toBe(true);
   });
 
   it('should reset the MockVM database', () => {
