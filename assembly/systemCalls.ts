@@ -834,7 +834,7 @@ export namespace System {
     * ```ts
     * const contractId = System.getContractId();
     * const contractSpace = new chain.object_space(false, contractId, 1);
-    * let obj = System.getObject<string, test.test_object>(contractSpace, 'key2', test.test_object.decode, returnBytes[0]);
+    * let obj = System.getObject<string, test.test_object>(contractSpace, 'key2', test.test_object.decode);
     *
     * if (obj) {
     *   System.log('obj.value: ' + obj.value.toString());
@@ -918,7 +918,7 @@ export namespace System {
     * ```ts
     * const contractId = System.getContractId();
     * const contractSpace = new chain.object_space(false, contractId, 1);
-    * let obj = System.getNextObject<string, test.test_object>(contractSpace, 'key3', test.test_object.decode, returnBytes[0]);
+    * let obj = System.getNextObject<string, test.test_object>(contractSpace, 'key3', test.test_object.decode);
     *
     * if (obj) {
     *   System.log('next obj.value: ' + obj.value.value.toString());
@@ -992,7 +992,7 @@ export namespace System {
     * ```ts
     * const contractId = System.getContractId();
     * const contractSpace = new chain.object_space(false, contractId, 1);
-    * let obj = System.getPrevObject<string, test.test_object>(contractSpace, 'key3', test.test_object.decode, returnBytes[0]);
+    * let obj = System.getPrevObject<string, test.test_object>(contractSpace, 'key3', test.test_object.decode);
     *
     * if (obj) {
     *   System.log('next obj.value: ' + obj.value.value.toString());
