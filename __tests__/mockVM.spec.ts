@@ -13,9 +13,6 @@ describe('MockVM', () => {
 
     MockVM.setChainId(chainId)
 
-    log(chainId)
-    log(System.getChainId())
-
     expect(Arrays.equal(System.getChainId(), chainId)).toBe(true);
   });
 
