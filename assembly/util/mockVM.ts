@@ -69,6 +69,10 @@ export namespace MockVM {
     System.putBytes(METADATA_SPACE, 'contract_id', contractId);
   }
 
+  export function setChainId(chainId: Uint8Array): void {
+    System.putBytes(METADATA_SPACE, 'chain_id', chainId);
+  }
+
   /**
     * Set head info that will be used when calling System.getHeadInfo()
     * @param { chain.head_info } headInfo head info to set

@@ -8,6 +8,17 @@ const mockId = StringBytes.stringToBytes("0x12345");
 
 describe('MockVM', () => {
 
+  it('should get the chain id', () => {
+    const chainId = mockAccount;
+
+    MockVM.setChainId(chainId)
+
+    log(chainId)
+    log(System.getChainId())
+
+    expect(Arrays.equal(System.getChainId(), chainId)).toBe(true);
+  });
+
   it('should set the contract arguments', () => {
     const setEntryPoint = 0xc3ab8ff1;
     MockVM.setEntryPoint(0xc3ab8ff1);

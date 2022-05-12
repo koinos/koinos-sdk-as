@@ -14,6 +14,17 @@ describe('SystemCalls', () => {
     MockVM.reset();
   });
 
+  it('should get the chain id', () => {
+    const chainId = mockAccount;
+
+    MockVM.setChainId(chainId)
+
+    log(chainId)
+    log(System.getChainId())
+
+    expect(Arrays.equal(System.getChainId(), chainId)).toBe(true);
+  });
+
   it('should get the head info', () => {
     const setHeadInfo = new chain.head_info();
     setHeadInfo.head_block_time = 123456789;
@@ -266,17 +277,23 @@ describe('SystemCalls', () => {
       System.exit(0);
     }).toThrow();
 
-    let exitCode = MockVM.getExitCode();
+    expect(MockVM.getExitCode()).toBe(0);
 
-    expect(exitCode).toBe(0);
+    const message = "my message";
 
     expect(() => {
-      System.exit(1);
+      System.exit(1, StringBytes.stringToBytes(message));
     }).toThrow();
 
-    exitCode = MockVM.getExitCode();
+    expect(MockVM.getExitCode()).toBe(1);
+    expect(MockVM.getErrorMessage()).toBe(message);
 
-    expect(exitCode).toBe(1);
+    expect(() => {
+      System.revert(message);
+    })
+
+    expect(MockVM.getExitCode()).toBe(1);
+    expect(MockVM.getErrorMessage()).toBe(message);
   });
 
   it('should put and get bytes', () => {

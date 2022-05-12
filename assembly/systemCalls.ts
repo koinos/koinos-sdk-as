@@ -86,6 +86,18 @@ export namespace System {
     return env.invokeSystemCall(system_call_ids.system_call_id.apply_set_system_contract_operation, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, returnBytes.dataStart as u32);
   }
 
+  export function getChainId(): Uint8Array {
+    const args = new system_calls.get_chain_id_arguments();
+    const encodedArgs = Protobuf.encode(args, system_calls.get_chain_id_arguments.encode);
+    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
+    const returnBytes = new Uint32Array(1);
+
+    const _retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_chain_id, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, returnBytes.dataStart as u32)
+    const result = Protobuf.decode<system_calls.get_chain_id_result>(readBuffer, system_calls.get_chain_id_result.decode, returnBytes[0]);
+
+    return result.value!;
+  }
+
   // System Helpers
 
   export function processBlockSignature(digest: Uint8Array, header: protocol.block_header, signature: Uint8Array): bool {
