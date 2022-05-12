@@ -177,4 +177,11 @@ describe('MockVM', () => {
     System.log("log 3");
     expect(MockVM.getLogs()).toStrictEqual(["log 3"]);
   });
+
+  it("should handle error messages", () => {
+    const message = "my message";
+    System.putBytes(MockVM.METADATA_SPACE, 'error_message', StringBytes.stringToBytes(message));
+
+    expect(MockVM.getErrorMessage()).toBe(message)
+  });
 });

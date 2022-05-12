@@ -1,6 +1,7 @@
 import { Protobuf } from "as-proto";
 import { System } from "../systemCalls";
 import { system_calls, chain, protocol, authority, value } from 'koinos-proto-as';
+import { StringBytes } from "./stringBytes";
 
 
 export namespace MockVM {
@@ -246,7 +247,7 @@ export namespace MockVM {
   }
 
   /**
-    * Get contract result set when calling System.setContractRsult()
+    * Get contract result set when calling System.exit()
     * @returns { Uint8Array | null }
     * @example
     * ```ts
@@ -263,6 +264,20 @@ export namespace MockVM {
     const bytes = System.getBytes(METADATA_SPACE, 'contract_result');
 
     return bytes;
+  }
+
+  /**
+   * Get error message string after a VM error
+   * @returns  { Uint8Array | null }
+   * @example
+   * ```ts
+   * const errorMessage = MockVM.getErrorMessage();
+   * ```
+   */
+  export function getErrorMessage(): String | null {
+    const bytes = System.getBytes(METADATA_SPACE, 'error_message');
+
+    return StringBytes.bytesToString(bytes)
   }
 
   /**
