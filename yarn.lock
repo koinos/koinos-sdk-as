@@ -1456,7 +1456,7 @@ koinos-as-gen@0.4.8:
 
 "koinos-mock-vm@https://github.com/koinos/koinos-mock-vm#json-descriptors-package":
   version "1.1.1"
-  resolved "https://github.com/koinos/koinos-mock-vm#710a9e7c7a6eca7e9fa515d1bf888f534c13b899"
+  resolved "https://github.com/koinos/koinos-mock-vm#a44c7e7e23e47b49b2a60998aa7987730f88fc36"
   dependencies:
     "@noble/hashes" "^1.0.0"
     "@noble/secp256k1" "^1.5.5"
@@ -1466,9 +1466,9 @@ koinos-as-gen@0.4.8:
     protobufjs "^6.11.2"
     somap "^0.5.14"
 
-"koinos-proto-as@https://github.com/koinos/koinos-proto-as.git#testnet-4":
+"koinos-proto-as@https://github.com/koinos/koinos-proto-as#testnet-4":
   version "0.4.2"
-  resolved "https://github.com/koinos/koinos-proto-as.git#bd481cdabbce13cc7d97c8f45e287428b03034bc"
+  resolved "https://github.com/koinos/koinos-proto-as#b7ab54d83a8c7eb5d0f4379c5f1b738c1b3136df"
   dependencies:
     as-proto "^0.2.2"
 

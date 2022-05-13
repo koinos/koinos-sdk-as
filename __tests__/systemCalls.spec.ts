@@ -1,5 +1,5 @@
 import { Arrays, Base58, MockVM, StringBytes, System, Crypto, Base64 } from "../assembly";
-import { chain, protocol, authority } from 'koinos-proto-as';
+import { chain, protocol, authority, error } from 'koinos-proto-as';
 
 import * as TestObject from "./test";
 
@@ -18,9 +18,6 @@ describe('SystemCalls', () => {
     const chainId = mockAccount;
 
     MockVM.setChainId(chainId)
-
-    log(chainId)
-    log(System.getChainId())
 
     expect(Arrays.equal(System.getChainId(), chainId)).toBe(true);
   });
@@ -183,6 +180,12 @@ describe('SystemCalls', () => {
     if (keccak256) {
       expect(Arrays.equal(keccak256, expectedKeccak256)).toBe(true);
     }
+
+    expect(() => {
+      System.hash(-1, mockStrBytes);
+    }).toThrow();
+
+    expect(MockVM.getExitCode()).toBe(error.error_code.unknown_hash_code);
   });
 
   it('should recover a public key', () => {
@@ -193,6 +196,12 @@ describe('SystemCalls', () => {
     const addr = Crypto.addressFromPublicKey(recoveredKey!);
 
     expect(Base58.encode(addr)).toBe('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
+
+    expect(() => {
+      System.recoverPublicKey(Base64.decode('IHhJwlD7P-o6x7L38den1MnumUhnYmNhTZhIUQQhezvEMf7rx89NbIIioNCIQSk1PQYdQ9mOI4-rDYiwO2pLvM4='), System.hash(Crypto.multicodec.sha2_256, StringBytes.stringToBytes(message))!, -1);
+    }).toThrow();
+
+    expect(MockVM.getExitCode()).toBe(error.error_code.invalid_dsa);
   });
 
   it('should verify a signature', () => {
