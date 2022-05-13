@@ -1454,9 +1454,9 @@ koinos-as-gen@0.4.8:
   dependencies:
     google-protobuf "^3.19.4"
 
-"koinos-mock-vm@https://github.com/koinos/koinos-mock-vm#json-descriptors-package":
+"koinos-mock-vm@https://github.com/koinos/koinos-mock-vm#testnet-4":
   version "1.1.1"
-  resolved "https://github.com/koinos/koinos-mock-vm#a44c7e7e23e47b49b2a60998aa7987730f88fc36"
+  resolved "https://github.com/koinos/koinos-mock-vm#b9176049af562c78efc83634b557d7b90733e0ab"
   dependencies:
     "@noble/hashes" "^1.0.0"
     "@noble/secp256k1" "^1.5.5"
