@@ -1,5 +1,5 @@
 import { Arrays, Base58, MockVM, StringBytes, System, Crypto, Base64 } from "../assembly";
-import { chain, protocol, authority } from 'koinos-proto-as';
+import { chain, protocol, authority, error } from 'koinos-proto-as';
 
 import * as TestObject from "./test";
 
@@ -12,6 +12,14 @@ const mockStrBytes = StringBytes.stringToBytes(mockStr);
 describe('SystemCalls', () => {
   beforeEach(() => {
     MockVM.reset();
+  });
+
+  it('should get the chain id', () => {
+    const chainId = mockAccount;
+
+    MockVM.setChainId(chainId)
+
+    expect(Arrays.equal(System.getChainId(), chainId)).toBe(true);
   });
 
   it('should get the head info', () => {
@@ -172,6 +180,12 @@ describe('SystemCalls', () => {
     if (keccak256) {
       expect(Arrays.equal(keccak256, expectedKeccak256)).toBe(true);
     }
+
+    expect(() => {
+      System.hash(-1, mockStrBytes);
+    }).toThrow();
+
+    expect(MockVM.getExitCode()).toBe(error.error_code.unknown_hash_code);
   });
 
   it('should recover a public key', () => {
@@ -182,6 +196,12 @@ describe('SystemCalls', () => {
     const addr = Crypto.addressFromPublicKey(recoveredKey!);
 
     expect(Base58.encode(addr)).toBe('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
+
+    expect(() => {
+      System.recoverPublicKey(Base64.decode('IHhJwlD7P-o6x7L38den1MnumUhnYmNhTZhIUQQhezvEMf7rx89NbIIioNCIQSk1PQYdQ9mOI4-rDYiwO2pLvM4='), System.hash(Crypto.multicodec.sha2_256, StringBytes.stringToBytes(message))!, -1);
+    }).toThrow();
+
+    expect(MockVM.getExitCode()).toBe(error.error_code.invalid_dsa);
   });
 
   it('should verify a signature', () => {
@@ -206,31 +226,27 @@ describe('SystemCalls', () => {
 
     MockVM.setCallContractResults([callRes1, callRes2]);
 
-    let callRes = System.callContract(mockAccount, 1, new Uint8Array(0));
 
-    expect(callRes).not.toBeNull();
-    expect(Arrays.equal(callRes, mockAccount)).toBe(true);
+    let callRes = System.call(mockAccount, 1, new Uint8Array(0));
 
-    callRes = System.callContract(mockAccount, 1, new Uint8Array(0));
-    expect(callRes).not.toBeNull();
-    expect(Arrays.equal(callRes, mockAccount2)).toBe(true);
-  });
+    expect(callRes.code).toBe(0);
+    expect(Arrays.equal(callRes.value, mockAccount)).toBe(true);
 
-  it('should get the entry point', () => {
-    const setEntryPoint = 0xc3ab8ff1;
-    MockVM.setEntryPoint(0xc3ab8ff1);
+    callRes = System.call(mockAccount, 1, new Uint8Array(0));
 
-    const getEntryPoint = System.getEntryPoint();
-
-    expect(getEntryPoint).toBe(setEntryPoint);
+    expect(callRes.code).toBe(0);
+    expect(Arrays.equal(callRes.value, mockAccount2)).toBe(true);
   });
 
   it('should get the contract arguments', () => {
+    const setEntryPoint = 0xc3ab8ff1;
+    MockVM.setEntryPoint(0xc3ab8ff1);
     MockVM.setContractArguments(mockAccount);
 
     const getContractArgs = System.getArguments();
 
-    expect(Arrays.equal(getContractArgs, mockAccount)).toBe(true);
+    expect(Arrays.equal(getContractArgs.args, mockAccount)).toBe(true);
+    expect(getContractArgs.entry_point).toBe(setEntryPoint)
   });
 
   it('should get the contract id', () => {
@@ -265,30 +281,28 @@ describe('SystemCalls', () => {
     expect(Arrays.equal(getCallerData.caller, mockAccount)).toBe(true);
   });
 
-  it('should set the contract result', () => {
-    System.setContractResult(mockStrBytes);
-
-    const contractRes = MockVM.getContractResult();
-
-    expect(Arrays.equal(contractRes, mockStrBytes)).toBe(true);
-  });
-
   it('should exit a contract', () => {
     expect(() => {
       System.exit(0);
     }).toThrow();
 
-    let exitCode = MockVM.getExitCode();
+    expect(MockVM.getExitCode()).toBe(0);
 
-    expect(exitCode).toBe(0);
+    const message = "my message";
 
     expect(() => {
-      System.exit(1);
+      System.exit(1, StringBytes.stringToBytes(message));
     }).toThrow();
 
-    exitCode = MockVM.getExitCode();
+    expect(MockVM.getExitCode()).toBe(1);
+    expect(MockVM.getErrorMessage()).toBe(message);
 
-    expect(exitCode).toBe(1);
+    expect(() => {
+      System.revert(message);
+    })
+
+    expect(MockVM.getExitCode()).toBe(1);
+    expect(MockVM.getErrorMessage()).toBe(message);
   });
 
   it('should put and get bytes', () => {

@@ -1,6 +1,7 @@
 import { Protobuf } from "as-proto";
 import { System } from "../systemCalls";
 import { system_calls, chain, protocol, authority, value } from 'koinos-proto-as';
+import { StringBytes } from "./stringBytes";
 
 
 export namespace MockVM {
@@ -66,6 +67,10 @@ export namespace MockVM {
     */
   export function setContractId(contractId: Uint8Array): void {
     System.putBytes(METADATA_SPACE, 'contract_id', contractId);
+  }
+
+  export function setChainId(chainId: Uint8Array): void {
+    System.putBytes(METADATA_SPACE, 'chain_id', chainId);
   }
 
   /**
@@ -246,7 +251,7 @@ export namespace MockVM {
   }
 
   /**
-    * Get contract result set when calling System.setContractRsult()
+    * Get contract result set when calling System.exit()
     * @returns { Uint8Array | null }
     * @example
     * ```ts
@@ -263,6 +268,20 @@ export namespace MockVM {
     const bytes = System.getBytes(METADATA_SPACE, 'contract_result');
 
     return bytes;
+  }
+
+  /**
+   * Get error message string after a VM error
+   * @returns  { Uint8Array | null }
+   * @example
+   * ```ts
+   * const errorMessage = MockVM.getErrorMessage();
+   * ```
+   */
+  export function getErrorMessage(): String | null {
+    const bytes = System.getBytes(METADATA_SPACE, 'error_message');
+
+    return StringBytes.bytesToString(bytes)
   }
 
   /**
@@ -283,8 +302,8 @@ export namespace MockVM {
     const bytes = System.getBytes(METADATA_SPACE, 'exit_code');
 
     if (bytes) {
-      const valueType =  Protobuf.decode<system_calls.exit_arguments>(bytes, system_calls.exit_arguments.decode);
-      return valueType.retval!.code;
+      const valueType = Protobuf.decode<value.value_type>(bytes, value.value_type.decode);
+      return valueType.int32_value;
     }
 
     return -1;
