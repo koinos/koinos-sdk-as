@@ -648,7 +648,7 @@ export namespace System {
    * ```
    */
   export function revert(message: string = "", code: i32 = 1): void {
-    exit(code >= error.error_code.reverted ? code : error.error_code.reverted, StringBytes.stringToBytes(message))
+    exit(code >= error.error_code.reversion ? code : error.error_code.reversion, StringBytes.stringToBytes(message))
   }
 
   /**

@@ -205,7 +205,6 @@ export namespace MockVM {
       authorityValueType.int32_value = auth.autorization_type;
 
       authoritiesListType.values.push(authorityValueType);
-
     }
 
     System.putObject(METADATA_SPACE, 'authority', authoritiesListType, value.list_type.encode);

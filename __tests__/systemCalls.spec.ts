@@ -201,7 +201,7 @@ describe('SystemCalls', () => {
       System.recoverPublicKey(Base64.decode('IHhJwlD7P-o6x7L38den1MnumUhnYmNhTZhIUQQhezvEMf7rx89NbIIioNCIQSk1PQYdQ9mOI4-rDYiwO2pLvM4='), System.hash(Crypto.multicodec.sha2_256, StringBytes.stringToBytes(message))!, -1);
     }).toThrow();
 
-    expect(MockVM.getExitCode()).toBe(error.error_code.invalid_dsa);
+    expect(MockVM.getExitCode()).toBe(error.error_code.unknown_dsa);
   });
 
   it('should verify a signature', () => {
