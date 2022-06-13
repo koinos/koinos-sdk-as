@@ -1454,27 +1454,27 @@ koinos-as-gen@0.4.8:
   dependencies:
     google-protobuf "^3.19.4"
 
-"koinos-mock-vm@https://github.com/koinos/koinos-mock-vm#testnet-4":
+"koinos-mock-vm@https://github.com/koinos/koinos-mock-vm#error-data":
   version "1.1.1"
-  resolved "https://github.com/koinos/koinos-mock-vm#4f5842db394f59ebe46a25afa5bb7b034d7ab997"
+  resolved "https://github.com/koinos/koinos-mock-vm#ef766ed999e2873d4d1caddcbc2ba4cc6cd38c4b"
   dependencies:
     "@noble/hashes" "^1.0.0"
     "@noble/secp256k1" "^1.5.5"
     chalk "4.1.2"
-    koinos-proto-js "https://github.com/koinos/koinos-proto-js#testnet-4"
+    koinos-proto-js "https://github.com/koinos/koinos-proto-js#master"
     multibase "^4.0.6"
     protobufjs "^6.11.2"
     somap "^0.5.14"
 
-"koinos-proto-as@https://github.com/koinos/koinos-proto-as#testnet-4":
-  version "0.4.2"
-  resolved "https://github.com/koinos/koinos-proto-as#5685a2a8475a72801f9de10dde94a91e1ae34a9c"
+"koinos-proto-as@https://github.com/koinos/koinos-proto-as#master":
+  version "0.4.3"
+  resolved "https://github.com/koinos/koinos-proto-as#44dcce88dcb2a94a185d5e4e4d1c9d98515d9fd1"
   dependencies:
     as-proto "^0.2.2"
 
-"koinos-proto-js@https://github.com/koinos/koinos-proto-js#testnet-4":
-  version "0.0.4"
-  resolved "https://github.com/koinos/koinos-proto-js#03023d63f2938a7721e2ba077a5b21e6ecf3de46"
+"koinos-proto-js@https://github.com/koinos/koinos-proto-js#master":
+  version "0.0.5"
+  resolved "https://github.com/koinos/koinos-proto-js#b98228192e1a363b876ecb59ad96cd0f4e168e72"
 
 levn@^0.4.1:
   version "0.4.1"
