@@ -85,7 +85,7 @@ export namespace SafeMath {
       } else {
         message = message != '' ? message : 'could not add';
       }
-      System.exit(1, StringBytes.stringToBytes(message));
+      System.revert(message);
     }
 
     return result.value;
@@ -162,7 +162,7 @@ export namespace SafeMath {
       } else {
         message = message != '' ? message : 'could not subtract';
       }
-      System.exit(1, StringBytes.stringToBytes(message));
+      System.revert(message);
     }
 
     return result.value;
@@ -262,7 +262,7 @@ export namespace SafeMath {
       } else {
         message = message != '' ? message : 'could not multiply';
       }
-      System.exit(1, StringBytes.stringToBytes(message));
+      System.revert(message);
     }
 
     return result.value;
@@ -346,7 +346,7 @@ export namespace SafeMath {
       } else {
         message = message != '' ? message : 'could not divide';
       }
-      System.exit(1, StringBytes.stringToBytes(message));
+      System.revert(message);
     }
 
     return result.value;
@@ -430,7 +430,7 @@ export namespace SafeMath {
       } else {
         message =message != '' ? message : 'could not calulate modulo';
       }
-      System.exit(1, StringBytes.stringToBytes(message));
+      System.revert(message);
     }
 
     return result.value;

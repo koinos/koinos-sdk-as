@@ -516,7 +516,7 @@ export namespace System {
 
   export class callReturn {
     code: i32;
-    value: Uint8Array;
+    res: chain.result;
   }
 
   /**
@@ -568,10 +568,9 @@ export namespace System {
     const returnBytes = new Uint32Array(1);
 
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.call, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, returnBytes.dataStart as u32);
-    checkErrorCode(retcode, readBuffer.slice(0, returnBytes[0]));
-    const result = Protobuf.decode<system_calls.call_result>(readBuffer, system_calls.call_result.decode, returnBytes[0]);
 
-    return {code: retcode, value: (result.value) ? result.value! : new Uint8Array(0)};
+    const result = Protobuf.decode<system_calls.call_result>(readBuffer, system_calls.call_result.decode, returnBytes[0]);
+    return {code: retcode, res: result.value ? result.value! : new chain.result()};
   }
 
   export class getArgumentsReturn {
@@ -626,10 +625,17 @@ export namespace System {
     * ```
     */
   export function exit(code: i32, value: Uint8Array | null = null): void {
-    let result = new chain.result();
-    result.code = code;
-    result.value = value;
-    const args = new system_calls.exit_arguments(result);
+    let args = new system_calls.exit_arguments();
+    args.code = code;
+
+    if ( value ) {
+      if (code == error.error_code.success) {
+        args.res = new chain.result( value );
+      } else {
+        args.res = new chain.result( null, new chain.error_data(StringBytes.bytesToString(value)));
+      }
+    }
+
     const encodedArgs = Protobuf.encode(args, system_calls.exit_arguments.encode);
     const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
     const returnBytes = new Uint32Array(1);
@@ -648,7 +654,16 @@ export namespace System {
    * ```
    */
   export function revert(message: string = "", code: i32 = 1): void {
-    exit(code >= error.error_code.reversion ? code : error.error_code.reversion, StringBytes.stringToBytes(message))
+    let args = new system_calls.exit_arguments();
+    args.res = new chain.result( null, new chain.error_data(message) );
+    args.code = code >= error.error_code.success ? code : error.error_code.reversion;
+
+    const encodedArgs = Protobuf.encode(args, system_calls.exit_arguments.encode);
+    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
+    const returnBytes = new Uint32Array(1);
+
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.exit, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, returnBytes.dataStart as u32);
+    checkErrorCode(retcode, readBuffer.slice(0, returnBytes[0]));
   }
 
   /**

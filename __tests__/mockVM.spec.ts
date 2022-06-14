@@ -114,11 +114,11 @@ describe('MockVM', () => {
     let callRes = System.call(mockAccount, 1, new Uint8Array(0));
 
     expect(callRes).not.toBeNull();
-    expect(Arrays.equal(callRes.value, mockAccount)).toBe(true);
+    expect(Arrays.equal(callRes.res.object, mockAccount)).toBe(true);
 
     callRes = System.call(mockAccount, 1, new Uint8Array(0));
     expect(callRes).not.toBeNull();
-    expect(Arrays.equal(callRes.value, mockAccount2)).toBe(true);
+    expect(Arrays.equal(callRes.res.object, mockAccount2)).toBe(true);
   });
 
   it('should reset the MockVM database', () => {
