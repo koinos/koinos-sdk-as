@@ -25,7 +25,7 @@
     "eslint": "^8.7.0",
     "koinos-abi-proto-gen": "^0.1.5",
     "koinos-mock-vm": "https://github.com/koinos/koinos-mock-vm#error-data",
-    "koinos-proto-as": "https://github.com/koinos/koinos-proto-as#master",
+    "koinos-proto-as": "0.4.3",
     "source-map-support": "^0.5.21",
     "typedoc": "^0.22.12",
     "typescript": "^4.5.5",

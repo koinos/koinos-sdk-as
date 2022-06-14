@@ -1466,9 +1466,10 @@ koinos-as-gen@0.4.8:
     protobufjs "^6.11.2"
     somap "^0.5.14"
 
-"koinos-proto-as@https://github.com/koinos/koinos-proto-as#master":
+koinos-proto-as@0.4.3:
   version "0.4.3"
-  resolved "https://github.com/koinos/koinos-proto-as#44dcce88dcb2a94a185d5e4e4d1c9d98515d9fd1"
+  resolved "https://registry.yarnpkg.com/koinos-proto-as/-/koinos-proto-as-0.4.3.tgz#a91553e893c9d2a730a8b443371d5a70d59adf8e"
+  integrity sha512-nqocQZGVX1acR/f6dwbzgtO5SzLQPMZDGPP4cntbkg+gTHUaUflYnSl1+jRvkh02JKvRF1CIf0eyXRRYP4iK8A==
   dependencies:
     as-proto "^0.2.2"
 
