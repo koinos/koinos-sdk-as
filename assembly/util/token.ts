@@ -1,5 +1,5 @@
 import { Protobuf, System } from "..";
-import { token } from "koinos-proto-as";
+import { chain, token, error } from "koinos-proto-as";
 
 enum entries {
   name_entry = 0x82a3537f,
@@ -146,11 +146,8 @@ export class Token {
    */
   transfer(from: Uint8Array, to: Uint8Array, amount: u64): bool {
     const args = new token.transfer_arguments(from, to, amount);
-
     const callRes = System.call(this._contractId, entries.transfer_entry, Protobuf.encode(args, token.transfer_arguments.encode));
-    System.require(callRes.code == 0, "failed to transfer token");
-    const res = Protobuf.decode<token.transfer_result>(callRes.res.object ? callRes.res.object! : new Uint8Array(0), token.transfer_result.decode);
-    return res.value;
+    return callRes.code == error.error_code.success;
   }
 
   /**
@@ -174,11 +171,8 @@ export class Token {
    */
   mint(to: Uint8Array, amount: u64): bool {
     const args = new token.mint_arguments(to, amount);
-
     const callRes = System.call(this._contractId, entries.mint_entry, Protobuf.encode(args, token.mint_arguments.encode));
-    System.require(callRes.code == 0, "failed to mint token");
-    const res = Protobuf.decode<token.mint_result>(callRes.res.object ? callRes.res.object! : new Uint8Array(0), token.mint_result.decode);
-    return res.value;
+    return callRes.code == error.error_code.success;
   }
 
   /**
@@ -202,10 +196,7 @@ export class Token {
    */
   burn(from: Uint8Array, amount: u64): bool {
     const args = new token.burn_arguments(from, amount);
-
     const callRes = System.call(this._contractId, entries.burn_entry, Protobuf.encode(args, token.burn_arguments.encode));
-    System.require(callRes.code == 0, "failed to retrieve token name");
-    const res = Protobuf.decode<token.burn_result>(callRes.res.object ? callRes.res.object! : new Uint8Array(0), token.burn_result.decode);
-    return res.value;
+    return callRes.code == error.error_code.success;
   }
 }
