@@ -93,10 +93,15 @@ export class Token {
    * ```
    */
   totalSupply(): u64 {
+    System.log('creating total supply arguments');
     const args = new token.total_supply_arguments();
 
+    System.log('calling call');
     const callRes = System.call(this._contractId, entries.total_supply_entry, Protobuf.encode(args, token.total_supply_arguments.encode));
+    System.log('callRes.code = ' + callRes.code.toString());
     System.require(callRes.code == 0, "failed to retrieve token supply");
+
+    System.log('deserializing totaly supply result');
     const res = Protobuf.decode<token.total_supply_result>(callRes.res.object as Uint8Array, token.total_supply_result.decode);
 
     return res.value;
