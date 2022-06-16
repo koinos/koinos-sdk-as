@@ -570,7 +570,7 @@ export namespace System {
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.call, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, returnBytes.dataStart as u32);
 
     const result = Protobuf.decode<system_calls.call_result>(readBuffer, system_calls.call_result.decode, returnBytes[0]);
-    return {code: retcode, res: result.value ? result.value! : new chain.result()};
+    return {code: retcode, res: result.value != null ? result.value! : new chain.result()};
   }
 
   export class getArgumentsReturn {
