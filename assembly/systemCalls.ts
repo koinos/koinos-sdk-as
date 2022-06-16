@@ -576,9 +576,7 @@ export namespace System {
     }
     else {
       const res = Protobuf.decode<system_calls.call_result>(readBuffer, system_calls.call_result.decode, returnBytes[0]);
-      if (res.value != null) {
-        result.object = res.value!.object;
-      }
+      result.object = res.value;
     }
 
     return {code: retcode, res: result};
