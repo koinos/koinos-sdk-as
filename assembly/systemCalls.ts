@@ -572,10 +572,18 @@ export namespace System {
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.call, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, returnBytes.dataStart as u32);
 
     System.log("decoding result");
-    const result = Protobuf.decode<system_calls.call_result>(readBuffer, system_calls.call_result.decode, returnBytes[0]);
+    let result = new chain.result();
+    if (retcode) {
+      const res = Protobuf.decode<chain.error_data>(readBuffer, chain.error_data.decode, returnBytes[0]);
+      result.error = res;
+    }
+    else {
+      const res = Protobuf.decode<system_calls.call_result>(readBuffer, system_calls.call_result.decode, returnBytes[0]);
+      result.object = res.value!.object;
+    }
 
     System.log("returning call result");
-    return {code: retcode, res: result.value != null ? result.value! : new chain.result()};
+    return {code: retcode, res: result};
   }
 
   export class getArgumentsReturn {
