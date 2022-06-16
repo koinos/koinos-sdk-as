@@ -571,12 +571,10 @@ export namespace System {
 
     let result = new chain.result();
     if (retcode) {
-      const res = Protobuf.decode<chain.error_data>(readBuffer, chain.error_data.decode, returnBytes[0]);
-      result.error = res;
+      result.error = Protobuf.decode<chain.error_data>(readBuffer, chain.error_data.decode, returnBytes[0]);
     }
     else {
-      const res = Protobuf.decode<system_calls.call_result>(readBuffer, system_calls.call_result.decode, returnBytes[0]);
-      result.object = res.value;
+      result.object = Protobuf.decode<system_calls.call_result>(readBuffer, system_calls.call_result.decode, returnBytes[0]).value;
     }
 
     return {code: retcode, res: result};
