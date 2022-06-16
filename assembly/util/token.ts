@@ -147,7 +147,7 @@ export class Token {
   transfer(from: Uint8Array, to: Uint8Array, amount: u64): bool {
     const args = new token.transfer_arguments(from, to, amount);
     const callRes = System.call(this._contractId, entries.transfer_entry, Protobuf.encode(args, token.transfer_arguments.encode));
-    return callRes.code == error.error_code.success;
+    return callRes.code == 0;
   }
 
   /**
@@ -172,7 +172,7 @@ export class Token {
   mint(to: Uint8Array, amount: u64): bool {
     const args = new token.mint_arguments(to, amount);
     const callRes = System.call(this._contractId, entries.mint_entry, Protobuf.encode(args, token.mint_arguments.encode));
-    return callRes.code == error.error_code.success;
+    return callRes.code == 0;
   }
 
   /**
@@ -197,6 +197,6 @@ export class Token {
   burn(from: Uint8Array, amount: u64): bool {
     const args = new token.burn_arguments(from, amount);
     const callRes = System.call(this._contractId, entries.burn_entry, Protobuf.encode(args, token.burn_arguments.encode));
-    return callRes.code == error.error_code.success;
+    return callRes.code == 0;
   }
 }
