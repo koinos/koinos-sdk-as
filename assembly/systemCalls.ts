@@ -562,14 +562,19 @@ export namespace System {
     * ```
     */
   export function call(contractId: Uint8Array, entryPoint: u32, contractArgs: Uint8Array): callReturn {
+    System.log("creating call arguments");
     const args = new system_calls.call_arguments(contractId, entryPoint, contractArgs);
     const encodedArgs = Protobuf.encode(args, system_calls.call_arguments.encode);
     const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
     const returnBytes = new Uint32Array(1);
 
+    System.log("calling invokeSystemCall");
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.call, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, returnBytes.dataStart as u32);
 
+    System.log("decoding result");
     const result = Protobuf.decode<system_calls.call_result>(readBuffer, system_calls.call_result.decode, returnBytes[0]);
+
+    System.log("returning call result");
     return {code: retcode, res: result.value != null ? result.value! : new chain.result()};
   }
 
