@@ -195,8 +195,11 @@ export class Token {
    * ```
    */
   burn(from: Uint8Array, amount: u64): bool {
+    System.log('creating burn arguments');
     const args = new token.burn_arguments(from, amount);
+    System.log('calling call');
     const callRes = System.call(this._contractId, entries.burn_entry, Protobuf.encode(args, token.burn_arguments.encode));
+    System.log('callRes.code = ' + callRes.code.toString())
     return callRes.code == 0;
   }
 }
