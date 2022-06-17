@@ -1454,28 +1454,27 @@ koinos-as-gen@0.4.8:
   dependencies:
     google-protobuf "^3.19.4"
 
-"koinos-mock-vm@https://github.com/koinos/koinos-mock-vm#error-data":
+"koinos-mock-vm@https://github.com/koinos/koinos-mock-vm#authority-custom-args":
   version "1.1.1"
-  resolved "https://github.com/koinos/koinos-mock-vm#ef766ed999e2873d4d1caddcbc2ba4cc6cd38c4b"
+  resolved "https://github.com/koinos/koinos-mock-vm#c7fe13e6e5df9fd214a1afd6a534d413f97a4bf4"
   dependencies:
     "@noble/hashes" "^1.0.0"
     "@noble/secp256k1" "^1.5.5"
     chalk "4.1.2"
-    koinos-proto-js "https://github.com/koinos/koinos-proto-js#master"
+    koinos-proto-js "https://github.com/koinos/koinos-proto-js#authority_custom_args"
     multibase "^4.0.6"
     protobufjs "^6.11.2"
     somap "^0.5.14"
 
-koinos-proto-as@0.4.6:
-  version "0.4.6"
-  resolved "https://registry.yarnpkg.com/koinos-proto-as/-/koinos-proto-as-0.4.6.tgz#8190b00b6f2630b0a4bde1b354eeafcc86ff3591"
-  integrity sha512-Pe1K/MBF8ItzgGEmDCVS5To4C+kq0j2Sil3HT34PMjcyJFgJKbSbJMdBc2sR15Zs8oETjexBbmZDc1L8lnQyEg==
+"koinos-proto-as@https://github.com/koinos/koinos-proto-as#authority_custom_args":
+  version "0.4.7"
+  resolved "https://github.com/koinos/koinos-proto-as#cfe5dd8199a67a0295aff08721102d78d6131e33"
   dependencies:
     as-proto "^0.2.2"
 
-"koinos-proto-js@https://github.com/koinos/koinos-proto-js#master":
-  version "0.0.5"
-  resolved "https://github.com/koinos/koinos-proto-js#b98228192e1a363b876ecb59ad96cd0f4e168e72"
+"koinos-proto-js@https://github.com/koinos/koinos-proto-js#authority_custom_args":
+  version "0.0.9"
+  resolved "https://github.com/koinos/koinos-proto-js#2dab45364acdab61fbfc79dc05a5c5636b34af28"
 
 levn@^0.4.1:
   version "0.4.1"

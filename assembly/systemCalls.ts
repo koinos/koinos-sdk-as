@@ -743,8 +743,8 @@ export namespace System {
     * System.checkAuthority(authority.authorization_type.transaction_application, Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe));
     * ```
     */
-  export function checkAuthority(type: authority.authorization_type, account: Uint8Array): bool {
-    const args = new system_calls.check_authority_arguments(type, account);
+  export function checkAuthority(type: authority.authorization_type, account: Uint8Array, data: Uint8Array | null = null ): bool {
+    const args = new system_calls.check_authority_arguments(type, account, data);
     const encodedArgs = Protobuf.encode(args, system_calls.check_authority_arguments.encode);
     const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
     const returnBytes = new Uint32Array(1);
