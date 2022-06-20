@@ -291,10 +291,10 @@ describe('SystemCalls', () => {
     const message = "my message";
 
     expect(() => {
-      System.exit(1, StringBytes.stringToBytes(message));
+      System.exit(2, StringBytes.stringToBytes(message));
     }).toThrow();
 
-    expect(MockVM.getExitCode()).toBe(1);
+    expect(MockVM.getExitCode()).toBe(2);
     expect(MockVM.getErrorMessage()).toBe(message);
 
     expect(() => {
@@ -302,6 +302,13 @@ describe('SystemCalls', () => {
     })
 
     expect(MockVM.getExitCode()).toBe(1);
+    expect(MockVM.getErrorMessage()).toBe(message);
+
+    expect(() => {
+      System.fail(message);
+    })
+
+    expect(MockVM.getExitCode()).toBe(-1);
     expect(MockVM.getErrorMessage()).toBe(message);
   });
 
