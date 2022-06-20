@@ -2,6 +2,7 @@ import { env } from "./env";
 import { Protobuf, Reader, Writer } from 'as-proto';
 import { system_calls, system_call_ids, chain, protocol, authority, value, error } from 'koinos-proto-as';
 import { StringBytes } from ".";
+import { Base58 } from "./util";
 
 export namespace System {
   export const DEFAULT_MAX_BUFFER_SIZE = 1024;
@@ -786,7 +787,7 @@ export namespace System {
     * ```
     */
   export function requireAuthority(type: authority.authorization_type, account: Uint8Array): void {
-    require(checkAuthority(type, account));
+    require(checkAuthority(type, account), "account '" + Base58.encode(account) + "' authorization failed", error.error_code.authorization_failure);
   }
 
   /**
