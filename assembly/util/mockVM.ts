@@ -210,6 +210,37 @@ export namespace MockVM {
     System.putObject(METADATA_SPACE, 'authority', authoritiesListType, value.list_type.encode);
   }
 
+   /**
+    * Set results that will be used when calling System.verifyVRFProof(...)
+    * @param { Uint8Array[] } verifyVRFProofResults The results are FIFO, so the first System.verifyVRFPRoof(...) used in your code will use the first result you set in callContractResults, the second System.callContract(...) will get the second result, etc...
+    * @example
+    * ```ts
+    MockVM.setVerifyVRFProofResults([false, true]);
+
+    let callRes = System.verifyVRFProof(pubKey, proof, hash, messgae);
+    if (callRes) {
+      // Will execute
+    }
+
+    let callRes = System.verifyVRFProof(pubKey, proof, hash, messgae);
+    if (callRes) {
+      // Will not execute
+    }
+    * ```
+    */
+    export function setVerifyVRFPRoofResults(verifyVRFProofResults: bool[]): void {
+      const verifyVRFProofResultListType = new value.list_type();
+
+      for (let index = 0; index < verifyVRFProofResults.length; index++) {
+        const callVerufyVRFProofValueType = new value.value_type();
+        callVerufyVRFProofValueType.bool_value = verifyVRFProofResults[index];
+
+        verifyVRFProofResultListType.values.push(callVerufyVRFProofValueType);
+      }
+
+      System.putObject(METADATA_SPACE, 'verify_vrf', verifyVRFProofResultListType, value.list_type.encode);
+    }
+
   /**
     * Set call contract results that will be used when calling System.callContract(...)
     * @param { Uint8Array[] } callContractResults The results are FIFO, so the first System.callContract(...) used in your code will use the first result you set in callContractResults, the second System.callContract(...) will get the second result, etc...
