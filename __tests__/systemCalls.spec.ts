@@ -288,21 +288,32 @@ describe('SystemCalls', () => {
 
     expect(MockVM.getExitCode()).toBe(0);
 
-    const message = "my message";
+    const messageA = "my message A";
 
     expect(() => {
-      System.exit(1, StringBytes.stringToBytes(message));
+      System.exit(-2, StringBytes.stringToBytes(messageA));
+    }).toThrow();
+
+    expect(MockVM.getExitCode()).toBe(-2);
+    expect(MockVM.getErrorMessage()).toBe(messageA);
+
+    const messageB = "my message B";
+
+    expect(() => {
+      System.fail(messageB);
+    }).toThrow();
+
+    expect(MockVM.getExitCode()).toBe(-1);
+    expect(MockVM.getErrorMessage()).toBe(messageB);
+
+    const messageC = "my message C";
+
+    expect(() => {
+      System.revert(messageC);
     }).toThrow();
 
     expect(MockVM.getExitCode()).toBe(1);
-    expect(MockVM.getErrorMessage()).toBe(message);
-
-    expect(() => {
-      System.revert(message);
-    })
-
-    expect(MockVM.getExitCode()).toBe(1);
-    expect(MockVM.getErrorMessage()).toBe(message);
+    expect(MockVM.getErrorMessage()).toBe(messageC);
   });
 
   it('should put and get bytes', () => {

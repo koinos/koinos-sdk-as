@@ -24,7 +24,7 @@
     "assemblyscript": "^0.19.22",
     "eslint": "^8.7.0",
     "koinos-abi-proto-gen": "^0.1.5",
-    "koinos-mock-vm": "https://github.com/koinos/koinos-mock-vm#error-data",
+    "koinos-mock-vm": "https://github.com/koinos/koinos-mock-vm#testnet-4",
     "koinos-proto-as": "0.4.6",
     "source-map-support": "^0.5.21",
     "typedoc": "^0.22.12",
