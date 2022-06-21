@@ -1,5 +1,5 @@
 import { Arrays, Base58, MockVM, StringBytes, System, Crypto, Base64 } from "../assembly";
-import { chain, protocol, authority, error } from 'koinos-proto-as';
+import { chain, protocol, authority, error, system_calls } from 'koinos-proto-as';
 
 import * as TestObject from "./test";
 
@@ -224,7 +224,10 @@ describe('SystemCalls', () => {
     const callRes1 = mockAccount;
     const callRes2 = mockAccount2;
 
-    MockVM.setCallContractResults([callRes1, callRes2]);
+    MockVM.setCallContractResults([
+      new system_calls.exit_arguments(0, new chain.result(callRes1)),
+      new system_calls.exit_arguments(0, new chain.result(callRes2))
+    ]);
 
 
     let callRes = System.call(mockAccount, 1, new Uint8Array(0));

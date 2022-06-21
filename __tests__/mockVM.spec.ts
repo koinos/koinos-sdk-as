@@ -1,5 +1,5 @@
 import { Arrays, Base58, MockVM, StringBytes, System } from "../assembly";
-import { chain, protocol, authority } from 'koinos-proto-as';
+import { chain, protocol, authority, system_calls } from 'koinos-proto-as';
 
 
 const mockAccount = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
@@ -109,7 +109,10 @@ describe('MockVM', () => {
     const callRes1 = mockAccount;
     const callRes2 = mockAccount2;
 
-    MockVM.setCallContractResults([callRes1, callRes2]);
+    MockVM.setCallContractResults([
+      new system_calls.exit_arguments(0, new chain.result(callRes1)),
+      new system_calls.exit_arguments(0, new chain.result(callRes2))
+    ]);
 
     let callRes = System.call(mockAccount, 1, new Uint8Array(0));
 

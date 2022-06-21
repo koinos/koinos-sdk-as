@@ -233,14 +233,12 @@ export namespace MockVM {
     }
     * ```
     */
-  export function setCallContractResults(callContractResults: Uint8Array[]): void {
+  export function setCallContractResults(callContractResults: system_calls.exit_arguments[]): void {
     const callContractResultListType = new value.list_type();
 
     for (let index = 0; index < callContractResults.length; index++) {
-      const callContractRes = callContractResults[index];
-
       const callContractResultValueType = new value.value_type();
-      callContractResultValueType.bytes_value = callContractRes;
+      callContractResultValueType.bytes_value = Protobuf.encode(callContractResults[index], system_calls.exit_arguments.encode);
 
       callContractResultListType.values.push(callContractResultValueType);
 
