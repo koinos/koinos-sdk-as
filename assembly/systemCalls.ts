@@ -2,6 +2,7 @@ import { env } from "./env";
 import { Protobuf, Reader, Writer } from 'as-proto';
 import { system_calls, system_call_ids, chain, protocol, authority, value, error } from 'koinos-proto-as';
 import { StringBytes } from ".";
+import { Base58 } from "./util";
 
 export namespace System {
   export const DEFAULT_MAX_BUFFER_SIZE = 1024;
@@ -635,11 +636,11 @@ export namespace System {
     let args = new system_calls.exit_arguments();
     args.code = code;
 
-    if ( value ) {
+    if (value) {
       if (code == error.error_code.success) {
-        args.res = new chain.result( value );
+        args.res = new chain.result(value);
       } else {
-        args.res = new chain.result( null, new chain.error_data(StringBytes.bytesToString(value)));
+        args.res = new chain.result(null, new chain.error_data(StringBytes.bytesToString(value)));
       }
     }
 
@@ -647,14 +648,34 @@ export namespace System {
     const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
     const returnBytes = new Uint32Array(1);
 
-    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.exit, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, returnBytes.dataStart as u32);
-    checkErrorCode(retcode, readBuffer.slice(0, returnBytes[0]));
+    env.invokeSystemCall(system_call_ids.system_call_id.exit, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, returnBytes.dataStart as u32);
+  }
+
+  /**
+   * Fail the transaction in progress
+   * @param message Optional failure message
+   * @param code Optional error code, must be < 0, else code -1 is used (failure exit code)
+   * ```ts
+   * if (!System.checkAuthority(authority.authorization_type.transaction_application, Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe)))
+   *   System.fail("contract is not authorized");
+   * ```
+   */
+  export function fail(message: string = "", code: i32 = -1): void {
+    let args = new system_calls.exit_arguments();
+    args.res = new chain.result(null, new chain.error_data(message));
+    args.code = code < error.error_code.success ? code : error.error_code.failure;
+
+    const encodedArgs = Protobuf.encode(args, system_calls.exit_arguments.encode);
+    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
+    const returnBytes = new Uint32Array(1);
+
+    env.invokeSystemCall(system_call_ids.system_call_id.exit, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, returnBytes.dataStart as u32);
   }
 
   /**
    * Revert the transaction in progress
    * @param message Optional reversion message
-   * @param code Optional error code, must be >= 1, else code 1 is used (reverted exit code)
+   * @param code Optional error code, must be > 0, else code 1 is used (reverted exit code)
    * ```ts
    * if (!System.checkAuthority(authority.authorization_type.transaction_application, Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe)))
    *   System.revert("contract is not authorized");
@@ -662,15 +683,14 @@ export namespace System {
    */
   export function revert(message: string = "", code: i32 = 1): void {
     let args = new system_calls.exit_arguments();
-    args.res = new chain.result( null, new chain.error_data(message) );
-    args.code = code >= error.error_code.success ? code : error.error_code.reversion;
+    args.res = new chain.result(null, new chain.error_data(message));
+    args.code = code > error.error_code.success ? code : error.error_code.reversion;
 
     const encodedArgs = Protobuf.encode(args, system_calls.exit_arguments.encode);
     const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
     const returnBytes = new Uint32Array(1);
 
-    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.exit, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, returnBytes.dataStart as u32);
-    checkErrorCode(retcode, readBuffer.slice(0, returnBytes[0]));
+    env.invokeSystemCall(system_call_ids.system_call_id.exit, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, returnBytes.dataStart as u32);
   }
 
   /**
@@ -767,7 +787,7 @@ export namespace System {
     * ```
     */
   export function requireAuthority(type: authority.authorization_type, account: Uint8Array): void {
-    require(checkAuthority(type, account));
+    require(checkAuthority(type, account), "account '" + Base58.encode(account) + "' authorization failed", error.error_code.authorization_failure);
   }
 
   /**
