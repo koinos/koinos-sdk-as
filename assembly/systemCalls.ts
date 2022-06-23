@@ -1,6 +1,6 @@
 import { env } from "./env";
 import { Protobuf, Reader, Writer } from 'as-proto';
-import { system_calls, system_call_ids, chain, protocol, authority, value, error } from 'koinos-proto-as';
+import { system_calls, system_call_ids, chain, protocol, authority, value, error, resources } from 'koinos-proto-as';
 import { StringBytes } from ".";
 import { Base58 } from "./util";
 
@@ -507,6 +507,27 @@ export namespace System {
     const returnBytes = new Uint32Array(1);
 
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.verify_signature, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, returnBytes.dataStart as u32);
+    checkErrorCode(retcode, readBuffer.slice(0, returnBytes[0]));
+    const result = Protobuf.decode<system_calls.verify_signature_result>(readBuffer, system_calls.verify_signature_result.decode, returnBytes[0]);
+
+    return result.value;
+  }
+
+  /**
+   * Verifies a VRF proof
+   * @param publicKey public key that generated the proof
+   * @param proof the VRF proof itself
+   * @param hash the hash of the proof
+   * @param message the original message input
+   * @param type type of signature
+   */
+  export function verifyVRFProof(publicKey: Uint8Array, proof: Uint8Array, hash: Uint8Array, message: Uint8Array, type: chain.dsa = chain.dsa.ecdsa_secp256k1): bool {
+    const args = new system_calls.verify_vrf_proof_arguments(type, publicKey, proof, hash, message );
+    const encodedArgs = Protobuf.encode(args, system_calls.verify_vrf_proof_arguments.encode);
+    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
+    const returnBytes = new Uint32Array(1);
+
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.verify_vrf_proof, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, returnBytes.dataStart as u32);
     checkErrorCode(retcode, readBuffer.slice(0, returnBytes[0]));
     const result = Protobuf.decode<system_calls.verify_signature_result>(readBuffer, system_calls.verify_signature_result.decode, returnBytes[0]);
 
