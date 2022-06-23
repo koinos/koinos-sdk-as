@@ -195,4 +195,11 @@ describe('MockVM', () => {
 
     expect(MockVM.getErrorMessage()).toBe(message)
   });
+
+  it("should set verify vrf proof results", () => {
+    MockVM.setVerifyVRFPRoofResults([false, true]);
+
+    expect(System.verifyVRFProof(new Uint8Array(0), new Uint8Array(0), new Uint8Array(0), new Uint8Array(0))).toBe(false);
+    expect(System.verifyVRFProof(new Uint8Array(0), new Uint8Array(0), new Uint8Array(0), new Uint8Array(0))).toBe(true);
+  });
 });
