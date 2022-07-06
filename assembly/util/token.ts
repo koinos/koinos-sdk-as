@@ -117,7 +117,7 @@ export class Token {
     const args = new token.balance_of_arguments(owner);
 
     const callRes = System.call(this._contractId, entries.balance_of_entry, Protobuf.encode(args, token.balance_of_arguments.encode));
-    System.require(callRes.code == 0, "failed to retrieve token balancce");
+    System.require(callRes.code == 0, "failed to retrieve token balance");
     const res = Protobuf.decode<token.balance_of_result>(callRes.res.object as Uint8Array, token.balance_of_result.decode);
 
     return res.value;
