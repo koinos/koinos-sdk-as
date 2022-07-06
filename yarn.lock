@@ -385,11 +385,6 @@
     prettier "^2.5.0"
     ts-poet "^4.9.0"
 
-"@roaminroe/as-proto@^0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@roaminroe/as-proto/-/as-proto-0.2.3.tgz#931ff8f805d1ba4726037465d46fb0d9ac5a4f04"
-  integrity sha512-x+fDDY5fvfd1VHqJnD6ITh88m913uDuKQPCTnwi6TFwbCRIqmC9lfIst/pmPFx96rNVlNp8UBLXFKgZg9l6rYA==
-
 "@roaminroe/protoc@^2.4.0":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@roaminroe/protoc/-/protoc-2.4.0.tgz#9f50b727af5bdf7a06e20ae38a2f9c80ef24a2d0"
@@ -603,6 +598,11 @@ as-bignum@^0.2.18:
   version "0.2.18"
   resolved "https://registry.yarnpkg.com/as-bignum/-/as-bignum-0.2.18.tgz#61ed4dd07d4a62107bde227fdb4370190217bf0b"
   integrity sha512-5LODrOr7wvS643oh7PHfyRtbBO9vCcU69vNNvrqh5yovrApM9nRHDeT5XcqnaSI8TqK9ZhN12qhZnq4rdIGcwQ==
+
+"as-proto@npm:@roaminroe/as-proto":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@roaminroe/as-proto/-/as-proto-0.2.3.tgz#931ff8f805d1ba4726037465d46fb0d9ac5a4f04"
+  integrity sha512-x+fDDY5fvfd1VHqJnD6ITh88m913uDuKQPCTnwi6TFwbCRIqmC9lfIst/pmPFx96rNVlNp8UBLXFKgZg9l6rYA==
 
 asap@^2.0.0:
   version "2.0.6"
@@ -1471,12 +1471,12 @@ koinos-as-gen@0.4.8:
     protobufjs "^6.11.2"
     somap "^0.5.14"
 
-koinos-proto-as@^0.4.14:
-  version "0.4.14"
-  resolved "https://registry.yarnpkg.com/koinos-proto-as/-/koinos-proto-as-0.4.14.tgz#37ecee78e549a213fcb1ba40de8ffa98085075af"
-  integrity sha512-4Smd9uxd+lTDVoa4Oy8oT7N7cUlX6iusDfGhLB3xfaB/7ZFQ3nDuXh58f0e1Z/D635EBEH15StO92CJZ98Cjrw==
+koinos-proto-as@^0.4.15:
+  version "0.4.15"
+  resolved "https://registry.yarnpkg.com/koinos-proto-as/-/koinos-proto-as-0.4.15.tgz#e7209906d026be176785f7793cb8f19d2a75bc1d"
+  integrity sha512-hvGjmazMIy7jlmctgjxmvYpAoS5xmIeeH8Y+9b5Q4lKnpTFWD/v/TJPZky2l/z1tYSEqKDftO2y60pBbMJ7sQA==
   dependencies:
-    "@roaminroe/as-proto" "^0.2.3"
+    as-proto "npm:@roaminroe/as-proto"
 
 koinos-proto-js@^0.0.10:
   version "0.0.10"

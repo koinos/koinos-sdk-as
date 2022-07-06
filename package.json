@@ -8,8 +8,8 @@
   "dependencies": {
     "as-bignum": "^0.2.18",
     "koinos-as-gen": "0.4.8",
-    "koinos-proto-as": "^0.4.14",
-    "koinos-mock-vm": "https://github.com/koinos/koinos-mock-vm#testnet-4"
+    "koinos-mock-vm": "https://github.com/koinos/koinos-mock-vm#testnet-4",
+    "koinos-proto-as": "^0.4.15"
   },
   "files": [
     "assembly"
