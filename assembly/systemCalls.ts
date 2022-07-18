@@ -6,8 +6,8 @@ import { Base58 } from "./util";
 
 export namespace System {
   export const DEFAULT_MAX_BUFFER_SIZE = 1024;
-  export let MAX_BUFFER_SIZE = DEFAULT_MAX_BUFFER_SIZE;
-  export let SYSTEM_CALL_BUFFER = new Uint8Array(MAX_BUFFER_SIZE)
+  let MAX_BUFFER_SIZE = DEFAULT_MAX_BUFFER_SIZE;
+  let SYSTEM_CALL_BUFFER = new Uint8Array(MAX_BUFFER_SIZE)
   let RETURN_BYTES = new Uint32Array(1)
 
   let ERROR_MESSAGE = ""
@@ -15,6 +15,15 @@ export namespace System {
   function checkErrorCode(code: i32, message: Uint8Array): void {
     if (code != error.error_code.success)
       exit(code, message)
+  }
+
+  export function setSystemBufferSize(size: u32): void {
+    MAX_BUFFER_SIZE = size;
+    SYSTEM_CALL_BUFFER = new Uint8Array(MAX_BUFFER_SIZE);
+  }
+
+  export function getSystemBufferSize(): u32 {
+    return MAX_BUFFER_SIZE;
   }
 
   // General Blockchain Management
