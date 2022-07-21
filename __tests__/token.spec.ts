@@ -1,5 +1,6 @@
 import { Base58, MockVM, Protobuf, StringBytes, Token } from "../assembly";
-import * as token from '../assembly/koinos-proto-as/koinos/contracts/token/token';
+import { token } from 'koinos-proto-as';
+
 
 const mockTokenContractIdAccount = Base58.decode('1DQzuCcTKacbs9GGScFTU1Hc8BsyARTPqe');
 const mockAccount1 = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
@@ -98,5 +99,25 @@ describe('token', () => {
     mint = tkn.mint(mockAccount1, 76);
 
     expect(mint).toBe(mintResult);
+  });
+
+  it('should/not burn a token', () => {
+    let burnResult = true;
+    let burnRes = new token.burn_result(burnResult);
+    MockVM.setCallContractResults([Protobuf.encode(burnRes, token.burn_result.encode)]);
+
+    const tkn = new Token(mockTokenContractIdAccount);
+    let burn = tkn.burn(mockAccount1, 167);
+
+    expect(burn).toBe(burnResult);
+
+    burnResult = false;
+    burnRes.value = burnResult;
+
+    MockVM.setCallContractResults([Protobuf.encode(burnRes, token.burn_result.encode)]);
+
+    burn = tkn.burn(mockAccount1, 76);
+
+    expect(burn).toBe(burnResult);
   });
 });

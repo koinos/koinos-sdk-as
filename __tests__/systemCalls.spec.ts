@@ -1,7 +1,6 @@
 import { Arrays, Base58, MockVM, StringBytes, System, Crypto, Base64 } from "../assembly";
-import * as chain from '../assembly/koinos-proto-as/koinos/chain/chain';
-import * as protocol from '../assembly/koinos-proto-as/koinos/protocol/protocol';
-import * as authority from '../assembly/koinos-proto-as/koinos/chain/authority';
+import { chain, protocol, authority } from 'koinos-proto-as';
+
 import * as TestObject from "./test";
 
 const mockAccount = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
@@ -85,9 +84,9 @@ describe('SystemCalls', () => {
 
     MockVM.setAuthorities([auth1, auth2, auth3]);
 
-    // the System.requireAuthority that will fail will revert the database's VM, so we need to begin a transaction
+    // the System.requireAuthority that will fail will revert the database's VM, so we need to commit the transaction
     // this will backup the database
-    MockVM.beginTransaction();
+    MockVM.commitTransaction();
 
     expect(() => {
       System.requireAuthority(authority.authorization_type.contract_call, mockAccount);

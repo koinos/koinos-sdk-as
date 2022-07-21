@@ -158,8 +158,8 @@ describe('SafeMath', () => {
       }).toThrow();
 
       const logs = MockVM.getLogs();
-      expect(logs[0]).toBe('could not add 340282366920938463463374607431768211455 to 1');
-      expect(logs[1]).toBe('could not add 1 to 340282366920938463463374607431768211455');
+      expect(logs[0]).toBe('could not add');
+      expect(logs[1]).toBe('could not add');
     });
 
     it('adds correctly if it does not overflow and the result is positive', () => {
@@ -231,9 +231,16 @@ describe('SafeMath', () => {
         SafeMath.add(b, a, 'my message1');
       }).toThrow();
 
+      expect(() => {
+        let a: u128 = u128.Max;
+        let b: u128 = u128.One;
+        SafeMath.add(b, a, 'my message1');
+      }).toThrow();
+
       const logs = MockVM.getLogs();
       expect(logs[0]).toBe('my message');
       expect(logs[1]).toBe('my message1');
+      expect(logs[2]).toBe('my message1');
     });
   });
 
@@ -341,7 +348,7 @@ describe('SafeMath', () => {
       }).toThrow();
 
       const logs = MockVM.getLogs();
-      expect(logs[0]).toBe('could not subtract 5678 from 1234');
+      expect(logs[0]).toBe('could not subtract');
     });
 
     it('subtracts correctly if it does not overflow and the result is positive', () => {
@@ -387,8 +394,15 @@ describe('SafeMath', () => {
         SafeMath.sub(a, b, 'my message');
       }).toThrow();
 
+      expect(() => {
+        let a: u128 = u128.Min;
+        let b: u128 = u128.One;
+        SafeMath.sub(a, b, 'my message');
+      }).toThrow();
+
       const logs = MockVM.getLogs();
       expect(logs[0]).toBe('my message');
+      expect(logs[1]).toBe('my message');
     });
   });
 
@@ -615,8 +629,8 @@ describe('SafeMath', () => {
       }).toThrow();
 
       const logs = MockVM.getLogs();
-      expect(logs[0]).toBe('could not multiply 340282366920938463463374607431768211455 by 2');
-      expect(logs[1]).toBe('could not multiply 2 by 340282366920938463463374607431768211455');
+      expect(logs[0]).toBe('could not multiply');
+      expect(logs[1]).toBe('could not multiply');
     });
 
     it('reverts on multiplication overflow', () => {
@@ -853,7 +867,7 @@ describe('SafeMath', () => {
       }).toThrow();
 
       const logs = MockVM.getLogs();
-      expect(logs[0]).toBe('could not divide 5678 by 0');
+      expect(logs[0]).toBe('could not divide');
     });
 
     it('reverts on division by zero with a custom message', () => {
@@ -863,8 +877,15 @@ describe('SafeMath', () => {
         SafeMath.div(a, b, 'my message');
       }).toThrow();
 
+      expect(() => {
+        let a: u128 = u128.Min;
+        let b: u128 = u128.Zero;
+        SafeMath.div(a, b, 'my message');
+      }).toThrow();
+
       const logs = MockVM.getLogs();
       expect(logs[0]).toBe('my message');
+      expect(logs[1]).toBe('my message');
     });
   });
 
@@ -1125,7 +1146,7 @@ describe('SafeMath', () => {
       }).toThrow();
 
       const logs = MockVM.getLogs();
-      expect(logs[0]).toBe('could not calulate 5678 modulo 0');
+      expect(logs[0]).toBe('could not calulate modulo');
     });
 
     it('reverts with a 0 divisor with a custom message', () => {

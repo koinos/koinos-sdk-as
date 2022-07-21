@@ -1,5 +1,5 @@
 import { System } from '../systemCalls';
-import { object_space } from '../koinos-proto-as/koinos/chain/chain';
+import { chain } from 'koinos-proto-as';
 import { Protobuf, Reader, Writer } from 'as-proto';
 import { StringBytes } from './stringBytes';
 
@@ -10,7 +10,7 @@ export namespace Space {
   }
 
   export class Space<TKey, TValue> {
-    private space: object_space;
+    private space: chain.object_space;
     private valueDecoder: (reader: Reader, length: i32) => TValue;
     private valueEncoder: (message: TValue, writer: Writer) => void;
 
@@ -34,7 +34,7 @@ export namespace Space {
       valueDecoder: (reader: Reader, length: i32) => TValue,
       valueEncoder: (message: TValue, writer: Writer) => void,
       system: bool = false) {
-      this.space = new object_space(system, contractId, spaceId);
+      this.space = new chain.object_space(system, contractId, spaceId);
       this.valueDecoder = valueDecoder;
       this.valueEncoder = valueEncoder;
     }
@@ -115,6 +115,92 @@ export namespace Space {
     }
 
     /**
+    * Get many keys from the space
+    * @param offsetKey key used as the offset
+    * @param limit number of keys to return
+    * @param direction direction of the get, Ascending or Descending
+    * @returns an array with the keys retrieved
+    * @example
+    * ```ts
+    * const keys = Objects.getManyKeys('key1', 10, Space.Direction.Descending);
+    * 
+    * for (let index = 0; index < keys.length; index++) {
+    *   const key = keys[index];
+    * } 
+    * ```
+    */
+    getManyKeys(offsetKey: TKey, limit: i32 = i32.MAX_VALUE, direction: Direction = Direction.Ascending): TKey[] {
+      const result: TKey[] = [];
+
+      let key: Uint8Array;
+      if (offsetKey instanceof Uint8Array) {
+        key = offsetKey;
+      } else if (typeof offsetKey == 'string') {
+        key = StringBytes.stringToBytes(offsetKey);
+      }
+
+      let done = false;
+      do {
+        // @ts-ignore key is always initialized when reaching this code
+        const obj = direction == Direction.Ascending ? System.getNextObject<Uint8Array, TValue>(this.space, key, this.valueDecoder) : System.getPrevObject<Uint8Array, TValue>(this.space, key, this.valueDecoder);
+        if (obj) {
+          key = obj.key!;
+          if (offsetKey instanceof Uint8Array) {
+            // @ts-ignore key here is a Uint8Array
+            result.push(key);
+          } else if (typeof offsetKey == 'string') {
+            // @ts-ignore key here is a string
+            result.push(StringBytes.bytesToString(key)!);
+          }
+        }
+
+        done = obj == null || result.length >= limit;
+      } while (!done);
+
+      return result;
+    }
+
+    /**
+    * Get many values from the space
+    * @param offsetKey key used as the offset
+    * @param limit number of values to return
+    * @param direction direction of the get, Ascending or Descending
+    * @returns an array with the values retrieved
+    * @example
+    * ```ts
+    * const values = Objects.getManyValues('key1', 10, Space.Direction.Descending);
+    * 
+    * for (let index = 0; index < values.length; index++) {
+    *   const values = values[index];
+    * } 
+    * ```
+    */
+    getManyValues(offsetKey: TKey, limit: i32 = i32.MAX_VALUE, direction: Direction = Direction.Ascending): TValue[] {
+      const result: TValue[] = [];
+
+      let key: Uint8Array;
+      if (offsetKey instanceof Uint8Array) {
+        key = offsetKey;
+      } else if (typeof offsetKey == 'string') {
+        key = StringBytes.stringToBytes(offsetKey);
+      }
+
+      let done = false;
+      do {
+        // @ts-ignore key is always initialized when reaching this code
+        const obj = direction == Direction.Ascending ? System.getNextObject<Uint8Array, TValue>(this.space, key, this.valueDecoder) : System.getPrevObject<Uint8Array, TValue>(this.space, key, this.valueDecoder);
+        if (obj) {
+          result.push(obj.value);
+          key = obj.key!;
+        }
+
+        done = obj == null || result.length >= limit;
+      } while (!done);
+
+      return result;
+    }
+
+    /**
     * Get the next object from the space
     * @param key key to get next
     * @returns a System.ProtoDatabaseObject if exists, null otherwise
@@ -180,6 +266,7 @@ export namespace Space {
   }
 
   export class SpaceProtoKey<TKey, TValue> extends Space<Uint8Array, TValue> {
+    private keyDecoder: (reader: Reader, length: i32) => TKey;
     private keyEncoder: (message: TKey, writer: Writer) => void;
 
     /**
@@ -200,11 +287,13 @@ export namespace Space {
     constructor(
       contractId: Uint8Array,
       spaceId: u32,
+      keyDecoder: (reader: Reader, length: i32) => TKey,
       keyEncoder: (message: TKey, writer: Writer) => void,
       valueDecoder: (reader: Reader, length: i32) => TValue,
       valueEncoder: (message: TValue, writer: Writer) => void,
       system: bool = false) {
       super(contractId, spaceId, valueDecoder, valueEncoder, system);
+      this.keyDecoder = keyDecoder;
       this.keyEncoder = keyEncoder;
     }
 
@@ -220,6 +309,7 @@ export namespace Space {
     * }
     * ```
     */
+    // @ts-ignore valid in AS
     has(key: TKey): boolean {
       const finalKey = Protobuf.encode(key, this.keyEncoder);
       const object = super.get(finalKey);
@@ -240,6 +330,7 @@ export namespace Space {
     * }
     * ```
     */
+    // @ts-ignore valid in AS
     get(key: TKey): TValue | null {
       const finalKey = Protobuf.encode(key, this.keyEncoder);
       return super.get(finalKey);
@@ -253,7 +344,7 @@ export namespace Space {
     * @returns an array with the objects retrieved
     * @example
     * ```ts
-    * const objs = Objects.getMany('key1', 10, Space.Direction.Descending);
+    * const objs = Objects.getManyObj(new test_key(1), 10, Space.Direction.Descending);
     * 
     * for (let index = 0; index < objs.length; index++) {
     *   const obj = objs[index];
@@ -263,6 +354,61 @@ export namespace Space {
     getManyObj(offsetKey: TKey, limit: i32 = i32.MAX_VALUE, direction: Direction = Direction.Ascending): System.ProtoDatabaseObject<TValue>[] {
       const finalKey = Protobuf.encode(offsetKey, this.keyEncoder);
       return super.getMany(finalKey, limit, direction);
+    }
+
+    /**
+    * Get many values from the space
+    * @param offsetKey key used as the offset
+    * @param limit number of objects to return
+    * @param direction direction of the get, Ascending or Descending
+    * @returns an array with the objects retrieved
+    * @example
+    * ```ts
+    * const values = Objects.getManyObjValues(new test_key(1), 10, Space.Direction.Descending);
+    * 
+    * for (let index = 0; index < values.length; index++) {
+    *   const value = values[index];
+    * } 
+    * ```
+    */
+    getManyObjValues(offsetKey: TKey, limit: i32 = i32.MAX_VALUE, direction: Direction = Direction.Ascending): TValue[] {
+      const finalKey = Protobuf.encode(offsetKey, this.keyEncoder);
+      return super.getManyValues(finalKey, limit, direction);
+    }
+
+    /**
+    * Get many keys from the space
+    * @param offsetKey key used as the offset
+    * @param limit number of keys to return
+    * @param direction direction of the get, Ascending or Descending
+    * @returns an array with the keys retrieved
+    * @example
+    * ```ts
+    * const keys = Objects.getManyObjKeys(new test_key(1), 10, Space.Direction.Descending);
+    * 
+    * for (let index = 0; index < keys.length; index++) {
+    *   const key = keys[index];
+    * } 
+    * ```
+    */
+    getManyObjKeys(offsetKey: TKey, limit: i32 = i32.MAX_VALUE, direction: Direction = Direction.Ascending): TKey[] {
+      const result: TKey[] = [];
+
+      let key = Protobuf.encode(offsetKey, this.keyEncoder);
+
+      let done = false;
+      do {
+        // @ts-ignore key is always initialized when reaching this code
+        const obj = direction == Direction.Ascending ? System.getNextObject<Uint8Array, TValue>(this.space, key, this.valueDecoder) : System.getPrevObject<Uint8Array, TValue>(this.space, key, this.valueDecoder);
+        if (obj) {
+          key = obj.key!;
+          result.push(Protobuf.decode(key, this.keyDecoder));
+        }
+
+        done = obj == null || result.length >= limit;
+      } while (!done);
+
+      return result;
     }
 
     /**
@@ -279,6 +425,7 @@ export namespace Space {
     * }
     * ```
     */
+    // @ts-ignore valid in AS
     getNext(key: TKey): System.ProtoDatabaseObject<TValue> | null {
       const finalKey = Protobuf.encode(key, this.keyEncoder);
       return super.getNext(finalKey);
@@ -298,6 +445,7 @@ export namespace Space {
     * }
     * ```
     */
+    // @ts-ignore valid in AS
     getPrev(key: TKey): System.ProtoDatabaseObject<TValue> | null {
       const finalKey = Protobuf.encode(key, this.keyEncoder);
       return super.getPrev(finalKey);
@@ -315,6 +463,7 @@ export namespace Space {
     * System.log(nbBytesWritten.toString());
     * ```
     */
+    // @ts-ignore valid in AS
     put(key: TKey, object: TValue): i32 {
       const finalKey = Protobuf.encode(key, this.keyEncoder);
       return super.put(finalKey, object);
@@ -328,6 +477,7 @@ export namespace Space {
     * Objects.remove(new test_key(1));
     * ```
     */
+    // @ts-ignore valid in AS
     remove(key: TKey): void {
       const finalKey = Protobuf.encode(key, this.keyEncoder);
       super.remove(finalKey);

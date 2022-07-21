@@ -1,10 +1,7 @@
 import { Protobuf } from "as-proto";
 import { System } from "../systemCalls";
-import * as authority from "../koinos-proto-as/koinos/chain/authority";
-import * as chain from "../koinos-proto-as/koinos/chain/chain";
-import * as system_calls from "../koinos-proto-as/koinos/chain/system_calls";
-import * as protocol from "../koinos-proto-as/koinos/protocol/protocol";
-import * as value from "../koinos-proto-as/koinos/chain/value";
+import { system_calls, chain, protocol, authority, value } from 'koinos-proto-as';
+
 
 export namespace MockVM {
   export const METADATA_SPACE = new chain.object_space(true, null, 0);
@@ -394,18 +391,7 @@ export namespace MockVM {
   }
 
   /**
-    * Backup the database so that it can be rolledback to the backedup state if the transaction reverts
-    * @example
-    * ```ts
-    * MockVM.beginTransaction();
-    * ```
-    */
-  export function beginTransaction(): void {
-    System.putBytes(METADATA_SPACE, 'begin_transaction', new Uint8Array(0));
-  }
-
-  /**
-    * Rrestore the backup made via MockVM.beginTransaction()
+    * Rrestore the backup made via MockVM.commitTransaction()
     * @example
     * ```ts
     * MockVM.rollbackTransaction();
@@ -416,7 +402,7 @@ export namespace MockVM {
   }
 
   /**
-    * Clear the backup made via MockVM.beginTransaction() (hence make it impossible to rollback)
+    * Backup the database so that it can be rolledback to the backedup state if the transaction reverts
     * @example
     * ```ts
     * MockVM.commitTransaction();

@@ -1,5 +1,5 @@
 import { Protobuf, System } from "..";
-import * as token from "../koinos-proto-as/koinos/contracts/token/token";
+import { token } from "koinos-proto-as";
 
 enum entries {
   name_entry = 0x82a3537f,
@@ -8,7 +8,8 @@ enum entries {
   total_supply_entry = 0xb0da3934,
   balance_of_entry = 0x5c721497,
   transfer_entry = 0x27f576ca,
-  mint_entry = 0xdc6f17bb
+  mint_entry = 0xdc6f17bb,
+  burn_entry = 0x859facc5,
 }
 
 export class Token {
@@ -119,7 +120,7 @@ export class Token {
   }
 
   /**
-   * Transfer tokens from `from` to `to` 
+   * Transfer tokens from `from` to `to`
    * @param from from account
    * @param to to account
    * @param value number of tokens to transfer
@@ -129,9 +130,9 @@ export class Token {
    *  const from = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
    *  const to = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqE');
    *  const value = 12376182;
-   * 
+   *
    *  const token = new Token(Base58.decode('1DQzuCcTKacbs9GGScFTU1Hc8BsyARTPqe'));
-   *  const success = token.transfer(from, to, value;
+   *  const success = token.transfer(from, to, value);
    *  if (success) {
    *    // transfer succeeded
    *  } else {
@@ -157,9 +158,9 @@ export class Token {
    * ```ts
    *  const to = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqA');
    *  const value = 12376182;
-   * 
+   *
    *  const token = new Token(Base58.decode('1DQzuCcTKacbs9GGScFTU1Hc8BsyARTPqe'));
-   *  const success = token.mint(to, value;
+   *  const success = token.mint(to, value);
    *  if (success) {
    *    // mint succeeded
    *  } else {
@@ -173,6 +174,34 @@ export class Token {
     const buf = System.callContract(this._contractId, entries.mint_entry, Protobuf.encode(args, token.mint_arguments.encode));
 
     const res = Protobuf.decode<token.mint_result>(buf!, token.mint_result.decode);
+    return res.value;
+  }
+
+  /**
+   * Burn tokens from `from`
+   * @param from from account
+   * @param value number of tokens to burn
+   * @returns bool burn succeeded or not
+   * @example
+   * ```ts
+   *  const from = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
+   *  const value = 12376182;
+   *
+   *  const token = new Token(Base58.decode('1DQzuCcTKacbs9GGScFTU1Hc8BsyARTPqe'));
+   *  const success = token.burn(from, value);
+   *  if (success) {
+   *    // transfer succeeded
+   *  } else {
+   *    // transfer failed
+   *  }
+   * ```
+   */
+  burn(from: Uint8Array, value: u64): bool {
+    const args = new token.burn_arguments(from, value);
+
+    const buf = System.callContract(this._contractId, entries.burn_entry, Protobuf.encode(args, token.burn_arguments.encode));
+
+    const res = Protobuf.decode<token.burn_result>(buf!, token.burn_result.decode);
     return res.value;
   }
 }

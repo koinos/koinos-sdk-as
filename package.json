@@ -1,13 +1,15 @@
 {
   "name": "koinos-sdk-as",
-  "version": "0.4.5",
+  "version": "0.4.12",
   "main": "assembly/index.ts",
   "license": "MIT",
-  "author": "Roamin Roe <roamin@tuta.io>",
-  "repository": "https://github.com/roaminroe/koinos-sdk-as",
+  "author": "Koinos Group <contact@koinos.group>",
+  "repository": "https://github.com/koinos/koinos-sdk-as",
   "dependencies": {
     "as-bignum": "^0.2.18",
-    "as-proto": "^0.2.2"
+    "as-proto": "^0.2.2",
+    "koinos-as-gen": "0.4.8",
+    "koinos-proto-as": "^0.4.1"
   },
   "files": [
     "assembly"
@@ -23,7 +25,7 @@
     "assemblyscript": "^0.19.22",
     "eslint": "^8.7.0",
     "koinos-abi-proto-gen": "^0.1.5",
-    "koinos-mock-vm": "1.0.3",
+    "koinos-mock-vm": "1.1.0",
     "source-map-support": "^0.5.21",
     "typedoc": "^0.22.12",
     "typescript": "^4.5.5",
@@ -34,8 +36,7 @@
     "buildSDK:release": "asc assembly/index.ts --target release --use abort=",
     "buildSDK": "npm run lintSDK && npm run buildSDK:debug && npm run buildSDK:release",
     "lintSDK": "eslint --max-warnings 0 --ext ts \"assembly/**/*.ts\"",
-    "compileTransform": "tsc tools/koinos-contract-transform.ts",
-    "prepublishOnly": "yarn run compileTransform",
+    "prepublishOnly": "yarn buildSDK ",
     "generateKoinosProtoFiles": "yarn protoc -I ./koinos-proto --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ./koinos-proto/koinos/*.proto ./koinos-proto/koinos/**/*.proto ./koinos-proto/koinos/**/**/*.proto",
     "generateGoogleProtoFiles": "yarn protoc --plugin=protoc-gen-as=./node_modules/.bin/as-proto-gen --as_out=. ./google/protobuf/any.proto",
     "generateTestABI": "yarn protoc --plugin=protoc-gen-abi=./node_modules/.bin/koinos-abi-proto-gen --abi_out=test-contract/abi test-contract/assembly/proto/foobar.proto",

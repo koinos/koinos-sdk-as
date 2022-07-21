@@ -1,7 +1,6 @@
 import { Arrays, Base58, MockVM, StringBytes, System } from "../assembly";
-import * as chain from '../assembly/koinos-proto-as/koinos/chain/chain';
-import * as protocol from '../assembly/koinos-proto-as/koinos/protocol/protocol';
-import * as authority from '../assembly/koinos-proto-as/koinos/chain/authority';
+import { chain, protocol, authority } from 'koinos-proto-as';
+
 
 const mockAccount = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
 const mockAccount2 = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqE');
@@ -93,9 +92,9 @@ describe('MockVM', () => {
 
     MockVM.setAuthorities([auth1, auth2, auth3]);
 
-    // the System.requireAuthority that will fail will revert the database's VM, so we need to begin a transaction
+    // the System.requireAuthority that will fail will revert the database's VM, so we need to commit the transaction
     // this will backup the database
-    MockVM.beginTransaction();
+    MockVM.commitTransaction();
 
     expect(() => {
       System.requireAuthority(authority.authorization_type.contract_call, mockAccount);
@@ -159,7 +158,7 @@ describe('MockVM', () => {
     expect(bytes).not.toBeNull();
     expect(Arrays.equal(bytes, val1)).toBe(true);
 
-    MockVM.beginTransaction();
+    MockVM.commitTransaction();
 
     System.putBytes(space, 'key1', val2);
 
@@ -170,13 +169,11 @@ describe('MockVM', () => {
     expect(bytes).not.toBeNull();
     expect(Arrays.equal(bytes, val1)).toBe(true);
 
-    MockVM.beginTransaction();
+    MockVM.commitTransaction();
 
     System.putBytes(space, 'key1', val2);
 
     MockVM.commitTransaction();
-
-    MockVM.beginTransaction();
 
     System.putBytes(space, 'key1', val1);
 
