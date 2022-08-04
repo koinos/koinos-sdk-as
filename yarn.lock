@@ -797,6 +797,11 @@ commander@^2.19.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
 
+commander@^9.0.0:
+  version "9.4.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-9.4.0.tgz#bc4a40918fefe52e22450c111ecd6b7acce6f11c"
+  integrity sha512-sRPT+umqkz90UA8M1yqYfnHlZA7fF6nSphDtxeywPZ49ysjxDQybzk13CL+mXekDRG92skbcqCLVovuCusNmFw==
+
 common-ancestor-path@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/common-ancestor-path/-/common-ancestor-path-1.0.1.tgz#4f7d2d1394d91b7abdf51871c62f71eadb0182a7"
@@ -1459,7 +1464,7 @@ koinos-as-gen@0.4.8:
   dependencies:
     google-protobuf "^3.19.4"
 
-"koinos-mock-vm@https://github.com/koinos/koinos-mock-vm#testnet-4":
+"koinos-mock-vm@https://github.com/koinos/koinos-mock-vm#a7ad22f285b4d2b8b4e4bbf6f4695696db733661":
   version "1.1.3"
   resolved "https://github.com/koinos/koinos-mock-vm#a7ad22f285b4d2b8b4e4bbf6f4695696db733661"
   dependencies:
@@ -1482,6 +1487,13 @@ koinos-proto-js@^0.0.25:
   version "0.0.25"
   resolved "https://registry.yarnpkg.com/koinos-proto-js/-/koinos-proto-js-0.0.25.tgz#bd2f12922790b24670557464c1ed199aad549ae7"
   integrity sha512-H0+MzUrf6JpdPUzM+TNL3DNmgMoyqZUWMp7TuT6Okz2hLiBM11Sl4to9s3Sjx6uBQKG8m1GjdW5XYJYbkIilpQ==
+
+"koinos-sdk-as-cli@https://github.com/koinos/koinos-sdk-as-cli#c81d726f1bb4f345ae39e7777f5703efd5bafd62":
+  version "0.1.16"
+  resolved "https://github.com/koinos/koinos-sdk-as-cli#c81d726f1bb4f345ae39e7777f5703efd5bafd62"
+  dependencies:
+    chalk "4.1.2"
+    commander "^9.0.0"
 
 levn@^0.4.1:
   version "0.4.1"
