@@ -15,7 +15,7 @@
     "koinos-abi-proto-gen": "^0.1.5",
     "koinos-as-gen": "0.4.8",
     "koinos-mock-vm": "https://github.com/koinos/koinos-mock-vm#a7ad22f285b4d2b8b4e4bbf6f4695696db733661",
-    "koinos-proto-as": "^0.4.26",
+    "koinos-proto-as": "^0.4.27",
     "koinos-sdk-as-cli": "https://github.com/koinos/koinos-sdk-as-cli#c81d726f1bb4f345ae39e7777f5703efd5bafd62"
   },
   "files": [
