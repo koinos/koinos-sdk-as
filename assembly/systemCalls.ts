@@ -402,6 +402,7 @@ export namespace System {
     * @param signatureData the signature of the digest
     * @param digest digest that was signed by the public key
     * @param type type of signature
+    * @param compressed whether the public key should be compressed
     * @returns Uint8Array | null
     * @example
     * ```ts
@@ -413,8 +414,8 @@ export namespace System {
     * System.log('recoveredKey (b58): ' + Base58.encode(addr));
     * ```
     */
-  export function recoverPublicKey(signatureData: Uint8Array, digest: Uint8Array, type: chain.dsa = chain.dsa.ecdsa_secp256k1): Uint8Array | null {
-    const args = new system_calls.recover_public_key_arguments(type, signatureData, digest);
+  export function recoverPublicKey(signatureData: Uint8Array, digest: Uint8Array, type: chain.dsa = chain.dsa.ecdsa_secp256k1, compressed: bool = true): Uint8Array | null {
+    const args = new system_calls.recover_public_key_arguments(type, signatureData, digest, compressed);
     const encodedArgs = Protobuf.encode(args, system_calls.recover_public_key_arguments.encode);
 
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.recover_public_key, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
@@ -450,6 +451,7 @@ export namespace System {
     * @param signature signature of the digest
     * @param digest digest that was signed
     * @param type type of signature
+    * @param compressed whether or not the public key is compressed
     * @returns bool
     * @example
     * ```ts
@@ -457,8 +459,8 @@ export namespace System {
     * System.require(verify == true, `expected "true", got "${verify}"`);
     * ```
     */
-  export function verifySignature(publicKey: Uint8Array, signature: Uint8Array, digest: Uint8Array, type: chain.dsa = chain.dsa.ecdsa_secp256k1): bool {
-    const args = new system_calls.verify_signature_arguments(type, publicKey, signature, digest);
+  export function verifySignature(publicKey: Uint8Array, signature: Uint8Array, digest: Uint8Array, type: chain.dsa = chain.dsa.ecdsa_secp256k1, compressed: bool = true): bool {
+    const args = new system_calls.verify_signature_arguments(type, publicKey, signature, digest, compressed);
     const encodedArgs = Protobuf.encode(args, system_calls.verify_signature_arguments.encode);
 
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.verify_signature, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
