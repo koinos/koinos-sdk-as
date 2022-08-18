@@ -5,12 +5,12 @@ import { chain, authority, token } from 'koinos-proto-as';
 
 
 export function main(): i32 {
-  const entryPoint = System.getEntryPoint();
+  const args = System.getArguments();
+  const entryPoint = args.entry_point;
   System.log('entryPoint: ' + entryPoint.toString());
   System.require(entryPoint == 0xc3ab8ff1, `expected entry point "0xc3ab8ff1", got "${entryPoint}"`);
 
-  const rdbuf = System.getContractArguments();
-  const contractArgs = Protobuf.decode<foobar.foobar_arguments>(rdbuf, foobar.foobar_arguments.decode);
+  const contractArgs = Protobuf.decode<foobar.foobar_arguments>(args.args, foobar.foobar_arguments.decode);
   System.log('contractArgs: ' + contractArgs.value.toString());
 
   const contractId = System.getContractId();
@@ -34,8 +34,7 @@ export function main(): i32 {
 
   const contractSpace = new chain.object_space(false, contractId, 1);
 
-  const putRes = System.putBytes(contractSpace, 'testKey', StringBytes.stringToBytes('testValue'));
-  System.log('putRes: ' + putRes.toString());
+  System.putBytes(contractSpace, 'testKey', StringBytes.stringToBytes('testValue'));
 
   const obj = System.getBytes(contractSpace, 'testKey');
 
@@ -46,8 +45,7 @@ export function main(): i32 {
   }
 
   const contractSpace2 = new chain.object_space(false, contractId, 2);
-  const putRes2 = System.putBytes(contractSpace2, StringBytes.stringToBytes('testKey'), StringBytes.stringToBytes('testValue2'));
-  System.log('putRes: ' + putRes2.toString());
+  System.putBytes(contractSpace2, StringBytes.stringToBytes('testKey'), StringBytes.stringToBytes('testValue2'));
 
   const obj2 = System.getBytes(contractSpace2, 'testKey');
 
@@ -69,8 +67,7 @@ export function main(): i32 {
 
   const obj4 = new test.test_object(42);
 
-  const putRes3 = System.putObject(contractSpace3, "test", obj4, test.test_object.encode);
-  System.log('putRes3: ' + putRes3.toString());
+  System.putObject(contractSpace3, "test", obj4, test.test_object.encode);
 
   let obj5 = System.getObject<string, test.test_object>(contractSpace3, "test", test.test_object.decode);
   System.require(obj5, `expected "obj5", got "null"`);
@@ -224,12 +221,12 @@ export function main(): i32 {
   koinTransferArgs.to = to;
   koinTransferArgs.value = amount;
 
-  const resBuf = System.callContract(koinContractId, tranferEntryPoint, Protobuf.encode(koinTransferArgs, token.transfer_arguments.encode));
+  const callRet = System.call(koinContractId, tranferEntryPoint, Protobuf.encode(koinTransferArgs, token.transfer_arguments.encode));
+  const resBuf = callRet.res.object;
   System.require(resBuf, `expected resBuf not "null", got "null"`);
 
   if (resBuf) {
-    const transferRes = Protobuf.decode<token.transfer_result>(resBuf, token.transfer_result.decode);
-    System.require(transferRes.value, `expected transfer not "true", got "false"`);
+    Protobuf.decode<token.transfer_result>(resBuf, token.transfer_result.decode);
 
     const impacted: Uint8Array[] = [];
     impacted.push(from);

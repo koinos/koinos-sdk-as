@@ -1,20 +1,20 @@
 import { env } from "./env";
 import { Protobuf, Reader, Writer } from 'as-proto';
-import { system_calls, system_call_ids, chain, protocol, authority, value, error, resources } from 'koinos-proto-as';
+import { system_calls, system_call_ids, chain, protocol, authority, value, error } from 'koinos-proto-as';
 import { StringBytes } from ".";
 import { Base58 } from "./util";
 
 export namespace System {
   export const DEFAULT_MAX_BUFFER_SIZE = 1024;
   let MAX_BUFFER_SIZE = DEFAULT_MAX_BUFFER_SIZE;
-  let SYSTEM_CALL_BUFFER = new Uint8Array(MAX_BUFFER_SIZE)
-  let RETURN_BYTES = new Uint32Array(1)
+  let SYSTEM_CALL_BUFFER = new Uint8Array(MAX_BUFFER_SIZE);
+  let RETURN_BYTES = new Uint32Array(1);
 
-  let ERROR_MESSAGE = ""
+  let ERROR_MESSAGE = "";
 
   function checkErrorCode(code: i32, message: Uint8Array): void {
     if (code != error.error_code.success)
-      exit(code, message)
+      exit(code, message);
   }
 
   export function setSystemBufferSize(size: u32): void {
@@ -108,7 +108,7 @@ export namespace System {
     const args = new system_calls.get_chain_id_arguments();
     const encodedArgs = Protobuf.encode(args, system_calls.get_chain_id_arguments.encode);
 
-    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_chain_id, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32)
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_chain_id, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
     checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
     const result = Protobuf.decode<system_calls.get_chain_id_result>(SYSTEM_CALL_BUFFER, system_calls.get_chain_id_result.decode, RETURN_BYTES[0]);
 
@@ -277,7 +277,7 @@ export namespace System {
   }
 
   export function requireSystemAuthority(type: system_calls.system_authorization_type): void {
-    require(checkSystemAuthority(type))
+    require(checkSystemAuthority(type));
   }
 
   // Resource Subsystem
@@ -493,7 +493,7 @@ export namespace System {
 
   export class callReturn {
     code: i32;
-    res: chain.result;
+    res: chain.result = new chain.result();
   }
 
   /**
@@ -583,7 +583,7 @@ export namespace System {
     checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
     const result = Protobuf.decode<system_calls.get_arguments_result>(SYSTEM_CALL_BUFFER, system_calls.get_arguments_result.decode, RETURN_BYTES[0]);
 
-    let ret = new getArgumentsReturn()
+    let ret = new getArgumentsReturn();
 
     if ( result.value ) {
       ret.entry_point = result.value!.entry_point;

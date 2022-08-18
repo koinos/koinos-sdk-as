@@ -309,7 +309,7 @@ export namespace MockVM {
   export function getErrorMessage(): String | null {
     const bytes = System.getBytes(METADATA_SPACE, 'error_message');
 
-    return StringBytes.bytesToString(bytes)
+    return StringBytes.bytesToString(bytes);
   }
 
   /**
