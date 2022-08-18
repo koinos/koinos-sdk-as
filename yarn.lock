@@ -166,11 +166,11 @@
     somap "^0.5.14"
 
 "@koinos/proto-as@^0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@koinos/proto-as/-/proto-as-0.4.1.tgz#f567eab7ef27042c5c4c2f63264bd85f70ef8e25"
-  integrity sha512-vl7iGs32ivdt2qyFbD7wGfSK/FVW5aq9R+UVXtIH19HFD22Co9QmcJcnTf1MuW6bVgxgasJq8ZaO3/A7bv0uag==
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@koinos/proto-as/-/proto-as-0.4.2.tgz#c9e019ea1f7e3240011276d4beffea75ecc81dc1"
+  integrity sha512-LTELSXs9ItV2RJVROJzwUDp+SdL8DfQsrvwiVhUP7eQwGPF/XKBu8ITPQlGUuuqrb5JlOohp2Gort9iScz2PfQ==
   dependencies:
-    as-proto "npm:@roaminroe/as-proto"
+    as-proto "npm:@koinos/as-proto"
 
 "@koinos/proto-js@^0.4.0":
   version "0.4.0"
@@ -663,11 +663,6 @@ as-bignum@^0.2.18:
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/@koinos/as-proto/-/as-proto-0.2.4.tgz#3ed5977578c35608e95f3459fed73b4bc416f513"
   integrity sha512-vJnN9qQ+zbBOmPj5BREtaKwH2vS2aPFiuV4j4xPbUaaPWRU0mpPWyhYeTAsC5oh1Lf4oTNQ+y5LeUrzT/Y5aZQ==
-
-"as-proto@npm:@roaminroe/as-proto":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@roaminroe/as-proto/-/as-proto-0.2.3.tgz#931ff8f805d1ba4726037465d46fb0d9ac5a4f04"
-  integrity sha512-x+fDDY5fvfd1VHqJnD6ITh88m913uDuKQPCTnwi6TFwbCRIqmC9lfIst/pmPFx96rNVlNp8UBLXFKgZg9l6rYA==
 
 asap@^2.0.0:
   version "2.0.6"
