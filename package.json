@@ -8,15 +8,16 @@
   "dependencies": {
     "@as-covers/core": "^0.2.1",
     "@as-pect/cli": "^6.2.4",
-    "@roaminroe/as-proto-gen": "^0.3.3",
+    "@koinos/abi-proto-gen": "^0.4.0",
+    "@koinos/as-proto-gen": "^0.4.3",
+    "@koinos/mock-vm": "^0.4.1",
+    "@koinos/proto-as": "^0.4.1",
+    "@koinos/sdk-as-cli": "^0.4.0",
     "@roaminroe/protoc": "^2.4.0",
     "as-bignum": "^0.2.18",
+    "as-proto": "npm:@koinos/as-proto",
     "assemblyscript": "^0.19.22",
-    "koinos-abi-proto-gen": "^0.1.5",
-    "koinos-as-gen": "0.4.8",
-    "koinos-mock-vm": "https://github.com/koinos/koinos-mock-vm#a7ad22f285b4d2b8b4e4bbf6f4695696db733661",
-    "koinos-proto-as": "^0.4.27",
-    "koinos-sdk-as-cli": "https://github.com/koinos/koinos-sdk-as-cli#c81d726f1bb4f345ae39e7777f5703efd5bafd62"
+    "koinos-as-gen": "0.4.8"
   },
   "files": [
     "assembly"

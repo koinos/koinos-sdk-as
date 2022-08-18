@@ -1,7 +1,7 @@
 import { test } from "./proto/test";
 import { foobar } from "./proto/foobar";
 import { System, Protobuf, Base58, Base64, Crypto, StringBytes } from "../../assembly";
-import { chain, authority, token } from 'koinos-proto-as';
+import { chain, authority, token } from '@koinos/proto-as';
 
 
 export function main(): i32 {

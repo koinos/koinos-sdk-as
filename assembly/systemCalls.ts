@@ -1,6 +1,6 @@
 import { env } from "./env";
 import { Protobuf, Reader, Writer } from 'as-proto';
-import { system_calls, system_call_ids, chain, protocol, authority, value, error } from 'koinos-proto-as';
+import { system_calls, system_call_ids, chain, protocol, authority, value, error } from '@koinos/proto-as';
 import { StringBytes } from ".";
 import { Base58 } from "./util";
 
@@ -267,8 +267,8 @@ export namespace System {
     checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
   }
 
-  export function checkSystemAuthority(type: system_calls.system_authorization_type): bool {
-    const args = new system_calls.check_system_authority_arguments(type);
+  export function checkSystemAuthority(): bool {
+    const args = new system_calls.check_system_authority_arguments();
     const encodedArgs = Protobuf.encode(args, system_calls.check_system_authority_arguments.encode);
 
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.check_system_authority, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
@@ -276,8 +276,8 @@ export namespace System {
     return Protobuf.decode<system_calls.check_system_authority_result>(SYSTEM_CALL_BUFFER, system_calls.check_system_authority_result.decode).value;
   }
 
-  export function requireSystemAuthority(type: system_calls.system_authorization_type): void {
-    require(checkSystemAuthority(type));
+  export function requireSystemAuthority(): void {
+    require(checkSystemAuthority());
   }
 
   // Resource Subsystem

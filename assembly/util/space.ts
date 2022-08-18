@@ -1,5 +1,5 @@
 import { System } from '../systemCalls';
-import { chain } from 'koinos-proto-as';
+import { chain } from '@koinos/proto-as';
 import { Protobuf, Reader, Writer } from 'as-proto';
 import { StringBytes } from './stringBytes';
 

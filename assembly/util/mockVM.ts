@@ -1,6 +1,6 @@
 import { Protobuf } from "as-proto";
 import { System } from "../systemCalls";
-import { system_calls, chain, protocol, authority, value } from 'koinos-proto-as';
+import { system_calls, chain, protocol, authority, value } from '@koinos/proto-as';
 import { StringBytes } from "./stringBytes";
 
 

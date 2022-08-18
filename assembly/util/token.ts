@@ -1,5 +1,5 @@
 import { Protobuf, System } from "..";
-import { token, error } from "koinos-proto-as";
+import { token, error } from "@koinos/proto-as";
 
 enum entries {
   name_entry = 0x82a3537f,
