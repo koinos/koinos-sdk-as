@@ -140,6 +140,13 @@
     google-protobuf "^3.19.4"
     protobufjs "^6.11.2"
 
+"@koinos/as-gen@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@koinos/as-gen/-/as-gen-0.4.0.tgz#4acc59b701ff8e9c8864f7c4ca17727a70c0870f"
+  integrity sha512-dWXJGAEUgI8/A4i+hcLAkv6jGv4PDqOTIRLLUuCPyG0XhotyWUt8CbW5hSOS1hlmyVfE2fP3MelzUcvsIsWEuA==
+  dependencies:
+    google-protobuf "^3.19.4"
+
 "@koinos/as-proto-gen@^0.4.3":
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/@koinos/as-proto-gen/-/as-proto-gen-0.4.3.tgz#bea81e7692fd34c8d6ac2f3ff89d87a3b3114ab6"
@@ -165,10 +172,10 @@
     protobufjs "^6.11.2"
     somap "^0.5.14"
 
-"@koinos/proto-as@^0.4.3-beta.0":
-  version "0.4.3-beta.0"
-  resolved "https://registry.yarnpkg.com/@koinos/proto-as/-/proto-as-0.4.3-beta.0.tgz#b9dbc7d3d3d5940dced3a5825036d560bec8dbb7"
-  integrity sha512-eerHfOYY66DXSnfWGjrIK/B1WICrOm9i32P7EAssKHrfGI0jOr7PnRKRBwFvMKmiUWkyHZZKIM8bNoD0vaA0mQ==
+"@koinos/proto-as@^0.4.3":
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/@koinos/proto-as/-/proto-as-0.4.3.tgz#7b90e3fb0a5065cb9f26b230c5427119708b0dc1"
+  integrity sha512-W+4pzzw+I6uELlFErTaURj4uWFpk6ZnSc1jczbdyzruyK70ay1wPf7cMlvVNTR8xMrmzlgMxRelcwwRcGa3mlQ==
   dependencies:
     as-proto "npm:@koinos/as-proto"
 
@@ -1530,13 +1537,6 @@ just-diff@^5.0.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/just-diff/-/just-diff-5.1.1.tgz#8da6414342a5ed6d02ccd64f5586cbbed3146202"
   integrity sha512-u8HXJ3HlNrTzY7zrYYKjNEfBlyjqhdBkoyTVdjtn7p02RJD5NvR8rIClzeGA7t+UYP1/7eAkWNLU0+P3QrEqKQ==
-
-koinos-as-gen@0.4.8:
-  version "0.4.8"
-  resolved "https://registry.yarnpkg.com/koinos-as-gen/-/koinos-as-gen-0.4.8.tgz#b20893f1c6870ced7e48fa65a81d3e0b2676a670"
-  integrity sha512-Bbpp9Wr4SgFxP4QfoXAW3BRY3hBOH/+jgJAXlFlleJ9RYW9b96x0eM+gs9X/hsu1jBqAcVdXVK52y3VeNO0qmQ==
-  dependencies:
-    google-protobuf "^3.19.4"
 
 levn@^0.4.1:
   version "0.4.1"
