@@ -1,6 +1,6 @@
 import { Protobuf } from "as-proto";
 import { System } from "../systemCalls";
-import { system_calls, chain, protocol, authority, value } from 'koinos-proto-as';
+import { system_calls, chain, protocol, authority, value } from '@koinos/proto-as';
 import { StringBytes } from "./stringBytes";
 
 
@@ -309,7 +309,7 @@ export namespace MockVM {
   export function getErrorMessage(): String | null {
     const bytes = System.getBytes(METADATA_SPACE, 'error_message');
 
-    return StringBytes.bytesToString(bytes)
+    return StringBytes.bytesToString(bytes);
   }
 
   /**

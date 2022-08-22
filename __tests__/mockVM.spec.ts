@@ -1,5 +1,5 @@
 import { Arrays, Base58, MockVM, StringBytes, System } from "../assembly";
-import { chain, protocol, authority, system_calls } from 'koinos-proto-as';
+import { chain, protocol, authority, system_calls } from '@koinos/proto-as';
 
 
 const mockAccount = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');

@@ -1,5 +1,5 @@
 import { Base58, MockVM, Protobuf, StringBytes, Token } from "../assembly";
-import { token, system_calls, chain } from 'koinos-proto-as';
+import { token, system_calls, chain } from '@koinos/proto-as';
 
 
 const mockTokenContractIdAccount = Base58.decode('1DQzuCcTKacbs9GGScFTU1Hc8BsyARTPqe');

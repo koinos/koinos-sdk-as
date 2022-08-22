@@ -1,6 +1,5 @@
 import { System } from "../systemCalls";
 import { u128 } from "as-bignum";
-import { StringBytes } from './stringBytes';
 
 export namespace SafeMath {
 
