@@ -1,10 +1,30 @@
 import { env } from "./env";
 import { Protobuf, Reader, Writer } from 'as-proto';
-import { system_calls, system_call_ids, chain, protocol, authority, value } from 'koinos-proto-as';
-import {  StringBytes } from ".";
+import { system_calls, system_call_ids, chain, protocol, authority, value, error } from '@koinos/proto-as';
+import { StringBytes } from ".";
+import { Base58 } from "./util";
+
 export namespace System {
   export const DEFAULT_MAX_BUFFER_SIZE = 1024;
-  export let MAX_BUFFER_SIZE = DEFAULT_MAX_BUFFER_SIZE;
+  let MAX_BUFFER_SIZE = DEFAULT_MAX_BUFFER_SIZE;
+  let SYSTEM_CALL_BUFFER = new Uint8Array(MAX_BUFFER_SIZE);
+  let RETURN_BYTES = new Uint32Array(1);
+
+  let ERROR_MESSAGE = "";
+
+  function checkErrorCode(code: i32, message: Uint8Array): void {
+    if (code != error.error_code.success)
+      exit(code, message);
+  }
+
+  export function setSystemBufferSize(size: u32): void {
+    MAX_BUFFER_SIZE = size;
+    SYSTEM_CALL_BUFFER = new Uint8Array(MAX_BUFFER_SIZE);
+  }
+
+  export function getSystemBufferSize(): u32 {
+    return MAX_BUFFER_SIZE;
+  }
 
   // General Blockchain Management
 
@@ -22,60 +42,77 @@ export namespace System {
   export function getHeadInfo(): chain.head_info {
     const args = new system_calls.get_head_info_arguments();
     const encodedArgs = Protobuf.encode(args, system_calls.get_head_info_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.get_head_info, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.get_head_info_result>(readBuffer, system_calls.get_head_info_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_head_info, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.get_head_info_result>(SYSTEM_CALL_BUFFER, system_calls.get_head_info_result.decode, RETURN_BYTES[0]);
 
     return result.value!;
   }
 
-  export function applyBlock(block: protocol.block): void {
+  export function applyBlock(block: protocol.block): i32 {
     const args = new system_calls.apply_block_arguments(block);
     const encodedArgs = Protobuf.encode(args, system_calls.apply_block_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    env.invokeSystemCall(system_call_ids.system_call_id.apply_block, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.apply_block, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    ERROR_MESSAGE = StringBytes.bytesToString(SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]))!;
+    return retcode;
   }
 
-  export function applyTransaction(transaction: protocol.transaction): void {
+  export function applyTransaction(transaction: protocol.transaction): i32 {
     const args = new system_calls.apply_transaction_arguments(transaction);
     const encodedArgs = Protobuf.encode(args, system_calls.apply_transaction_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    env.invokeSystemCall(system_call_ids.system_call_id.apply_transaction, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.apply_transaction, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    ERROR_MESSAGE = StringBytes.bytesToString(SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]))!;
+    return retcode;
   }
 
-  export function applyUploadContractOperation(op: protocol.upload_contract_operation): void {
+  export function applyUploadContractOperation(op: protocol.upload_contract_operation): i32 {
     const args = new system_calls.apply_upload_contract_operation_arguments(op);
     const encodedArgs = Protobuf.encode(args, system_calls.apply_upload_contract_operation_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    env.invokeSystemCall(system_call_ids.system_call_id.apply_upload_contract_operation, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.apply_upload_contract_operation, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    ERROR_MESSAGE = StringBytes.bytesToString(SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]))!;
+    return retcode;
   }
 
-  export function applyCallContractOperation(op: protocol.call_contract_operation): void {
+  export function applyCallContractOperation(op: protocol.call_contract_operation): i32 {
     const args = new system_calls.apply_call_contract_operation_arguments(op);
     const encodedArgs = Protobuf.encode(args, system_calls.apply_call_contract_operation_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    env.invokeSystemCall(system_call_ids.system_call_id.apply_call_contract_operation, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.apply_call_contract_operation, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    ERROR_MESSAGE = StringBytes.bytesToString(SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]))!;
+    return retcode;
   }
 
-  export function applySetSystemCallOperation(op: protocol.set_system_call_operation): void {
+  export function applySetSystemCallOperation(op: protocol.set_system_call_operation): i32 {
     const args = new system_calls.apply_set_system_call_operation_arguments(op);
     const encodedArgs = Protobuf.encode(args, system_calls.apply_set_system_call_operation_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    env.invokeSystemCall(system_call_ids.system_call_id.apply_set_system_call_operation, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.apply_set_system_call_operation, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    ERROR_MESSAGE = StringBytes.bytesToString(SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]))!;
+    return retcode;
   }
 
-  export function applySetSystemContractOperation(op: protocol.set_system_contract_operation): void {
+  export function applySetSystemContractOperation(op: protocol.set_system_contract_operation): i32 {
     const args = new system_calls.apply_set_system_contract_operation_arguments(op);
     const encodedArgs = Protobuf.encode(args, system_calls.apply_set_system_contract_operation_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    env.invokeSystemCall(system_call_ids.system_call_id.apply_set_system_contract_operation, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.apply_set_system_contract_operation, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    ERROR_MESSAGE = StringBytes.bytesToString(SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]))!;
+    return retcode;
+  }
+
+  export function getChainId(): Uint8Array {
+    const args = new system_calls.get_chain_id_arguments();
+    const encodedArgs = Protobuf.encode(args, system_calls.get_chain_id_arguments.encode);
+
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_chain_id, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.get_chain_id_result>(SYSTEM_CALL_BUFFER, system_calls.get_chain_id_result.decode, RETURN_BYTES[0]);
+
+    return result.value!;
   }
 
   // System Helpers
@@ -83,10 +120,10 @@ export namespace System {
   export function processBlockSignature(digest: Uint8Array, header: protocol.block_header, signature: Uint8Array): bool {
     const args = new system_calls.process_block_signature_arguments(digest, header, signature);
     const encodedArgs = Protobuf.encode(args, system_calls.process_block_signature_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.process_block_signature, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.process_block_signature_result>(readBuffer, system_calls.process_block_signature_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.process_block_signature, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.process_block_signature_result>(SYSTEM_CALL_BUFFER, system_calls.process_block_signature_result.decode, RETURN_BYTES[0]);
 
     return result.value;
   }
@@ -103,10 +140,10 @@ export namespace System {
   export function getTransaction(): protocol.transaction {
     const args = new system_calls.get_transaction_arguments();
     const encodedArgs = Protobuf.encode(args, system_calls.get_transaction_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.get_transaction, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.get_transaction_result>(readBuffer, system_calls.get_transaction_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_transaction, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.get_transaction_result>(SYSTEM_CALL_BUFFER, system_calls.get_transaction_result.decode, RETURN_BYTES[0]);
 
     return result.value!;
   }
@@ -126,10 +163,10 @@ export namespace System {
   export function getTransactionField(field: string): value.value_type | null {
     const args = new system_calls.get_transaction_field_arguments(field);
     const encodedArgs = Protobuf.encode(args, system_calls.get_transaction_field_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.get_transaction_field, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.get_transaction_field_result>(readBuffer, system_calls.get_transaction_field_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_transaction_field, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.get_transaction_field_result>(SYSTEM_CALL_BUFFER, system_calls.get_transaction_field_result.decode, RETURN_BYTES[0]);
 
     return result.value;
   }
@@ -146,10 +183,10 @@ export namespace System {
   export function getBlock(): protocol.block {
     const args = new system_calls.get_block_arguments();
     const encodedArgs = Protobuf.encode(args, system_calls.get_block_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.get_block, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.get_block_result>(readBuffer, system_calls.get_block_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_block, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.get_block_result>(SYSTEM_CALL_BUFFER, system_calls.get_block_result.decode, RETURN_BYTES[0]);
 
     return result.value!;
   }
@@ -171,10 +208,10 @@ export namespace System {
   export function getBlockField(field: string): value.value_type | null {
     const args = new system_calls.get_block_field_arguments(field);
     const encodedArgs = Protobuf.encode(args, system_calls.get_block_field_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.get_block_field, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.get_block_field_result>(readBuffer, system_calls.get_block_field_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_block_field, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.get_block_field_result>(SYSTEM_CALL_BUFFER, system_calls.get_block_field_result.decode, RETURN_BYTES[0]);
 
     return result.value;
   }
@@ -191,10 +228,10 @@ export namespace System {
   export function getLastIrreversibleBlock(): u64 {
     const args = new system_calls.get_last_irreversible_block_arguments();
     const encodedArgs = Protobuf.encode(args, system_calls.get_last_irreversible_block_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.get_last_irreversible_block, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.get_last_irreversible_block_result>(readBuffer, system_calls.get_last_irreversible_block_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_last_irreversible_block, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.get_last_irreversible_block_result>(SYSTEM_CALL_BUFFER, system_calls.get_last_irreversible_block_result.decode, RETURN_BYTES[0]);
 
     return result.value;
   }
@@ -202,10 +239,10 @@ export namespace System {
   export function getAccountNonce(account: Uint8Array): Uint8Array | null {
     const args = new system_calls.get_account_nonce_arguments(account);
     const encodedArgs = Protobuf.encode(args, system_calls.get_account_nonce_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.get_account_nonce, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.get_account_nonce_result>(readBuffer, system_calls.get_account_nonce_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_account_nonce, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.get_account_nonce_result>(SYSTEM_CALL_BUFFER, system_calls.get_account_nonce_result.decode, RETURN_BYTES[0]);
 
     return result.value;
   }
@@ -213,10 +250,10 @@ export namespace System {
   export function verifyAccountNonce(account: Uint8Array, nonce: Uint8Array): bool {
     const args = new system_calls.verify_account_nonce_arguments(account, nonce);
     const encodedArgs = Protobuf.encode(args, system_calls.verify_account_nonce_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.verify_account_nonce, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.verify_account_nonce_result>(readBuffer, system_calls.verify_account_nonce_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.verify_account_nonce, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.verify_account_nonce_result>(SYSTEM_CALL_BUFFER, system_calls.verify_account_nonce_result.decode, RETURN_BYTES[0]);
 
     return result.value;
   }
@@ -225,17 +262,22 @@ export namespace System {
     const args = new system_calls.set_account_nonce_arguments(account, nonce);
 
     const encodedArgs = Protobuf.encode(args, system_calls.set_account_nonce_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    env.invokeSystemCall(system_call_ids.system_call_id.verify_account_nonce, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.verify_account_nonce, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
   }
 
-  export function requireSystemAuthority(type: system_calls.system_authorization_type): void {
-    const args = new system_calls.require_system_authority_arguments(type);
-    const encodedArgs = Protobuf.encode(args, system_calls.require_system_authority_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
+  export function checkSystemAuthority(): bool {
+    const args = new system_calls.check_system_authority_arguments();
+    const encodedArgs = Protobuf.encode(args, system_calls.check_system_authority_arguments.encode);
 
-    env.invokeSystemCall(system_call_ids.system_call_id.require_system_authority, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.check_system_authority, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    return Protobuf.decode<system_calls.check_system_authority_result>(SYSTEM_CALL_BUFFER, system_calls.check_system_authority_result.decode).value;
+  }
+
+  export function requireSystemAuthority(): void {
+    require(checkSystemAuthority());
   }
 
   // Resource Subsystem
@@ -243,10 +285,10 @@ export namespace System {
   export function getAccountRC(account: Uint8Array): u64 {
     const args = new system_calls.get_account_rc_arguments(account);
     const encodedArgs = Protobuf.encode(args, system_calls.get_account_rc_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.get_account_rc, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.get_account_rc_result>(readBuffer, system_calls.get_account_rc_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_account_rc, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.get_account_rc_result>(SYSTEM_CALL_BUFFER, system_calls.get_account_rc_result.decode, RETURN_BYTES[0]);
 
     return result.value;
   }
@@ -254,10 +296,10 @@ export namespace System {
   export function consumeAccountRC(account: Uint8Array, value: u64): bool {
     const args = new system_calls.consume_account_rc_arguments(account, value);
     const encodedArgs = Protobuf.encode(args, system_calls.consume_account_rc_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.consume_account_rc, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.consume_account_rc_result>(readBuffer, system_calls.consume_account_rc_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.consume_account_rc, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.consume_account_rc_result>(SYSTEM_CALL_BUFFER, system_calls.consume_account_rc_result.decode, RETURN_BYTES[0]);
 
     return result.value;
   }
@@ -265,10 +307,10 @@ export namespace System {
   export function getResourceLimits(): chain.resource_limit_data {
     const args = new system_calls.get_resource_limits_arguments();
     const encodedArgs = Protobuf.encode(args, system_calls.get_resource_limits_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.get_resource_limits, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.get_resource_limits_result>(readBuffer, system_calls.get_resource_limits_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_resource_limits, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.get_resource_limits_result>(SYSTEM_CALL_BUFFER, system_calls.get_resource_limits_result.decode, RETURN_BYTES[0]);
 
     return result.value!;
   }
@@ -276,10 +318,10 @@ export namespace System {
   export function consumeBlockResources(disk_storage_consumed: u64, network_bandwidth_consumed: u64, compute_bandwidth_consumed: u64): bool {
     const args = new system_calls.consume_block_resources_arguments(disk_storage_consumed, network_bandwidth_consumed, compute_bandwidth_consumed);
     const encodedArgs = Protobuf.encode(args, system_calls.consume_block_resources_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.consume_block_resources, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.consume_block_resources_result>(readBuffer, system_calls.consume_block_resources_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.consume_block_resources, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.consume_block_resources_result>(SYSTEM_CALL_BUFFER, system_calls.consume_block_resources_result.decode, RETURN_BYTES[0]);
 
     return result.value;
   }
@@ -297,9 +339,9 @@ export namespace System {
   export function log(s: string): void {
     const args = new system_calls.log_arguments(s);
     const encodedArgs = Protobuf.encode(args, system_calls.log_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    env.invokeSystemCall(system_call_ids.system_call_id.log, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.log, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
   }
 
   /**
@@ -326,9 +368,9 @@ export namespace System {
   export function event(name: string, data: Uint8Array, impacted: Uint8Array[]): void {
     const args = new system_calls.event_arguments(name, data, impacted);
     const encodedArgs = Protobuf.encode(args, system_calls.event_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    env.invokeSystemCall(system_call_ids.system_call_id.event, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.event, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
   }
 
   // Cryptography
@@ -347,10 +389,10 @@ export namespace System {
   export function hash(code: u64, obj: Uint8Array, size: u64 = 0): Uint8Array | null {
     const args = new system_calls.hash_arguments(code, obj, size);
     const encodedArgs = Protobuf.encode(args, system_calls.hash_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.hash, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.hash_result>(readBuffer, system_calls.hash_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.hash, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.hash_result>(SYSTEM_CALL_BUFFER, system_calls.hash_result.decode, RETURN_BYTES[0]);
 
     return result.value;
   }
@@ -360,6 +402,7 @@ export namespace System {
     * @param signatureData the signature of the digest
     * @param digest digest that was signed by the public key
     * @param type type of signature
+    * @param compressed whether the public key should be compressed
     * @returns Uint8Array | null
     * @example
     * ```ts
@@ -371,13 +414,13 @@ export namespace System {
     * System.log('recoveredKey (b58): ' + Base58.encode(addr));
     * ```
     */
-  export function recoverPublicKey(signatureData: Uint8Array, digest: Uint8Array, type: chain.dsa = chain.dsa.ecdsa_secp256k1): Uint8Array | null {
-    const args = new system_calls.recover_public_key_arguments(type, signatureData, digest);
+  export function recoverPublicKey(signatureData: Uint8Array, digest: Uint8Array, type: chain.dsa = chain.dsa.ecdsa_secp256k1, compressed: bool = true): Uint8Array | null {
+    const args = new system_calls.recover_public_key_arguments(type, signatureData, digest, compressed);
     const encodedArgs = Protobuf.encode(args, system_calls.recover_public_key_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.recover_public_key, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.recover_public_key_result>(readBuffer, system_calls.recover_public_key_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.recover_public_key, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.recover_public_key_result>(SYSTEM_CALL_BUFFER, system_calls.recover_public_key_result.decode, RETURN_BYTES[0]);
 
     return result.value;
   }
@@ -394,10 +437,10 @@ export namespace System {
   export function verifyMerkleRoot(root: Uint8Array, hashes: Array<Uint8Array>): bool {
     const args = new system_calls.verify_merkle_root_arguments(root, hashes);
     const encodedArgs = Protobuf.encode(args, system_calls.verify_merkle_root_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.verify_merkle_root, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.verify_merkle_root_result>(readBuffer, system_calls.verify_merkle_root_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.verify_merkle_root, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.verify_merkle_root_result>(SYSTEM_CALL_BUFFER, system_calls.verify_merkle_root_result.decode, RETURN_BYTES[0]);
 
     return result.value;
   }
@@ -408,6 +451,7 @@ export namespace System {
     * @param signature signature of the digest
     * @param digest digest that was signed
     * @param type type of signature
+    * @param compressed whether or not the public key is compressed
     * @returns bool
     * @example
     * ```ts
@@ -415,18 +459,42 @@ export namespace System {
     * System.require(verify == true, `expected "true", got "${verify}"`);
     * ```
     */
-  export function verifySignature(publicKey: Uint8Array, signature: Uint8Array, digest: Uint8Array, type: chain.dsa = chain.dsa.ecdsa_secp256k1): bool {
-    const args = new system_calls.verify_signature_arguments(type, publicKey, signature, digest);
+  export function verifySignature(publicKey: Uint8Array, signature: Uint8Array, digest: Uint8Array, type: chain.dsa = chain.dsa.ecdsa_secp256k1, compressed: bool = true): bool {
+    const args = new system_calls.verify_signature_arguments(type, publicKey, signature, digest, compressed);
     const encodedArgs = Protobuf.encode(args, system_calls.verify_signature_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.verify_signature, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.verify_signature_result>(readBuffer, system_calls.verify_signature_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.verify_signature, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.verify_signature_result>(SYSTEM_CALL_BUFFER, system_calls.verify_signature_result.decode, RETURN_BYTES[0]);
+
+    return result.value;
+  }
+
+  /**
+   * Verifies a VRF proof
+   * @param publicKey public key that generated the proof
+   * @param proof the VRF proof itself
+   * @param hash the hash of the proof
+   * @param message the original message input
+   * @param type type of signature
+   */
+  export function verifyVRFProof(publicKey: Uint8Array, proof: Uint8Array, hash: Uint8Array, message: Uint8Array, type: chain.dsa = chain.dsa.ecdsa_secp256k1): bool {
+    const args = new system_calls.verify_vrf_proof_arguments(type, publicKey, proof, hash, message );
+    const encodedArgs = Protobuf.encode(args, system_calls.verify_vrf_proof_arguments.encode);
+
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.verify_vrf_proof, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.verify_signature_result>(SYSTEM_CALL_BUFFER, system_calls.verify_signature_result.decode, RETURN_BYTES[0]);
 
     return result.value;
   }
 
   // Contract Management
+
+  export class callReturn {
+    code: i32;
+    res: chain.result = new chain.result();
+  }
 
   /**
     * Call a contract
@@ -452,7 +520,7 @@ export namespace System {
     * System.require(resBuf, `expected resBuf not "null", got "null"`);
     *
     * if (resBuf) {
-    *   const transferRes = Protobuf.decode<koin.transfer_result>(resBuf, koin.transfer_result.decode);
+    *   const transferRes = Protobuf.decode<koin.transfer_result>(resBuf, koin.transfer_result.decode, RETURN_BYTES[0]);
     *   System.require(transferRes.value, `expected transfer not "true", got "false"`);
     *
     *   const impacted: Uint8Array[] = [];
@@ -470,34 +538,31 @@ export namespace System {
     * }
     * ```
     */
-  export function callContract(contractId: Uint8Array, entryPoint: u32, contractArgs: Uint8Array): Uint8Array | null {
-    const args = new system_calls.call_contract_arguments(contractId, entryPoint, contractArgs);
-    const encodedArgs = Protobuf.encode(args, system_calls.call_contract_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
+  export function call(contractId: Uint8Array, entryPoint: u32, contractArgs: Uint8Array): callReturn {
+    const args = new system_calls.call_arguments(contractId, entryPoint, contractArgs);
+    const encodedArgs = Protobuf.encode(args, system_calls.call_arguments.encode);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.call_contract, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.call_contract_result>(readBuffer, system_calls.call_contract_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.call, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
 
-    return result.value;
+    let result = new chain.result();
+    if (retcode) {
+      result.error = Protobuf.decode<chain.error_data>(SYSTEM_CALL_BUFFER, chain.error_data.decode, RETURN_BYTES[0]);
+    }
+    else {
+      result.object = Protobuf.decode<system_calls.call_result>(SYSTEM_CALL_BUFFER, system_calls.call_result.decode, RETURN_BYTES[0]).value;
+    }
+
+    return {code: retcode, res: result};
   }
 
-  /**
-    * Get entry point that was used when calling the contract
-    * @returns u32
-    * @example
-    * ```ts
-    * const entryPoint = System.getEntryPoint();
-    * System.log('entryPoint: ' + entryPoint.toString());
-    * ```
-    */
-  export function getEntryPoint(): u32 {
-    const args = new system_calls.get_entry_point_arguments();
-    const encodedArgs = Protobuf.encode(args, system_calls.get_entry_point_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.get_entry_point, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.get_entry_point_result>(readBuffer, system_calls.get_entry_point_result.decode, len);
+  export class getArgumentsReturn {
+    constructor() {
+      this.entry_point = 0;
+      this.args = new Uint8Array(0);
+    }
 
-    return result.value;
+    entry_point: u32;
+    args: Uint8Array;
   }
 
   /**
@@ -506,40 +571,29 @@ export namespace System {
     * @example
     * ```ts
     * const rdbuf = System.getContractArguments();
-    * const contractArgs = Protobuf.decode<foobar.foobar_arguments>(rdbuf, foobar.foobar_arguments.decode);
+    * const contractArgs = Protobuf.decode<foobar.foobar_arguments>(rdbuf, foobar.foobar_arguments.decode, RETURN_BYTES[0]);
     * System.log('contractArgs: ' + contractArgs.value.toString());
     * ```
     */
-  export function getContractArguments(): Uint8Array {
-    const args = new system_calls.get_contract_arguments_arguments();
-    const encodedArgs = Protobuf.encode(args, system_calls.get_contract_arguments_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
+  export function getArguments(): getArgumentsReturn {
+    const args = new system_calls.get_arguments_arguments();
+    const encodedArgs = Protobuf.encode(args, system_calls.get_arguments_arguments.encode);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.get_contract_arguments, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.get_contract_arguments_result>(readBuffer, system_calls.get_contract_arguments_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_arguments, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.get_arguments_result>(SYSTEM_CALL_BUFFER, system_calls.get_arguments_result.decode, RETURN_BYTES[0]);
 
-    if (result.value) {
-      return result.value!;
+    let ret = new getArgumentsReturn();
+
+    if ( result.value ) {
+      ret.entry_point = result.value!.entry_point;
+
+      if ( result.value!.arguments ) {
+        ret.args = result.value!.arguments!;
+      }
     }
 
-    return new Uint8Array(0);
-  }
-
-  /**
-    * Set the result of a contract call
-    * @param res result to set
-    * @example
-    * ```ts
-    * const contractRes = new foobar.foobar_result(42);
-    * System.setContractResult(Protobuf.encode(contractRes, foobar.foobar_result.encode));
-    * ```
-    */
-  export function setContractResult(res: Uint8Array | null): void {
-    const args = new system_calls.set_contract_result_arguments(res);
-    const encodedArgs = Protobuf.encode(args, system_calls.set_contract_result_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
-
-    env.invokeSystemCall(system_call_ids.system_call_id.set_contract_result, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    return ret;
   }
 
   /**
@@ -550,12 +604,72 @@ export namespace System {
     * System.exitContract(0);
     * ```
     */
-  export function exitContract(exitCode: i32): void {
-    const args = new system_calls.exit_contract_arguments(exitCode);
-    const encodedArgs = Protobuf.encode(args, system_calls.exit_contract_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
+  export function exit(code: i32, value: Uint8Array | null = null): void {
+    let args = new system_calls.exit_arguments();
+    args.code = code;
 
-    env.invokeSystemCall(system_call_ids.system_call_id.exit_contract, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    if (value) {
+      if (code == error.error_code.success) {
+        args.res = new chain.result(value);
+      } else {
+        args.res = new chain.result(null, new chain.error_data(StringBytes.bytesToString(value)));
+      }
+    }
+
+    const encodedArgs = Protobuf.encode(args, system_calls.exit_arguments.encode);
+
+    env.invokeSystemCall(system_call_ids.system_call_id.exit, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+  }
+
+  /**
+   * Fail the transaction in progress
+   * @param message Optional failure message
+   * @param code Optional error code, must be < 0, else code -1 is used (failure exit code)
+   * ```ts
+   * if (!System.checkAuthority(authority.authorization_type.transaction_application, Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe)))
+   *   System.fail("contract is not authorized");
+   * ```
+   */
+  export function fail(message: string = "", code: i32 = -1): void {
+    let args = new system_calls.exit_arguments();
+    args.res = new chain.result(null, new chain.error_data(message));
+    args.code = code < error.error_code.success ? code : error.error_code.failure;
+
+    const encodedArgs = Protobuf.encode(args, system_calls.exit_arguments.encode);
+
+    env.invokeSystemCall(system_call_ids.system_call_id.exit, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+  }
+
+  /**
+   * Revert the transaction in progress
+   * @param message Optional reversion message
+   * @param code Optional error code, must be > 0, else code 1 is used (reverted exit code)
+   * ```ts
+   * if (!System.checkAuthority(authority.authorization_type.transaction_application, Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe)))
+   *   System.revert("contract is not authorized");
+   * ```
+   */
+  export function revert(message: string = "", code: i32 = 1): void {
+    let args = new system_calls.exit_arguments();
+    args.res = new chain.result(null, new chain.error_data(message));
+    args.code = code > error.error_code.success ? code : error.error_code.reversion;
+
+    const encodedArgs = Protobuf.encode(args, system_calls.exit_arguments.encode);
+
+    env.invokeSystemCall(system_call_ids.system_call_id.exit, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+  }
+
+  /**
+   * Gets a stored error message after a system call that can return an error.
+   * @returns string
+   * @example
+   * ```ts
+   * if (System.applyTransaction(trx) != error.error_code.success)
+   *   System.log(getErrorMessage())
+   * ```
+   */
+  export function getErrorMessage(): string {
+    return ERROR_MESSAGE;
   }
 
   /**
@@ -570,10 +684,10 @@ export namespace System {
   export function getContractId(): Uint8Array {
     const args = new system_calls.get_contract_id_arguments();
     const encodedArgs = Protobuf.encode(args, system_calls.get_contract_id_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.get_contract_id, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.get_contract_id_result>(readBuffer, system_calls.get_contract_id_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_contract_id, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.get_contract_id_result>(SYSTEM_CALL_BUFFER, system_calls.get_contract_id_result.decode, RETURN_BYTES[0]);
 
     return result.value!;
   }
@@ -593,15 +707,35 @@ export namespace System {
   export function getCaller(): chain.caller_data {
     const args = new system_calls.get_caller_arguments();
     const encodedArgs = Protobuf.encode(args, system_calls.get_caller_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.get_caller, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.get_caller_result>(readBuffer, system_calls.get_caller_result.decode, len);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_caller, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.get_caller_result>(SYSTEM_CALL_BUFFER, system_calls.get_caller_result.decode, RETURN_BYTES[0]);
 
     return result.value!;
   }
 
   /**
+    * Check authority for an account
+    * @param type type of authority required
+    * @param account account to check
+    * @returns bool true if the account has authority
+    * @example
+    * ```ts
+    * System.checkAuthority(authority.authorization_type.transaction_application, Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe));
+    * ```
+    */
+  export function checkAuthority(type: authority.authorization_type, account: Uint8Array, data: Uint8Array | null = null ): bool {
+    const args = new system_calls.check_authority_arguments(type, account, data);
+    const encodedArgs = Protobuf.encode(args, system_calls.check_authority_arguments.encode);
+
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.check_authority, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.check_authority_result>(SYSTEM_CALL_BUFFER, system_calls.check_authority_result.decode, RETURN_BYTES[0]);
+    return result.value;
+  }
+
+   /**
     * Require authority for an account
     * @param type type of authority required
     * @param account account to check
@@ -612,11 +746,7 @@ export namespace System {
     * ```
     */
   export function requireAuthority(type: authority.authorization_type, account: Uint8Array): void {
-    const args = new system_calls.require_authority_arguments(type, account);
-    const encodedArgs = Protobuf.encode(args, system_calls.require_authority_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
-
-    env.invokeSystemCall(system_call_ids.system_call_id.require_authority, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    require(checkAuthority(type, account), "account '" + Base58.encode(account) + "' authorization failed", error.error_code.authorization_failure);
   }
 
   /**
@@ -627,13 +757,10 @@ export namespace System {
     * System.require(1 + 1 == 11, `expected "11", got "2"`);
     * ```
     */
-  export function require<T>(isTrueish: T, message: string = "", exitCode: i32 = 1): T {
+  export function require<T>(isTrueish: T, message: string = "", code: i32 = 1): T {
 
     if (!isTrueish) {
-      if (message != "") {
-        log(message);
-      }
-      exitContract(exitCode);
+      exit(code, StringBytes.stringToBytes(message));
     }
 
     return isTrueish;
@@ -656,25 +783,22 @@ export namespace System {
     * System.log('nbBytesWritten: ' + nbBytesWritten.toString());
     * ```
    */
-  export function putBytes<K>(space: chain.object_space, key: K, obj: Uint8Array): i32 {
+  export function putBytes<K>(space: chain.object_space, key: K, obj: Uint8Array): void {
     let finalKey: Uint8Array;
     if (key instanceof Uint8Array) {
       finalKey = key;
     } else if (typeof key == "string") {
       finalKey = StringBytes.stringToBytes(key);
     } else {
-      exitContract(1);
+      exit(1, StringBytes.stringToBytes("An invalid key was passed to putBytes"));
     }
 
     // @ts-ignore
     const args = new system_calls.put_object_arguments(space, finalKey, obj);
     const encodedArgs = Protobuf.encode(args, system_calls.put_object_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.put_object, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    const result = Protobuf.decode<system_calls.put_object_result>(readBuffer, system_calls.put_object_result.decode, len);
-
-    return result.value;
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.put_object, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
   }
 
   /**
@@ -698,10 +822,10 @@ export namespace System {
     key: K,
     obj: TMessage,
     encoder: (message: TMessage, writer: Writer) => void
-  ): i32 {
+  ): void {
     let finalObj = Protobuf.encode<TMessage>(obj, encoder);
 
-    return putBytes(space, key, finalObj);
+    putBytes(space, key, finalObj);
   }
 
   /**
@@ -723,15 +847,15 @@ export namespace System {
     } else if (typeof key == "string") {
       finalKey = StringBytes.stringToBytes(key);
     } else {
-      exitContract(1);
+      exit(1, StringBytes.stringToBytes("An invalid key was passed to removeObject"));
     }
 
     // @ts-ignore
     const args = new system_calls.remove_object_arguments(space, finalKey);
     const encodedArgs = Protobuf.encode(args, system_calls.remove_object_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    env.invokeSystemCall(system_call_ids.system_call_id.remove_object, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.remove_object, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
   }
 
   /**
@@ -761,21 +885,21 @@ export namespace System {
     } else if (typeof key == 'string') {
       finalKey = StringBytes.stringToBytes(key);
     } else {
-      exitContract(1);
+      exit(1, StringBytes.stringToBytes("An invalid key was passed to getBytes"));
     }
 
     // @ts-ignore
     const args = new system_calls.get_object_arguments(space, finalKey);
     const encodedArgs = Protobuf.encode(args, system_calls.get_object_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.get_object, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_object, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
 
-    if (!len) {
+    if (!RETURN_BYTES[0]) {
       return null;
     }
 
-    const result = Protobuf.decode<system_calls.get_object_result>(readBuffer, system_calls.get_object_result.decode, len);
+    const result = Protobuf.decode<system_calls.get_object_result>(SYSTEM_CALL_BUFFER, system_calls.get_object_result.decode, RETURN_BYTES[0]);
 
     return (result.value!).value;
   }
@@ -846,21 +970,22 @@ export namespace System {
     } else if (typeof key == 'string') {
       finalKey = StringBytes.stringToBytes(key);
     } else {
-      exitContract(1);
+      exit(1, StringBytes.stringToBytes("An invalid key was passed to getNextBytes"));
     }
 
     // @ts-ignore
     const args = new system_calls.get_next_object_arguments(space, finalKey);
     const encodedArgs = Protobuf.encode(args, system_calls.get_next_object_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.get_next_object, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
-    if (!len) {
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_next_object, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+
+    if (retcode) {
       return null;
     }
 
-    const result = Protobuf.decode<system_calls.get_next_object_result>(readBuffer, system_calls.get_next_object_result.decode, len);
-    return result.value!;
+    const result = Protobuf.decode<system_calls.get_next_object_result>(SYSTEM_CALL_BUFFER, system_calls.get_next_object_result.decode, RETURN_BYTES[0]);
+    return result.value;
   }
 
 
@@ -919,22 +1044,22 @@ export namespace System {
     } else if (typeof key == 'string') {
       finalKey = StringBytes.stringToBytes(key);
     } else {
-      exitContract(1);
+      exit(1, StringBytes.stringToBytes("An invalid key was passed to getPrevBytes"));
     }
 
     // @ts-ignore
     const args = new system_calls.get_prev_object_arguments(space, finalKey);
     const encodedArgs = Protobuf.encode(args, system_calls.get_prev_object_arguments.encode);
-    const readBuffer = new Uint8Array(MAX_BUFFER_SIZE);
 
-    const len = env.invokeSystemCall(system_call_ids.system_call_id.get_prev_object, readBuffer.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength);
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_prev_object, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
 
-    if (!len) {
+    if (retcode) {
       return null;
     }
 
-    const result = Protobuf.decode<system_calls.get_prev_object_result>(readBuffer, system_calls.get_prev_object_result.decode, len);
-    return result.value!;
+    const result = Protobuf.decode<system_calls.get_prev_object_result>(SYSTEM_CALL_BUFFER, system_calls.get_prev_object_result.decode, RETURN_BYTES[0]);
+    return result.value;
   }
 
   /**
