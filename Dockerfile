@@ -1,4 +1,4 @@
-FROM ubuntu:focal as builder
+FROM ubuntu:jammy as builder
 ENV DEBIAN_FRONTEND noninteractive
 
 ENV KOINOS_PROTO_VERSION v0.4.0
@@ -32,7 +32,7 @@ RUN /opt/koinos-sdk/as/build_helpers/configure_project.sh && \
     cp -R /tmp/koinos-proto/koinos /opt/koinos-sdk/as/project/ && \
     rm -rf /opt/koinos-sdk/as/docker/build_helpers
 
-FROM ubuntu:focal
+FROM ubuntu:jammy
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt update && \

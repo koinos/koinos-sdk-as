@@ -14,7 +14,7 @@ yarn build:release
 
 # copy build artifacts
 if [ $? -eq 0 ]; then
-   mkdir /src/build
+   mkdir -p /src/build
 
    USER=`stat -c "%u" /src/*.ts | head -n 1`
    GROUP=`stat -c "%g" /src/*.ts | head -n 1`
