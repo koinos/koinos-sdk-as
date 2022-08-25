@@ -159,10 +159,10 @@
     ts-poet "^4.9.0"
     typescript "^4.6.4"
 
-"@koinos/mock-vm@^0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@koinos/mock-vm/-/mock-vm-0.4.1.tgz#83168bd2757a877b105f30c5e290e54c73f61ede"
-  integrity sha512-QlVmMVK7mqLExnB2Fi+8MdAMNjlaFGKkB1m+J/5BjJFb/iLaFvRp0xUziWmlJV/0Pebft5U3mtfHHa6BorNhHA==
+"@koinos/mock-vm@^0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@koinos/mock-vm/-/mock-vm-0.4.2.tgz#c2fc8af6680c532bc83f1e3bfa4318d8250c7b00"
+  integrity sha512-qAxorppWvdt5spqTPO4NfGBpskWOkqaoy7r9xH8CvP2KaQ31jFM2eBmtscoSnAi+1/GTIwX035O/Wse/0qF9Vw==
   dependencies:
     "@koinos/proto-js" "^0.4.0"
     "@noble/hashes" "^1.0.0"
