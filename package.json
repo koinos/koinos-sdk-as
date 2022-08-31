@@ -1,6 +1,6 @@
 {
   "name": "@koinos/sdk-as",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "main": "assembly/index.ts",
   "license": "MIT",
   "author": "Koinos Group <contact@koinos.group>",
@@ -12,7 +12,7 @@
     "@koinos/as-gen": "^0.4.0",
     "@koinos/as-proto-gen": "^0.4.3",
     "@koinos/mock-vm": "^0.4.1",
-    "@koinos/proto-as": "^0.4.3",
+    "@koinos/proto-as": "^0.4.5",
     "@koinos/sdk-as-cli": "^0.4.1",
     "@roaminroe/protoc": "^2.4.0",
     "as-bignum": "^0.2.18",
