@@ -573,7 +573,7 @@ export namespace Storage {
     * obj.remove();
     * ```
     */
-     remove(): void {
+    remove(): void {
       System.removeObject(this.space, defaultKey);
     }
   }
