@@ -3,14 +3,17 @@ import { chain } from '@koinos/proto-as';
 import { Protobuf, Reader, Writer } from 'as-proto';
 import { StringBytes } from './stringBytes';
 
-export namespace Space {
+const defaultKey = new Uint8Array(0);
+
+export namespace Storage {
   export enum Direction {
     Ascending,
     Descending
   }
 
-  export class Space<TKey, TValue> {
+  export class Map<TKey, TValue> {
     private space: chain.object_space;
+    private defaultValue: () => TValue | null;
     private valueDecoder: (reader: Reader, length: i32) => TValue;
     private valueEncoder: (message: TValue, writer: Writer) => void;
 
@@ -18,23 +21,32 @@ export namespace Space {
     * Initialize a Space object with TKey the type of the keys and TValue the type of the values
     * @param contractId the id of the contract
     * @param spaceId the id of the space
+    * @param defaultValue arrow function that returns the default value
     * @param valueDecoder the protobuf decoder for the values
     * @param valueEncoder the protobuf encoder for the values
     * @param system is system space
     * @example
     * ```ts
     * const contractId = Base58.decode('1DQzuCcTKacbs9GGScFTU1Hc8BsyARTPqe');
-    * const spaceId = 1;
-    * const Objects = new Space.Space<String, test_object>(contractId, spaceId, test_object.decode, test_object.encode);
+    * const BALANCES_SPACE_ID = 1;
+    * const balances = new Storage.Map(
+    *   this.contractId,
+    *   BALANCES_SPACE_ID,
+    *   () => new token.uint64(0),
+    *   token.uint64.decode,
+    *   token.uint64.encode
+    * );
     * ```
     */
     constructor(
       contractId: Uint8Array,
       spaceId: u32,
+      defaultValue: () => TValue | null,
       valueDecoder: (reader: Reader, length: i32) => TValue,
       valueEncoder: (message: TValue, writer: Writer) => void,
       system: bool = false) {
       this.space = new chain.object_space(system, contractId, spaceId);
+      this.defaultValue = defaultValue;
       this.valueDecoder = valueDecoder;
       this.valueEncoder = valueEncoder;
     }
@@ -71,7 +83,9 @@ export namespace Space {
     * ```
     */
     get(key: TKey): TValue | null {
-      return System.getObject<TKey, TValue>(this.space, key, this.valueDecoder);
+      const value = System.getObject<TKey, TValue>(this.space, key, this.valueDecoder);
+      if (!value && this.defaultValue) return this.defaultValue();
+      return value;
     }
 
     /**
@@ -265,7 +279,7 @@ export namespace Space {
     }
   }
 
-  export class SpaceProtoKey<TKey, TValue> extends Space<Uint8Array, TValue> {
+  export class ProtoMap<TKey, TValue> extends Map<Uint8Array, TValue> {
     private keyDecoder: (reader: Reader, length: i32) => TKey;
     private keyEncoder: (message: TKey, writer: Writer) => void;
 
@@ -287,12 +301,13 @@ export namespace Space {
     constructor(
       contractId: Uint8Array,
       spaceId: u32,
+      defaultValue: () => TValue | null,
       keyDecoder: (reader: Reader, length: i32) => TKey,
       keyEncoder: (message: TKey, writer: Writer) => void,
       valueDecoder: (reader: Reader, length: i32) => TValue,
       valueEncoder: (message: TValue, writer: Writer) => void,
       system: bool = false) {
-      super(contractId, spaceId, valueDecoder, valueEncoder, system);
+      super(contractId, spaceId, defaultValue, valueDecoder, valueEncoder, system);
       this.keyDecoder = keyDecoder;
       this.keyEncoder = keyEncoder;
     }
@@ -481,6 +496,85 @@ export namespace Space {
     remove(key: TKey): void {
       const finalKey = Protobuf.encode(key, this.keyEncoder);
       super.remove(finalKey);
+    }
+  }
+
+  export class Obj<TValue> {
+    private space: chain.object_space;
+    private defaultValue: () => TValue | null;
+    private valueDecoder: (reader: Reader, length: i32) => TValue;
+    private valueEncoder: (message: TValue, writer: Writer) => void;
+
+    /**
+    * Initialize a Space object with TKey the type of the keys and TValue the type of the values
+    * @param contractId the id of the contract
+    * @param spaceId the id of the space
+    * @param defaultValue arrow function that returns the default value
+    * @param valueDecoder the protobuf decoder for the values
+    * @param valueEncoder the protobuf encoder for the values
+    * @param system is system space
+    * @example
+    * ```ts
+    * const contractId = Base58.decode('1DQzuCcTKacbs9GGScFTU1Hc8BsyARTPqe');
+    * const SUPPLY_ID = 1;
+    * const supply = new Storage.Obj(
+    *   contractId,
+    *   SUPPLY_ID,
+    *   () => new token.uint64(0),
+    *   token.uint64.decode,
+    *   token.uint64.encode
+    * );
+    * ```
+    */
+    constructor(
+      contractId: Uint8Array,
+      spaceId: u32,
+      defaultValue: () => TValue | null,
+      valueDecoder: (reader: Reader, length: i32) => TValue,
+      valueEncoder: (message: TValue, writer: Writer) => void,
+      system: bool = false) {
+      this.space = new chain.object_space(system, contractId, spaceId);
+      this.defaultValue = defaultValue;
+      this.valueDecoder = valueDecoder;
+      this.valueEncoder = valueEncoder;
+    }
+
+    /**
+    * Get the object from the space
+    * @returns the object if exists, or the defaultValue
+    * if exists, null otherwise
+    * @example
+    * ```ts
+    * const myobj = obj.get();
+    * ```
+    */
+    get(): TValue | null {
+      const value = System.getObject<Uint8Array, TValue>(this.space, defaultKey, this.valueDecoder);
+      if (!value && this.defaultValue) return this.defaultValue();
+      return value;
+    }
+
+    /**
+    * Put an object in the space
+    * @param object object to put
+    * @example
+    * ```ts
+    * obj.put(new test_object(42));
+    * ```
+    */
+    put(object: TValue): void {
+      System.putObject(this.space, defaultKey, object, this.valueEncoder);
+    }
+
+    /**
+    * Remove the object from the space
+    * @example
+    * ```ts
+    * obj.remove();
+    * ```
+    */
+    remove(): void {
+      System.removeObject(this.space, defaultKey);
     }
   }
 }
