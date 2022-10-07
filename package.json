@@ -14,7 +14,7 @@
     "@koinos/mock-vm": "^0.4.2",
     "@koinos/proto-as": "^0.4.7",
     "@koinos/sdk-as-cli": "^0.4.1",
-    "@roaminroe/protoc": "^2.4.0",
+    "@roamin/protoc": "^2.4.0",
     "as-bignum": "^0.2.18",
     "as-proto": "npm:@koinos/as-proto",
     "assemblyscript": "^0.19.22"
