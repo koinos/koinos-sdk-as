@@ -4,8 +4,8 @@ import { test_object } from './test';
 const mockContractId = Base58.decode('1DQzuCcTKacbs9GGScFTU1Hc8BsyARTPqe');
 const mockKey = StringBytes.stringToBytes("0x12345");
 
-describe('space', () => {
-  it('should put and get an object', () => {
+describe('storage', () => {
+  it('should put and get an object in a Map', () => {
     const obj = new test_object(42);
     const Objects = new Storage.Map<String, test_object>(mockContractId, 1, test_object.decode, test_object.encode);
     const key = 'key1';
@@ -17,7 +17,15 @@ describe('space', () => {
     expect(storedObj!.value).toBe(obj.value);
   });
 
-  it('should check if space has an object or not', () => {
+  it('should get an object in a Map with default value', () => {
+    const Objects = new Storage.Map<String, test_object>(mockContractId, 1, test_object.decode, test_object.encode, () => new test_object(42));
+    const key = 'idonotexist';
+
+    let storedObj = Objects.get(key);
+    expect(storedObj!.value).toBe(42);
+  });
+
+  it('should check if storage has an object or not', () => {
     const key = 'key1';
     const Objects = new Storage.Map<String, test_object>(mockContractId, 1, test_object.decode, test_object.encode);
 
@@ -120,7 +128,7 @@ describe('space', () => {
   });
 });
 
-describe('space with proto key', () => {
+describe('storage with proto key', () => {
   it('should put and get an object', () => {
     const key = new test_object(1);
     const obj = new test_object(42);
@@ -133,7 +141,7 @@ describe('space with proto key', () => {
     expect(storedObj!.value).toBe(obj.value);
   });
 
-  it('should check if space has an object or not', () => {
+  it('should check if storage has an object or not', () => {
     const key = new test_object(1);
     const Objects = new Storage.ProtoMap<test_object, test_object>(mockContractId, 2,test_object.decode, test_object.encode, test_object.decode, test_object.encode);
 
@@ -219,5 +227,29 @@ describe('space with proto key', () => {
     expect(key.length).toBe(2);
     expect(key[0].value).toBe(3);
     expect(key[1].value).toBe(2);
+  });
+
+  it('should put, get and remove an object in a Obj', () => {
+    const obj = new test_object(42);
+    const objStorage = new Storage.Obj<test_object>(mockContractId, 100, test_object.decode, test_object.encode);
+
+    objStorage.put(obj);
+
+    let storedObj = objStorage.get();
+    expect(storedObj).not.toBeNull();
+    expect(storedObj!.value).toBe(obj.value);
+
+    objStorage.remove();
+
+    storedObj = objStorage.get();
+    expect(storedObj).toBeNull();
+  });
+
+  it('should get  an object in a Obj with default value', () => {
+    const objStorage = new Storage.Obj<test_object>(mockContractId, 1000, test_object.decode, test_object.encode, () => new test_object(42));
+
+    let storedObj = objStorage.get();
+    expect(storedObj).not.toBeNull();
+    expect(storedObj!.value).toBe(42);
   });
 });

@@ -3,7 +3,7 @@ import { chain } from '@koinos/proto-as';
 import { Protobuf, Reader, Writer } from 'as-proto';
 import { StringBytes } from './stringBytes';
 
-const defaultKey = new Uint8Array(0);
+const DEFAULT_KEY = new Uint8Array(0);
 
 export namespace Storage {
   export enum Direction {
@@ -549,7 +549,7 @@ export namespace Storage {
     * ```
     */
     get(): TValue | null {
-      const value = System.getObject<Uint8Array, TValue>(this.space, defaultKey, this.valueDecoder);
+      const value = System.getObject<Uint8Array, TValue>(this.space, DEFAULT_KEY, this.valueDecoder);
       if (!value && this.defaultValue) return this.defaultValue();
       return value;
     }
@@ -563,7 +563,7 @@ export namespace Storage {
     * ```
     */
     put(object: TValue): void {
-      System.putObject(this.space, defaultKey, object, this.valueEncoder);
+      System.putObject(this.space, DEFAULT_KEY, object, this.valueEncoder);
     }
 
     /**
@@ -574,7 +574,7 @@ export namespace Storage {
     * ```
     */
     remove(): void {
-      System.removeObject(this.space, defaultKey);
+      System.removeObject(this.space, DEFAULT_KEY);
     }
   }
 }
