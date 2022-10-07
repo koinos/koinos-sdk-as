@@ -156,6 +156,30 @@ export namespace MockVM {
   }
 
   /**
+    * Set transaction that will be used when calling System.getTransaction() and System.getTransactionField(...)
+    * @param { protocol.transaction } transaction transaction to set
+    * @example
+    * ```ts
+    * let transaction = new protocol.transaction();
+    * transaction.id = StringBytes.stringToBytes("0x12345");
+    *
+    * MockVM.setTransaction(transaction);
+    *
+    * transaction = System.getTransaction();
+    *
+    * System.log("transaction.id: " + (StringBytes.bytesToString((transaction.id)!)!));
+    *
+    * let txField = System.getTransactionField('id');
+    * if (txField) {
+    *   System.log("transaction.id: " + (StringBytes.bytesToString((txField.bytes_value) as Uint8Array) as string));
+    * }
+    * ```
+    */
+  export function setOperation(operation: protocol.operation): void {
+    System.putObject(METADATA_SPACE, 'operation', operation, protocol.operation.encode);
+  }
+
+  /**
     * Set block that will be used when calling System.getBlock() and System.getBlockField(...)
     * @param { protocol.block } block block to set
     * @example
@@ -210,36 +234,36 @@ export namespace MockVM {
     System.putObject(METADATA_SPACE, 'authority', authoritiesListType, value.list_type.encode);
   }
 
-   /**
-    * Set results that will be used when calling System.verifyVRFProof(...)
-    * @param { Uint8Array[] } verifyVRFProofResults The results are FIFO, so the first System.verifyVRFPRoof(...) used in your code will use the first result you set in callContractResults, the second System.callContract(...) will get the second result, etc...
-    * @example
-    * ```ts
-    MockVM.setVerifyVRFProofResults([false, true]);
+  /**
+   * Set results that will be used when calling System.verifyVRFProof(...)
+   * @param { Uint8Array[] } verifyVRFProofResults The results are FIFO, so the first System.verifyVRFPRoof(...) used in your code will use the first result you set in callContractResults, the second System.callContract(...) will get the second result, etc...
+   * @example
+   * ```ts
+   MockVM.setVerifyVRFProofResults([false, true]);
 
-    let callRes = System.verifyVRFProof(pubKey, proof, hash, messgae);
-    if (callRes) {
-      // Will execute
+   let callRes = System.verifyVRFProof(pubKey, proof, hash, messgae);
+   if (callRes) {
+     // Will execute
+   }
+
+   let callRes = System.verifyVRFProof(pubKey, proof, hash, messgae);
+   if (callRes) {
+     // Will not execute
+   }
+   * ```
+   */
+  export function setVerifyVRFPRoofResults(verifyVRFProofResults: bool[]): void {
+    const verifyVRFProofResultListType = new value.list_type();
+
+    for (let index = 0; index < verifyVRFProofResults.length; index++) {
+      const callVerufyVRFProofValueType = new value.value_type();
+      callVerufyVRFProofValueType.bool_value = verifyVRFProofResults[index];
+
+      verifyVRFProofResultListType.values.push(callVerufyVRFProofValueType);
     }
 
-    let callRes = System.verifyVRFProof(pubKey, proof, hash, messgae);
-    if (callRes) {
-      // Will not execute
-    }
-    * ```
-    */
-    export function setVerifyVRFPRoofResults(verifyVRFProofResults: bool[]): void {
-      const verifyVRFProofResultListType = new value.list_type();
-
-      for (let index = 0; index < verifyVRFProofResults.length; index++) {
-        const callVerufyVRFProofValueType = new value.value_type();
-        callVerufyVRFProofValueType.bool_value = verifyVRFProofResults[index];
-
-        verifyVRFProofResultListType.values.push(callVerufyVRFProofValueType);
-      }
-
-      System.putObject(METADATA_SPACE, 'verify_vrf', verifyVRFProofResultListType, value.list_type.encode);
-    }
+    System.putObject(METADATA_SPACE, 'verify_vrf', verifyVRFProofResultListType, value.list_type.encode);
+  }
 
   /**
     * Set call contract results that will be used when calling System.callContract(...)

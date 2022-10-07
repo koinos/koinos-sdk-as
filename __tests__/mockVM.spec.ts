@@ -78,6 +78,18 @@ describe('MockVM', () => {
     expect(Arrays.equal(getTransaction.id, setTransaction.id)).toBe(true);
   });
 
+  xit('should set the operation', () => {
+    let setOperation = new protocol.operation();
+    setOperation.set_system_contract = new protocol.set_system_contract_operation(mockAccount, true);
+
+    MockVM.setOperation(setOperation);
+
+    const getOperation = System.getOperation();
+
+    expect(Arrays.equal(getOperation.set_system_contract!.contract_id, setOperation.set_system_contract!.contract_id)).toBe(true);
+    expect(getOperation.set_system_contract!.system_contract).toBe(true);
+  });
+
   it('should set the block', () => {
     let setBlock = new protocol.block(mockId);
 

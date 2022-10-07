@@ -172,6 +172,25 @@ export namespace System {
   }
 
   /**
+    * Get the current operation
+    * @returns protocol.operation
+    * @example
+    * ```ts
+    *  const op = System.getOperation();
+    * ```
+    */
+  export function getOperation(): protocol.operation {
+    const args = new system_calls.get_operation_arguments();
+    const encodedArgs = Protobuf.encode(args, system_calls.get_operation_arguments.encode);
+
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_operation, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.get_operation_result>(SYSTEM_CALL_BUFFER, system_calls.get_operation_result.decode, RETURN_BYTES[0]);
+
+    return result.value!;
+  }
+
+  /**
     * Get the current block
     * @returns protocol.block
     * @example
@@ -479,7 +498,7 @@ export namespace System {
    * @param type type of signature
    */
   export function verifyVRFProof(publicKey: Uint8Array, proof: Uint8Array, hash: Uint8Array, message: Uint8Array, type: chain.dsa = chain.dsa.ecdsa_secp256k1): bool {
-    const args = new system_calls.verify_vrf_proof_arguments(type, publicKey, proof, hash, message );
+    const args = new system_calls.verify_vrf_proof_arguments(type, publicKey, proof, hash, message);
     const encodedArgs = Protobuf.encode(args, system_calls.verify_vrf_proof_arguments.encode);
 
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.verify_vrf_proof, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
@@ -552,7 +571,7 @@ export namespace System {
       result.object = Protobuf.decode<system_calls.call_result>(SYSTEM_CALL_BUFFER, system_calls.call_result.decode, RETURN_BYTES[0]).value;
     }
 
-    return {code: retcode, res: result};
+    return { code: retcode, res: result };
   }
 
   export class getArgumentsReturn {
@@ -585,10 +604,10 @@ export namespace System {
 
     let ret = new getArgumentsReturn();
 
-    if ( result.value ) {
+    if (result.value) {
       ret.entry_point = result.value!.entry_point;
 
-      if ( result.value!.arguments ) {
+      if (result.value!.arguments) {
         ret.args = result.value!.arguments!;
       }
     }
@@ -725,7 +744,7 @@ export namespace System {
     * System.checkAuthority(authority.authorization_type.transaction_application, Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe));
     * ```
     */
-  export function checkAuthority(type: authority.authorization_type, account: Uint8Array, data: Uint8Array | null = null ): bool {
+  export function checkAuthority(type: authority.authorization_type, account: Uint8Array, data: Uint8Array | null = null): bool {
     const args = new system_calls.check_authority_arguments(type, account, data);
     const encodedArgs = Protobuf.encode(args, system_calls.check_authority_arguments.encode);
 
@@ -735,16 +754,16 @@ export namespace System {
     return result.value;
   }
 
-   /**
-    * Require authority for an account
-    * @param type type of authority required
-    * @param account account to check
-    * @throws revert the transaction if the account is not authorized
-    * @example
-    * ```ts
-    * System.requireAuthority(authority.authorization_type.transaction_application, Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe));
-    * ```
-    */
+  /**
+   * Require authority for an account
+   * @param type type of authority required
+   * @param account account to check
+   * @throws revert the transaction if the account is not authorized
+   * @example
+   * ```ts
+   * System.requireAuthority(authority.authorization_type.transaction_application, Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe));
+   * ```
+   */
   export function requireAuthority(type: authority.authorization_type, account: Uint8Array): void {
     require(checkAuthority(type, account), "account '" + Base58.encode(account) + "' authorization failed", error.error_code.authorization_failure);
   }
