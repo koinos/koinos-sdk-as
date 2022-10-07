@@ -11,7 +11,7 @@ describe('MockVM', () => {
   it('should get the chain id', () => {
     const chainId = mockAccount;
 
-    MockVM.setChainId(chainId)
+    MockVM.setChainId(chainId);
 
     expect(Arrays.equal(System.getChainId(), chainId)).toBe(true);
   });
@@ -24,7 +24,7 @@ describe('MockVM', () => {
     const getContractArgs = System.getArguments();
 
     expect(Arrays.equal(getContractArgs.args, mockAccount)).toBe(true);
-    expect(getContractArgs.entry_point).toBe(setEntryPoint)
+    expect(getContractArgs.entry_point).toBe(setEntryPoint);
   });
 
   it('should set the contract id', () => {
@@ -193,7 +193,7 @@ describe('MockVM', () => {
     const message = "my message";
     System.putBytes(MockVM.METADATA_SPACE, 'error_message', StringBytes.stringToBytes(message));
 
-    expect(MockVM.getErrorMessage()).toBe(message)
+    expect(MockVM.getErrorMessage()).toBe(message);
   });
 
   it("should set verify vrf proof results", () => {

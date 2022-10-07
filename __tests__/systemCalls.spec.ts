@@ -17,7 +17,7 @@ describe('SystemCalls', () => {
   it('should get the chain id', () => {
     const chainId = mockAccount;
 
-    MockVM.setChainId(chainId)
+    MockVM.setChainId(chainId);
 
     expect(Arrays.equal(System.getChainId(), chainId)).toBe(true);
   });
@@ -249,7 +249,7 @@ describe('SystemCalls', () => {
     const getContractArgs = System.getArguments();
 
     expect(Arrays.equal(getContractArgs.args, mockAccount)).toBe(true);
-    expect(getContractArgs.entry_point).toBe(setEntryPoint)
+    expect(getContractArgs.entry_point).toBe(setEntryPoint);
   });
 
   it('should get the contract id', () => {
