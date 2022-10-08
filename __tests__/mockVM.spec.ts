@@ -78,7 +78,7 @@ describe('MockVM', () => {
     expect(Arrays.equal(getTransaction.id, setTransaction.id)).toBe(true);
   });
 
-  xit('should set the operation', () => {
+  it('should set the operation', () => {
     let setOperation = new protocol.operation();
     setOperation.set_system_contract = new protocol.set_system_contract_operation(mockAccount, true);
 
@@ -209,7 +209,7 @@ describe('MockVM', () => {
   });
 
   it("should set verify vrf proof results", () => {
-    MockVM.setVerifyVRFPRoofResults([false, true]);
+    MockVM.setVerifyVRFProofResults([false, true]);
 
     expect(System.verifyVRFProof(new Uint8Array(0), new Uint8Array(0), new Uint8Array(0), new Uint8Array(0))).toBe(false);
     expect(System.verifyVRFProof(new Uint8Array(0), new Uint8Array(0), new Uint8Array(0), new Uint8Array(0))).toBe(true);

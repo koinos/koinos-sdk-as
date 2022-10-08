@@ -11,7 +11,7 @@
     "@koinos/abi-proto-gen": "^0.4.0",
     "@koinos/as-gen": "^0.4.0",
     "@koinos/as-proto-gen": "^0.4.3",
-    "@koinos/mock-vm": "^0.4.2",
+    "@koinos/mock-vm": "^0.4.3",
     "@koinos/proto-as": "^0.4.7",
     "@koinos/sdk-as-cli": "^0.4.1",
     "@roamin/protoc": "^2.4.0",

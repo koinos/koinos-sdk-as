@@ -156,23 +156,17 @@ export namespace MockVM {
   }
 
   /**
-    * Set transaction that will be used when calling System.getTransaction() and System.getTransactionField(...)
-    * @param { protocol.transaction } transaction transaction to set
+    * Set operation that will be used when calling System.getOperation()
+    * @param { protocol.operation } operation operation to set
     * @example
     * ```ts
-    * let transaction = new protocol.transaction();
-    * transaction.id = StringBytes.stringToBytes("0x12345");
+    * let setOperation = new protocol.operation();
+    * setOperation.set_system_contract = new protocol.set_system_contract_operation(Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe'), true);
     *
-    * MockVM.setTransaction(transaction);
+    * MockVM.setOperation(setOperation);
     *
-    * transaction = System.getTransaction();
-    *
-    * System.log("transaction.id: " + (StringBytes.bytesToString((transaction.id)!)!));
-    *
-    * let txField = System.getTransactionField('id');
-    * if (txField) {
-    *   System.log("transaction.id: " + (StringBytes.bytesToString((txField.bytes_value) as Uint8Array) as string));
-    * }
+    * const getOperation = System.getOperation();
+    * ...
     * ```
     */
   export function setOperation(operation: protocol.operation): void {
@@ -252,14 +246,14 @@ export namespace MockVM {
    }
    * ```
    */
-  export function setVerifyVRFPRoofResults(verifyVRFProofResults: bool[]): void {
+  export function setVerifyVRFProofResults(verifyVRFProofResults: bool[]): void {
     const verifyVRFProofResultListType = new value.list_type();
 
     for (let index = 0; index < verifyVRFProofResults.length; index++) {
-      const callVerufyVRFProofValueType = new value.value_type();
-      callVerufyVRFProofValueType.bool_value = verifyVRFProofResults[index];
+      const callVerifyVRFProofValueType = new value.value_type();
+      callVerifyVRFProofValueType.bool_value = verifyVRFProofResults[index];
 
-      verifyVRFProofResultListType.values.push(callVerufyVRFProofValueType);
+      verifyVRFProofResultListType.values.push(callVerifyVRFProofValueType);
     }
 
     System.putObject(METADATA_SPACE, 'verify_vrf', verifyVRFProofResultListType, value.list_type.encode);

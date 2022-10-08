@@ -55,7 +55,7 @@ describe('SystemCalls', () => {
     expect(Arrays.equal(getTransaction!.bytes_value, setTransaction.id)).toBe(true);
   });
 
-  xit('should get the operation', () => {
+  it('should get the operation', () => {
     let setOperation = new protocol.operation();
     setOperation.set_system_contract = new protocol.set_system_contract_operation(mockAccount, true);
 
