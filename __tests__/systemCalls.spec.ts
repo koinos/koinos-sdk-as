@@ -17,7 +17,7 @@ describe('SystemCalls', () => {
   it('should get the chain id', () => {
     const chainId = mockAccount;
 
-    MockVM.setChainId(chainId)
+    MockVM.setChainId(chainId);
 
     expect(Arrays.equal(System.getChainId(), chainId)).toBe(true);
   });
@@ -53,6 +53,18 @@ describe('SystemCalls', () => {
     const getTransaction = System.getTransactionField('id');
 
     expect(Arrays.equal(getTransaction!.bytes_value, setTransaction.id)).toBe(true);
+  });
+
+  it('should get the operation', () => {
+    let setOperation = new protocol.operation();
+    setOperation.set_system_contract = new protocol.set_system_contract_operation(mockAccount, true);
+
+    MockVM.setOperation(setOperation);
+
+    const getOperation = System.getOperation();
+
+    expect(Arrays.equal(getOperation.set_system_contract!.contract_id, setOperation.set_system_contract!.contract_id)).toBe(true);
+    expect(getOperation.set_system_contract!.system_contract).toBe(true);
   });
 
   it('should get the block', () => {
@@ -249,7 +261,7 @@ describe('SystemCalls', () => {
     const getContractArgs = System.getArguments();
 
     expect(Arrays.equal(getContractArgs.args, mockAccount)).toBe(true);
-    expect(getContractArgs.entry_point).toBe(setEntryPoint)
+    expect(getContractArgs.entry_point).toBe(setEntryPoint);
   });
 
   it('should get the contract id', () => {

@@ -3,7 +3,7 @@ import { chain } from '@koinos/proto-as';
 import { Protobuf, Reader, Writer } from 'as-proto';
 import { StringBytes } from './stringBytes';
 
-const defaultKey = new Uint8Array(0);
+const DEFAULT_KEY = new Uint8Array(0);
 
 export namespace Storage {
   export enum Direction {
@@ -13,7 +13,7 @@ export namespace Storage {
 
   export class Map<TKey, TValue> {
     private space: chain.object_space;
-    private defaultValue: () => TValue | null;
+    private defaultValue: (() => TValue | null) | null;
     private valueDecoder: (reader: Reader, length: i32) => TValue;
     private valueEncoder: (message: TValue, writer: Writer) => void;
 
@@ -21,9 +21,9 @@ export namespace Storage {
     * Initialize a Space object with TKey the type of the keys and TValue the type of the values
     * @param contractId the id of the contract
     * @param spaceId the id of the space
-    * @param defaultValue arrow function that returns the default value
     * @param valueDecoder the protobuf decoder for the values
     * @param valueEncoder the protobuf encoder for the values
+    * @param defaultValue arrow function that returns the default value
     * @param system is system space
     * @example
     * ```ts
@@ -32,18 +32,18 @@ export namespace Storage {
     * const balances = new Storage.Map(
     *   this.contractId,
     *   BALANCES_SPACE_ID,
-    *   () => new token.uint64(0),
     *   token.uint64.decode,
-    *   token.uint64.encode
+    *   token.uint64.encode,
+    *   () => new token.uint64(0)
     * );
     * ```
     */
     constructor(
       contractId: Uint8Array,
       spaceId: u32,
-      defaultValue: () => TValue | null,
       valueDecoder: (reader: Reader, length: i32) => TValue,
       valueEncoder: (message: TValue, writer: Writer) => void,
+      defaultValue: (() => TValue | null) | null = null,
       system: bool = false) {
       this.space = new chain.object_space(system, contractId, spaceId);
       this.defaultValue = defaultValue;
@@ -301,13 +301,13 @@ export namespace Storage {
     constructor(
       contractId: Uint8Array,
       spaceId: u32,
-      defaultValue: () => TValue | null,
       keyDecoder: (reader: Reader, length: i32) => TKey,
       keyEncoder: (message: TKey, writer: Writer) => void,
       valueDecoder: (reader: Reader, length: i32) => TValue,
       valueEncoder: (message: TValue, writer: Writer) => void,
+      defaultValue: (() => TValue | null) | null = null,
       system: bool = false) {
-      super(contractId, spaceId, defaultValue, valueDecoder, valueEncoder, system);
+      super(contractId, spaceId, valueDecoder, valueEncoder, defaultValue, system);
       this.keyDecoder = keyDecoder;
       this.keyEncoder = keyEncoder;
     }
@@ -501,7 +501,7 @@ export namespace Storage {
 
   export class Obj<TValue> {
     private space: chain.object_space;
-    private defaultValue: () => TValue | null;
+    private defaultValue: (() => TValue | null) | null;
     private valueDecoder: (reader: Reader, length: i32) => TValue;
     private valueEncoder: (message: TValue, writer: Writer) => void;
 
@@ -509,9 +509,9 @@ export namespace Storage {
     * Initialize a Space object with TKey the type of the keys and TValue the type of the values
     * @param contractId the id of the contract
     * @param spaceId the id of the space
-    * @param defaultValue arrow function that returns the default value
     * @param valueDecoder the protobuf decoder for the values
     * @param valueEncoder the protobuf encoder for the values
+    * @param defaultValue arrow function that returns the default value
     * @param system is system space
     * @example
     * ```ts
@@ -520,18 +520,18 @@ export namespace Storage {
     * const supply = new Storage.Obj(
     *   contractId,
     *   SUPPLY_ID,
-    *   () => new token.uint64(0),
     *   token.uint64.decode,
-    *   token.uint64.encode
+    *   token.uint64.encode,
+    *   () => new token.uint64(0)
     * );
     * ```
     */
     constructor(
       contractId: Uint8Array,
       spaceId: u32,
-      defaultValue: () => TValue | null,
       valueDecoder: (reader: Reader, length: i32) => TValue,
       valueEncoder: (message: TValue, writer: Writer) => void,
+      defaultValue: (() => TValue | null) | null = null,
       system: bool = false) {
       this.space = new chain.object_space(system, contractId, spaceId);
       this.defaultValue = defaultValue;
@@ -549,7 +549,7 @@ export namespace Storage {
     * ```
     */
     get(): TValue | null {
-      const value = System.getObject<Uint8Array, TValue>(this.space, defaultKey, this.valueDecoder);
+      const value = System.getObject<Uint8Array, TValue>(this.space, DEFAULT_KEY, this.valueDecoder);
       if (!value && this.defaultValue) return this.defaultValue();
       return value;
     }
@@ -563,7 +563,7 @@ export namespace Storage {
     * ```
     */
     put(object: TValue): void {
-      System.putObject(this.space, defaultKey, object, this.valueEncoder);
+      System.putObject(this.space, DEFAULT_KEY, object, this.valueEncoder);
     }
 
     /**
@@ -574,7 +574,7 @@ export namespace Storage {
     * ```
     */
     remove(): void {
-      System.removeObject(this.space, defaultKey);
+      System.removeObject(this.space, DEFAULT_KEY);
     }
   }
 }
