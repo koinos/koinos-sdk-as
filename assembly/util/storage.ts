@@ -279,7 +279,8 @@ export namespace Storage {
     }
   }
 
-  export class ProtoMap<TKey, TValue> extends Map<Uint8Array, TValue> {
+  export class ProtoMap<TKey, TValue>{
+    private map: Map<Uint8Array, TValue>;
     private keyDecoder: (reader: Reader, length: i32) => TKey;
     private keyEncoder: (message: TKey, writer: Writer) => void;
 
@@ -307,7 +308,7 @@ export namespace Storage {
       valueEncoder: (message: TValue, writer: Writer) => void,
       defaultValue: (() => TValue | null) | null = null,
       system: bool = false) {
-      super(contractId, spaceId, valueDecoder, valueEncoder, defaultValue, system);
+      this.map = new Map(contractId, spaceId, valueDecoder, valueEncoder, defaultValue, system);
       this.keyDecoder = keyDecoder;
       this.keyEncoder = keyEncoder;
     }
@@ -324,10 +325,9 @@ export namespace Storage {
     * }
     * ```
     */
-    // @ts-ignore valid in AS
     has(key: TKey): boolean {
       const finalKey = Protobuf.encode(key, this.keyEncoder);
-      const object = super.get(finalKey);
+      const object = this.map.get(finalKey);
 
       return object ? true : false;
     }
@@ -345,10 +345,9 @@ export namespace Storage {
     * }
     * ```
     */
-    // @ts-ignore valid in AS
     get(key: TKey): TValue | null {
       const finalKey = Protobuf.encode(key, this.keyEncoder);
-      return super.get(finalKey);
+      return this.map.get(finalKey);
     }
 
     /**
@@ -368,7 +367,7 @@ export namespace Storage {
     */
     getManyObj(offsetKey: TKey, limit: i32 = i32.MAX_VALUE, direction: Direction = Direction.Ascending): System.ProtoDatabaseObject<TValue>[] {
       const finalKey = Protobuf.encode(offsetKey, this.keyEncoder);
-      return super.getMany(finalKey, limit, direction);
+      return this.map.getMany(finalKey, limit, direction);
     }
 
     /**
@@ -388,7 +387,7 @@ export namespace Storage {
     */
     getManyObjValues(offsetKey: TKey, limit: i32 = i32.MAX_VALUE, direction: Direction = Direction.Ascending): TValue[] {
       const finalKey = Protobuf.encode(offsetKey, this.keyEncoder);
-      return super.getManyValues(finalKey, limit, direction);
+      return this.map.getManyValues(finalKey, limit, direction);
     }
 
     /**
@@ -414,7 +413,7 @@ export namespace Storage {
       let done = false;
       do {
         // @ts-ignore key is always initialized when reaching this code
-        const obj = direction == Direction.Ascending ? System.getNextObject<Uint8Array, TValue>(this.space, key, this.valueDecoder) : System.getPrevObject<Uint8Array, TValue>(this.space, key, this.valueDecoder);
+        const obj = direction == Direction.Ascending ? System.getNextObject<Uint8Array, TValue>(this.map.space, key, this.map.valueDecoder) : System.getPrevObject<Uint8Array, TValue>(this.map.space, key, this.map.valueDecoder);
         if (obj) {
           key = obj.key!;
           result.push(Protobuf.decode(key, this.keyDecoder));
@@ -440,10 +439,9 @@ export namespace Storage {
     * }
     * ```
     */
-    // @ts-ignore valid in AS
     getNext(key: TKey): System.ProtoDatabaseObject<TValue> | null {
       const finalKey = Protobuf.encode(key, this.keyEncoder);
-      return super.getNext(finalKey);
+      return this.map.getNext(finalKey);
     }
 
     /**
@@ -460,10 +458,9 @@ export namespace Storage {
     * }
     * ```
     */
-    // @ts-ignore valid in AS
     getPrev(key: TKey): System.ProtoDatabaseObject<TValue> | null {
       const finalKey = Protobuf.encode(key, this.keyEncoder);
-      return super.getPrev(finalKey);
+      return this.map.getPrev(finalKey);
     }
 
     /**
@@ -478,10 +475,9 @@ export namespace Storage {
     * System.log(nbBytesWritten.toString());
     * ```
     */
-    // @ts-ignore valid in AS
     put(key: TKey, object: TValue): void {
       const finalKey = Protobuf.encode(key, this.keyEncoder);
-      super.put(finalKey, object);
+      this.map.put(finalKey, object);
     }
 
     /**
@@ -492,10 +488,9 @@ export namespace Storage {
     * Objects.remove(new test_key(1));
     * ```
     */
-    // @ts-ignore valid in AS
     remove(key: TKey): void {
       const finalKey = Protobuf.encode(key, this.keyEncoder);
-      super.remove(finalKey);
+      this.map.remove(finalKey);
     }
   }
 
