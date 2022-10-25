@@ -711,6 +711,16 @@ export namespace System {
     return result.value!;
   }
 
+  /**
+   * Get the name of a system contract for a given address
+   * @param address The address of the system contract
+   * @returns Uint8Array The contract's name
+   * @example
+   * ```ts
+   * const name = System.getContractName(Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe'));
+   * System.log('contract name: ' + StringBytes.bytesToString(name));
+   * ```
+   */
   export function getContractName(address:Uint8Array): string {
     const args = new name_service.get_name_arguments(address);
     const encodedArgs = Protobuf.encode(args, name_service.get_name_arguments.encode);
@@ -722,6 +732,16 @@ export namespace System {
     return result.value!.name!;
   }
 
+   /**
+   * Get the address for a given system contract name
+   * @param name The name of the system contract
+   * @returns Uint8Array The contract's address
+   * @example
+   * ```ts
+   * const address = System.getSystemContractAddress('koin');
+   * System.log('address (b58): ' + address);
+   * ```
+   */
   export function getContractAddress(name:string): Uint8Array {
     const args = new name_service.get_address_arguments(name);
     const encodedArgs = Protobuf.encode(args, name_service.get_address_arguments.encode);
