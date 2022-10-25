@@ -738,7 +738,7 @@ export namespace System {
    * @returns Uint8Array The contract's address
    * @example
    * ```ts
-   * const address = System.getSystemContractAddress('koin');
+   * const address = System.getContractAddress('koin');
    * System.log('address (b58): ' + address);
    * ```
    */
