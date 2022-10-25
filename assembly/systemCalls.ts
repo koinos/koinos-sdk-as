@@ -714,11 +714,11 @@ export namespace System {
   /**
    * Get the name of a system contract for a given address
    * @param address The address of the system contract
-   * @returns Uint8Array The contract's name
+   * @returns string The contract's name
    * @example
    * ```ts
    * const name = System.getContractName(Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe'));
-   * System.log('contract name: ' + StringBytes.bytesToString(name));
+   * System.log('contract name: ' + name);
    * ```
    */
   export function getContractName(address:Uint8Array): string {
@@ -739,7 +739,7 @@ export namespace System {
    * @example
    * ```ts
    * const address = System.getContractAddress('koin');
-   * System.log('address (b58): ' + address);
+   * System.log('address (b58): ' + Base58.encode(address));
    * ```
    */
   export function getContractAddress(name:string): Uint8Array {
