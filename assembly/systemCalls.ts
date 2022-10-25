@@ -1,6 +1,6 @@
 import { env } from "./env";
 import { Protobuf, Reader, Writer } from 'as-proto';
-import { system_calls, system_call_ids, chain, protocol, authority, value, error } from '@koinos/proto-as';
+import { system_calls, system_call_ids, chain, protocol, authority, value, error, name_service } from '@koinos/proto-as';
 import { StringBytes } from ".";
 import { Base58 } from "./util";
 
@@ -709,6 +709,48 @@ export namespace System {
     const result = Protobuf.decode<system_calls.get_contract_id_result>(SYSTEM_CALL_BUFFER, system_calls.get_contract_id_result.decode, RETURN_BYTES[0]);
 
     return result.value!;
+  }
+
+  /**
+   * Get the name of a system contract for a given address
+   * @param address The address of the system contract
+   * @returns string The contract's name
+   * @example
+   * ```ts
+   * const name = System.getContractName(Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe'));
+   * System.log('contract name: ' + name);
+   * ```
+   */
+  export function getContractName(address:Uint8Array): string {
+    const args = new name_service.get_name_arguments(address);
+    const encodedArgs = Protobuf.encode(args, name_service.get_name_arguments.encode);
+
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_contract_name, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<name_service.get_name_result>(SYSTEM_CALL_BUFFER, name_service.get_name_result.decode, RETURN_BYTES[0]);
+
+    return result.value!.name!;
+  }
+
+   /**
+   * Get the address for a given system contract name
+   * @param name The name of the system contract
+   * @returns Uint8Array The contract's address
+   * @example
+   * ```ts
+   * const address = System.getContractAddress('koin');
+   * System.log('address (b58): ' + Base58.encode(address));
+   * ```
+   */
+  export function getContractAddress(name:string): Uint8Array {
+    const args = new name_service.get_address_arguments(name);
+    const encodedArgs = Protobuf.encode(args, name_service.get_address_arguments.encode);
+
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_contract_address, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<name_service.get_address_result>(SYSTEM_CALL_BUFFER, name_service.get_address_result.decode, RETURN_BYTES[0]);
+
+    return result.value!.address!;
   }
 
   /**
