@@ -229,6 +229,22 @@ export namespace MockVM {
   }
 
   /**
+   * Set system authority that will be used when calling System.requireSystemAuthority(...)
+   * @param { bool } authorized
+   * ```ts
+   * MockVM.setSystemAuthority(true);
+   *
+   * System.requireSystemAuthority();
+   * ```
+   */
+  export function setSystemAuthority(authorized: bool): void {
+    const systemAuthValueType = new value.value_type();
+    systemAuthValueType.bool_value = authorized;
+
+    System.putObject(METADATA_SPACE, 'system_authority', systemAuthValueType, value.value_type.encode);
+  }
+
+  /**
    * Set results that will be used when calling System.verifyVRFProof(...)
    * @param { Uint8Array[] } verifyVRFProofResults The results are FIFO, so the first System.verifyVRFPRoof(...) used in your code will use the first result you set in callContractResults, the second System.callContract(...) will get the second result, etc...
    * @example
