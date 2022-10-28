@@ -292,7 +292,7 @@ export namespace System {
 
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.check_system_authority, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
     checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
-    return Protobuf.decode<system_calls.check_system_authority_result>(SYSTEM_CALL_BUFFER, system_calls.check_system_authority_result.decode).value;
+    return Protobuf.decode<system_calls.check_system_authority_result>(SYSTEM_CALL_BUFFER, system_calls.check_system_authority_result.decode, RETURN_BYTES[0]).value;
   }
 
   export function requireSystemAuthority(): void {

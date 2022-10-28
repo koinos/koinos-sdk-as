@@ -214,4 +214,12 @@ describe('MockVM', () => {
     expect(System.verifyVRFProof(new Uint8Array(0), new Uint8Array(0), new Uint8Array(0), new Uint8Array(0))).toBe(false);
     expect(System.verifyVRFProof(new Uint8Array(0), new Uint8Array(0), new Uint8Array(0), new Uint8Array(0))).toBe(true);
   });
+
+  it("should set system authority", () => {
+    expect(System.checkSystemAuthority()).toBe(false);
+
+    MockVM.setSystemAuthority(true);
+
+    expect(System.checkSystemAuthority()).toBe(true);
+  });
 });
