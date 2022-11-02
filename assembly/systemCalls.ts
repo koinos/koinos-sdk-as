@@ -14,7 +14,13 @@ export namespace System {
 
   function checkErrorCode(code: i32, message: Uint8Array): void {
     if (code != error.error_code.success)
-      exit(code, message);
+    {
+      let errorMessage = new Uint8Array(0);
+      let eData = Protobuf.decode<chain.error_data>(message, chain.error_data.decode);
+      if (eData.message != null)
+        errorMessage = StringBytes.stringToBytes(eData.message!);
+      exit(code, errorMessage);
+    }
   }
 
   export function setSystemBufferSize(size: u32): void {
