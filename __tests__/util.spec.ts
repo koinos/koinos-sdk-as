@@ -213,7 +213,7 @@ describe('StringBytes', () => {
     calculatedStr = StringBytes.bytesToString(new Uint8Array(0));
     expect(calculatedStr).toBe('');
 
-    expect(StringBytes.bytesToString(null)).toBeNull();
+    expect(StringBytes.bytesToString(null)).toBe('');
   });
 });
 

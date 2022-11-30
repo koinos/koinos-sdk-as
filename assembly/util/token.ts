@@ -42,7 +42,7 @@ export class Token {
     System.require(callRes.code == 0, "failed to retrieve token name");
     const res = Protobuf.decode<token.name_result>(callRes.res.object as Uint8Array, token.name_result.decode);
 
-    return res.value!;
+    return res.value;
   }
 
   /**
@@ -61,7 +61,7 @@ export class Token {
     System.require(callRes.code == 0, "failed to retrieve token symbol");
     const res = Protobuf.decode<token.symbol_result>(callRes.res.object as Uint8Array, token.symbol_result.decode);
 
-    return res.value!;
+    return res.value;
   }
 
   /**

@@ -164,7 +164,7 @@ export namespace Storage {
             result.push(key);
           } else if (typeof offsetKey == 'string') {
             // @ts-ignore key here is a string
-            result.push(StringBytes.bytesToString(key)!);
+            result.push(StringBytes.bytesToString(key));
           }
         }
 
