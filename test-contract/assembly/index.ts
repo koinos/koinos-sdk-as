@@ -26,7 +26,7 @@ export function main(): i32 {
   const callerData = System.getCaller();
   System.log('callerData.caller_privilege: ' + callerData.caller_privilege.toString());
   if (callerData.caller) {
-    System.log('callerData.caller (b58): ' + Base58.encode(callerData.caller!));
+    System.log('callerData.caller (b58): ' + Base58.encode(callerData.caller));
   }
 
   const lastIrreversibleBlock = System.getLastIrreversibleBlock();
@@ -39,7 +39,7 @@ export function main(): i32 {
   const obj = System.getBytes(contractSpace, 'testKey');
 
   if (obj) {
-    const strObj = StringBytes.bytesToString(obj)!;
+    const strObj = StringBytes.bytesToString(obj);
     System.log('obj: ' + strObj);
     System.require(strObj == 'testValue', `expected "testValue", got "${strObj}"`);
   }
@@ -50,7 +50,7 @@ export function main(): i32 {
   const obj2 = System.getBytes(contractSpace2, 'testKey');
 
   if (obj2) {
-    const strObj = StringBytes.bytesToString(obj2)!;
+    const strObj = StringBytes.bytesToString(obj2);
     System.log('obj: ' + strObj);
     System.require(strObj == 'testValue2', `expected "testValue2", got "${strObj}"`);
   }
@@ -58,7 +58,7 @@ export function main(): i32 {
   const obj3 = System.getBytes(contractSpace2, StringBytes.stringToBytes('testKey'));
 
   if (obj3) {
-    const strObj = StringBytes.bytesToString(obj3)!;
+    const strObj = StringBytes.bytesToString(obj3);
     System.log('obj: ' + strObj);
     System.require(strObj == 'testValue2', `expected "testValue2", got "${strObj}"`);
   }
@@ -110,7 +110,7 @@ export function main(): i32 {
   let obj100 = System.getBytes(contractSpace100, StringBytes.stringToBytes('key2'));
 
   if (obj100) {
-    const str = StringBytes.bytesToString(obj100)!;
+    const str = StringBytes.bytesToString(obj100);
     System.log(str);
     System.require(str == 'value2', `expected "value2", got "${str}"`);
   }
@@ -125,10 +125,10 @@ export function main(): i32 {
   let obj101 = System.getNextBytes(contractSpace100, StringBytes.stringToBytes('key2'));
 
   if (obj101) {
-    const key = StringBytes.bytesToString(obj101.key)!;
+    const key = StringBytes.bytesToString(obj101.key);
     System.log(key);
     System.require(key == 'key3', `expected "key3", got "${key}"`);
-    const val = StringBytes.bytesToString(obj101.value)!;
+    const val = StringBytes.bytesToString(obj101.value);
     System.log(val);
     System.require(val == 'value3', `expected "value3", got "${val}"`);
   }
@@ -136,10 +136,10 @@ export function main(): i32 {
   let obj102 = System.getPrevBytes(contractSpace100, StringBytes.stringToBytes('key2'));
 
   if (obj102) {
-    const key = StringBytes.bytesToString(obj102.key)!;
+    const key = StringBytes.bytesToString(obj102.key);
     System.log(key);
     System.require(key == 'key1', `expected "key1", got "${key}"`);
-    const val = StringBytes.bytesToString(obj102.value)!;
+    const val = StringBytes.bytesToString(obj102.value);
     System.log(val);
     System.require(val == 'value1', `expected "value1", got "${val}"`);
   }
@@ -202,11 +202,11 @@ export function main(): i32 {
   }
 
   const tx = System.getTransaction();
-  System.log("payer: " + Base58.encode(tx.header!.payer!));
+  System.log("payer: " + Base58.encode(tx.header!.payer));
 
   const txField = System.getTransactionField('header.payer');
   if (txField) {
-    System.log("payer: " + Base58.encode(txField.bytes_value!));
+    System.log("payer: " + Base58.encode(txField.bytes_value));
   }
 
   // Transfer 10 tKOIN to 1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe
@@ -243,16 +243,16 @@ export function main(): i32 {
   }
 
   const b = System.getBlock();
-  System.log("signer: " + Base58.encode(b.header!.signer!));
-  System.require('1GXe3r3VmkKAEhj6C156jPxQC8p1xbQD2i' == Base58.encode(b.header!.signer!), `expected "1GXe3r3VmkKAEhj6C156jPxQC8p1xbQD2i", got "${Base58.encode(b.header!.signer!)}"`);
+  System.log("signer: " + Base58.encode(b.header!.signer));
+  System.require('1GXe3r3VmkKAEhj6C156jPxQC8p1xbQD2i' == Base58.encode(b.header!.signer), `expected "1GXe3r3VmkKAEhj6C156jPxQC8p1xbQD2i", got "${Base58.encode(b.header!.signer)}"`);
 
 
   const blField = System.getBlockField('header.signer');
   System.require(blField, `expected blField not "null", got "null"`);
 
   if (blField) {
-    System.log("signer: " + Base58.encode(blField.bytes_value!));
-    System.require('1GXe3r3VmkKAEhj6C156jPxQC8p1xbQD2i' == Base58.encode(blField.bytes_value!), `expected "1GXe3r3VmkKAEhj6C156jPxQC8p1xbQD2i", got "${Base58.encode(blField.bytes_value!)}"`);
+    System.log("signer: " + Base58.encode(blField.bytes_value));
+    System.require('1GXe3r3VmkKAEhj6C156jPxQC8p1xbQD2i' == Base58.encode(blField.bytes_value), `expected "1GXe3r3VmkKAEhj6C156jPxQC8p1xbQD2i", got "${Base58.encode(blField.bytes_value)}"`);
   }
 
   const contractRes = new foobar.foobar_result(42);

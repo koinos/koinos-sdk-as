@@ -18,7 +18,7 @@ export namespace System {
       let errorMessage = new Uint8Array(0);
       let eData = Protobuf.decode<chain.error_data>(message, chain.error_data.decode);
       if (eData.message != null)
-        errorMessage = StringBytes.stringToBytes(eData.message!);
+        errorMessage = StringBytes.stringToBytes(eData.message);
       exit(code, errorMessage);
     }
   }
@@ -61,7 +61,7 @@ export namespace System {
     const encodedArgs = Protobuf.encode(args, system_calls.apply_block_arguments.encode);
 
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.apply_block, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
-    ERROR_MESSAGE = StringBytes.bytesToString(SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]))!;
+    ERROR_MESSAGE = StringBytes.bytesToString(SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
     return retcode;
   }
 
@@ -70,7 +70,7 @@ export namespace System {
     const encodedArgs = Protobuf.encode(args, system_calls.apply_transaction_arguments.encode);
 
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.apply_transaction, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
-    ERROR_MESSAGE = StringBytes.bytesToString(SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]))!;
+    ERROR_MESSAGE = StringBytes.bytesToString(SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
     return retcode;
   }
 
@@ -79,7 +79,7 @@ export namespace System {
     const encodedArgs = Protobuf.encode(args, system_calls.apply_upload_contract_operation_arguments.encode);
 
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.apply_upload_contract_operation, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
-    ERROR_MESSAGE = StringBytes.bytesToString(SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]))!;
+    ERROR_MESSAGE = StringBytes.bytesToString(SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
     return retcode;
   }
 
@@ -88,7 +88,7 @@ export namespace System {
     const encodedArgs = Protobuf.encode(args, system_calls.apply_call_contract_operation_arguments.encode);
 
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.apply_call_contract_operation, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
-    ERROR_MESSAGE = StringBytes.bytesToString(SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]))!;
+    ERROR_MESSAGE = StringBytes.bytesToString(SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
     return retcode;
   }
 
@@ -97,7 +97,7 @@ export namespace System {
     const encodedArgs = Protobuf.encode(args, system_calls.apply_set_system_call_operation_arguments.encode);
 
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.apply_set_system_call_operation, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
-    ERROR_MESSAGE = StringBytes.bytesToString(SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]))!;
+    ERROR_MESSAGE = StringBytes.bytesToString(SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
     return retcode;
   }
 
@@ -106,7 +106,7 @@ export namespace System {
     const encodedArgs = Protobuf.encode(args, system_calls.apply_set_system_contract_operation_arguments.encode);
 
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.apply_set_system_contract_operation, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
-    ERROR_MESSAGE = StringBytes.bytesToString(SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]))!;
+    ERROR_MESSAGE = StringBytes.bytesToString(SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
     return retcode;
   }
 
@@ -118,7 +118,7 @@ export namespace System {
     checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
     const result = Protobuf.decode<system_calls.get_chain_id_result>(SYSTEM_CALL_BUFFER, system_calls.get_chain_id_result.decode, RETURN_BYTES[0]);
 
-    return result.value!;
+    return result.value;
   }
 
   // System Helpers
@@ -612,10 +612,7 @@ export namespace System {
 
     if (result.value) {
       ret.entry_point = result.value!.entry_point;
-
-      if (result.value!.arguments) {
-        ret.args = result.value!.arguments!;
-      }
+      ret.args = result.value!.arguments;
     }
 
     return ret;
@@ -637,7 +634,7 @@ export namespace System {
       if (code == error.error_code.success) {
         args.res = new chain.result(value);
       } else {
-        args.res = new chain.result(null, new chain.error_data(StringBytes.bytesToString(value)));
+        args.res = new chain.result(new Uint8Array(0), new chain.error_data(StringBytes.bytesToString(value)));
       }
     }
 
@@ -657,7 +654,7 @@ export namespace System {
    */
   export function fail(message: string = "", code: i32 = -1): void {
     let args = new system_calls.exit_arguments();
-    args.res = new chain.result(null, new chain.error_data(message));
+    args.res = new chain.result(new Uint8Array(0), new chain.error_data(message));
     args.code = code < error.error_code.success ? code : error.error_code.failure;
 
     const encodedArgs = Protobuf.encode(args, system_calls.exit_arguments.encode);
@@ -676,7 +673,7 @@ export namespace System {
    */
   export function revert(message: string = "", code: i32 = 1): void {
     let args = new system_calls.exit_arguments();
-    args.res = new chain.result(null, new chain.error_data(message));
+    args.res = new chain.result(new Uint8Array(0), new chain.error_data(message));
     args.code = code > error.error_code.success ? code : error.error_code.reversion;
 
     const encodedArgs = Protobuf.encode(args, system_calls.exit_arguments.encode);
@@ -714,7 +711,7 @@ export namespace System {
     checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
     const result = Protobuf.decode<system_calls.get_contract_id_result>(SYSTEM_CALL_BUFFER, system_calls.get_contract_id_result.decode, RETURN_BYTES[0]);
 
-    return result.value!;
+    return result.value;
   }
 
   /**
@@ -735,7 +732,7 @@ export namespace System {
     checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
     const result = Protobuf.decode<name_service.get_name_result>(SYSTEM_CALL_BUFFER, name_service.get_name_result.decode, RETURN_BYTES[0]);
 
-    return result.value!.name!;
+    return result.value!.name;
   }
 
    /**
@@ -756,7 +753,7 @@ export namespace System {
     checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
     const result = Protobuf.decode<name_service.get_address_result>(SYSTEM_CALL_BUFFER, name_service.get_address_result.decode, RETURN_BYTES[0]);
 
-    return result.value!.address!;
+    return result.value!.address;
   }
 
   /**
@@ -793,7 +790,7 @@ export namespace System {
     * ```
     */
   export function checkAuthority(type: authority.authorization_type, account: Uint8Array, data: Uint8Array | null = null): bool {
-    const args = new system_calls.check_authority_arguments(type, account, data);
+    const args = new system_calls.check_authority_arguments(type, account, data !== null ? data : new Uint8Array(0));
     const encodedArgs = Protobuf.encode(args, system_calls.check_authority_arguments.encode);
 
     const retcode = env.invokeSystemCall(system_call_ids.system_call_id.check_authority, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
@@ -937,7 +934,7 @@ export namespace System {
     * let obj = System.getBytes(contractSpace, StringBytes.stringToBytes('key2'));
     *
     * if (obj) {
-    *   const str = StringBytes.bytesToString(obj)!;
+    *   const str = StringBytes.bytesToString(obj);
     *   System.log(str);
     * }
     * ```
@@ -1008,7 +1005,7 @@ export namespace System {
 
     constructor(obj: system_calls.database_object, decoder: (reader: Reader, length: i32) => TMessage) {
       this.key = obj.key;
-      this.value = Protobuf.decode<TMessage>(obj.value!, decoder);
+      this.value = Protobuf.decode<TMessage>(obj.value, decoder);
     }
   }
 

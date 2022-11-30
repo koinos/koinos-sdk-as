@@ -339,7 +339,7 @@ describe('SystemCalls', () => {
     let bytes = System.getBytes(objSpace, 'testKey1');
 
     expect(bytes).not.toBeNull();
-    expect(StringBytes.bytesToString(bytes)!).toBe('testValue1');
+    expect(StringBytes.bytesToString(bytes)).toBe('testValue1');
 
     const contractSpace2 = new chain.object_space(false, mockAccount, 2);
     System.putBytes(contractSpace2, StringBytes.stringToBytes('testKey'), StringBytes.stringToBytes('testValue2'));
@@ -347,12 +347,12 @@ describe('SystemCalls', () => {
     bytes = System.getBytes(contractSpace2, 'testKey');
 
     expect(bytes).not.toBeNull();
-    expect(StringBytes.bytesToString(bytes)!).toBe('testValue2');
+    expect(StringBytes.bytesToString(bytes)).toBe('testValue2');
 
     bytes = System.getBytes(contractSpace2, StringBytes.stringToBytes('testKey'));
 
     expect(bytes).not.toBeNull();
-    expect(StringBytes.bytesToString(bytes)!).toBe('testValue2');
+    expect(StringBytes.bytesToString(bytes)).toBe('testValue2');
 
     bytes = System.getBytes(contractSpace2, StringBytes.stringToBytes('testKey2'));
 
@@ -363,16 +363,16 @@ describe('SystemCalls', () => {
 
     let obj = System.getPrevBytes(objSpace, 'testKey2');
     expect(obj).not.toBeNull();
-    expect(StringBytes.bytesToString(obj!.key)!).toBe('testKey1');
-    expect(StringBytes.bytesToString(obj!.value)!).toBe('testValue1');
+    expect(StringBytes.bytesToString(obj!.key)).toBe('testKey1');
+    expect(StringBytes.bytesToString(obj!.value)).toBe('testValue1');
 
     obj = System.getPrevBytes(objSpace, 'testKey1');
     expect(obj).toBeNull();
 
     obj = System.getNextBytes(objSpace, 'testKey2');
     expect(obj).not.toBeNull();
-    expect(StringBytes.bytesToString(obj!.key)!).toBe('testKey3');
-    expect(StringBytes.bytesToString(obj!.value)!).toBe('testValue3');
+    expect(StringBytes.bytesToString(obj!.key)).toBe('testKey3');
+    expect(StringBytes.bytesToString(obj!.value)).toBe('testValue3');
 
     obj = System.getNextBytes(objSpace, 'testKey3');
     expect(obj).toBeNull();
@@ -397,13 +397,13 @@ describe('SystemCalls', () => {
 
     expect(obj2).not.toBeNull();
     expect(obj2!.value.value).toBe(300);
-    expect(StringBytes.bytesToString(obj2!.key)!).toBe('key3');
+    expect(StringBytes.bytesToString(obj2!.key)).toBe('key3');
 
     obj2 = System.getPrevObject<string, TestObject.test_object>(objSpace, 'key2', TestObject.test_object.decode);
 
     expect(obj2).not.toBeNull();
     expect(obj2!.value.value).toBe(100);
-    expect(StringBytes.bytesToString(obj2!.key)!).toBe('key1');
+    expect(StringBytes.bytesToString(obj2!.key)).toBe('key1');
 
     obj2 = System.getPrevObject<string, TestObject.test_object>(objSpace, 'key1', TestObject.test_object.decode);
 
