@@ -64,8 +64,7 @@ export namespace Storage {
     * ```
     */
     has(key: TKey): boolean {
-      const object = this.get(key);
-
+      const object = System.getBytes<TKey>(this.space, key);
       return object ? true : false;
     }
 
@@ -327,9 +326,7 @@ export namespace Storage {
     */
     has(key: TKey): boolean {
       const finalKey = Protobuf.encode(key, this.keyEncoder);
-      const object = this.map.get(finalKey);
-
-      return object ? true : false;
+      return this.map.has(finalKey);
     }
 
     /**
