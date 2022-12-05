@@ -1,6 +1,6 @@
 {
   "name": "@koinos/sdk-as",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "assembly/index.ts",
   "license": "MIT",
   "author": "Koinos Group <contact@koinos.group>",
