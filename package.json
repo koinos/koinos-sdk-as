@@ -13,11 +13,11 @@
     "@koinos/as-gen": "1.0.0",
     "@koinos/as-proto-gen": "1.0.0",
     "@koinos/mock-vm": "1.0.0",
-    "@koinos/proto-as": "npm:@roamin/proto-as@1.0.4",
+    "@koinos/proto-as": "^1.0.4",
     "@koinos/sdk-as-cli": "1.0.0",
     "@roamin/protoc": "^2.4.0",
     "as-bignum": "^0.2.18",
-    "as-proto": "npm:@roamin/as-proto@1.0.1",
+    "as-proto": "npm:@koinos/as-proto@1.0.1",
     "assemblyscript": "^0.25.1"
   },
   "files": [
