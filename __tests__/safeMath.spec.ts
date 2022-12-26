@@ -1,5 +1,5 @@
-import { u128 } from "as-bignum";
-import { MockVM, SafeMath, StringBytes } from "../assembly";
+import { u128 } from "as-bignum/assembly";
+import { MockVM, SafeMath, StringBytes } from "../index";
 
 describe('SafeMath', () => {
   beforeEach(() => {

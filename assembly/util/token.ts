@@ -1,4 +1,5 @@
-import { Protobuf, System } from "..";
+import { Protobuf } from "as-proto";
+import { System } from "../systemCalls";
 import { token, error } from "@koinos/proto-as";
 
 enum entries {

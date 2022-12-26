@@ -9,5 +9,5 @@ build
 yarn-error.log
 
 assembly/proto/template.ts
-assembly/index.ts
+index.ts
 assembly/Template.boilerplate.ts
