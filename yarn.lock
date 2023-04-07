@@ -233,25 +233,17 @@
     protobufjs "^6.11.2"
     somap "^0.5.14"
 
-"@koinos/proto-as@npm:@roamin/proto-as@1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@roamin/proto-as/-/proto-as-1.0.4.tgz#d254e4b896c311a5a907d6c06753454cec802bc7"
-  integrity sha512-e6xKQL/ZAzkHe+Z1Ckoq1Eov9hpVXrxVRybGo0I2fNs8HjMKltRWtknHWm1p0aCtUbKjPzCpYIYnxEPCMd68Jw==
+"@koinos/proto-as@1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@koinos/proto-as/-/proto-as-1.2.0.tgz#f262b51895116a6f4f8b77f0864e82e1396d3061"
+  integrity sha512-uhdyXwec0PYTf/DUd4W68eEsC+IJT/+kzFzlsfVOIc7Dy+hfZNp9KT39RxOJhS02ck1q/wfJDiKku8bbvy04pA==
   dependencies:
-    as-proto "npm:@roamin/as-proto"
+    as-proto "npm:@koinos/as-proto"
 
 "@koinos/proto-js@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@koinos/proto-js/-/proto-js-1.0.0.tgz#ac200fb6e95dbbc0059e0f3c002b8fa54498340a"
   integrity sha512-5ro2EjM5tD267Rfc4Se9w/CA+IixPXY4vFFK894Z+fqOEOjrkUmtZM9Y57u4s6BLNtvNUUUx/Hvqe9H3Usc47g==
-
-"@koinos/sdk-as-cli@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@koinos/sdk-as-cli/-/sdk-as-cli-1.0.0.tgz#6e2ba7c643f00b07009d5c5cfa9df710859b8585"
-  integrity sha512-lIaTqT5L9Kb9G9LgU07arGVU21CFm2rA0smzgAx8a2Q6FITVyYEHjkwmLC6Kk77Zif1wM+T/XTAFHADAaRz4Qg==
-  dependencies:
-    chalk "4.1.2"
-    commander "^9.0.0"
 
 "@multiformats/base-x@^4.0.1":
   version "4.0.1"
@@ -846,10 +838,10 @@ as-bignum@^0.2.18:
   resolved "https://registry.yarnpkg.com/as-bignum/-/as-bignum-0.2.23.tgz#626e358721504291d35db4ce5c80693630048ad3"
   integrity sha512-0+GiwHNwyw0lXI+6uzOI6ReNOEsqKihdLJuOYJeqEOfXcIqwtSixLcQ7h9UQaMrroktW/Idmqj2TinpcWTxxJA==
 
-"as-proto@npm:@roamin/as-proto", "as-proto@npm:@roamin/as-proto@1.0.1":
+"as-proto@npm:@koinos/as-proto", "as-proto@npm:@koinos/as-proto@1.0.1":
   version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@roamin/as-proto/-/as-proto-1.0.1.tgz#9d0d38b4e5ae172ad218b9bc421fa87336e596b2"
-  integrity sha512-VFQ1jVB1HIFj1Vj9khbUp7ggi0LfeQYNckmwGnjrtzIUyloJylN0CIOFY8wlAoOvOmJFbw+VcL6Te3sacubYkw==
+  resolved "https://registry.yarnpkg.com/@koinos/as-proto/-/as-proto-1.0.1.tgz#ab0f1267ac389f988e0cc9823616332d0c5b8a0b"
+  integrity sha512-2igTvIO36eALA70xGTSPobLsaxGcGuXS/DfmnjskPVGwXkWKKa01QdWf7L45IRLmgZRuqFxLD7Doo0o/44vCDA==
 
 asap@^2.0.0:
   version "2.0.6"
@@ -863,13 +855,21 @@ asn1@~0.2.3:
   dependencies:
     safer-buffer "~2.1.0"
 
-assemblyscript@^0.25.0, assemblyscript@^0.25.1:
+assemblyscript@^0.25.0:
   version "0.25.1"
   resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.25.1.tgz#22650e2a3bfe83d22b4517fd25ab66ef45ee85c8"
   integrity sha512-UtbAE1R+1XmSGMDeRXwsCepbnO6yhkcSiS+D8MNyy68cmR9qF6+XfbFWC+Tvw2RZib+tGEdXfPnnXZA8Cyv3CQ==
   dependencies:
     binaryen "110.0.0-nightly.20221105"
     long "^5.2.0"
+
+assemblyscript@^0.27.1:
+  version "0.27.1"
+  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.27.1.tgz#d6ba32a3e3030aac04c34bac785ce40d93bb2d2f"
+  integrity sha512-0ZS9ujdoSAjuwc+qdZ4PeZy32wFh3U2GVy7/G2dfDr/5i0jOmWY29AaFsiNxDQ7z6MOeTo9YpNLfIqZ1WWzh8A==
+  dependencies:
+    binaryen "111.0.0-nightly.20230202"
+    long "^5.2.1"
 
 assert-plus@1.0.0, assert-plus@^1.0.0:
   version "1.0.0"
@@ -941,6 +941,11 @@ binaryen@110.0.0-nightly.20221105:
   version "110.0.0-nightly.20221105"
   resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-110.0.0-nightly.20221105.tgz#9e3c47e8ffa31521acd125013dca3ceea143d0bf"
   integrity sha512-OBESOc51q3SwgG8Uv8nMzGnSq7LJpSB/Fu8B3AjlZg6YtCEwRnlDWlnwNB6mdql+VdexfKmNcsrs4K7MYidmdQ==
+
+binaryen@111.0.0-nightly.20230202:
+  version "111.0.0-nightly.20230202"
+  resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-111.0.0-nightly.20230202.tgz#40899e27447315f1c5fa948e35f365c2b3ca8a58"
+  integrity sha512-aGMDtxmc8zQHzAamyOBvO38n2e/GuXM0dZCJg+IuG2YUQODTqI37XSkAixS8c0wXn2dgLntDMk1VDblKCsy0GA==
 
 bluebird@^3.5.1, bluebird@^3.5.3, bluebird@^3.5.5:
   version "3.7.2"
@@ -1319,7 +1324,7 @@ commander@^2.19.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
 
-commander@^9.0.0, commander@^9.4.1:
+commander@^9.4.1:
   version "9.4.1"
   resolved "https://registry.yarnpkg.com/commander/-/commander-9.4.1.tgz#d1dd8f2ce6faf93147295c0df13c7c21141cfbdd"
   integrity sha512-5EEkTNyHNGFPD2H+c/dXXfQZYa/scCKasxWcXJaWnNJ99pnQN9Vnmqow+p+PlFPE63Q6mThaZws1T+HxfpgtPw==

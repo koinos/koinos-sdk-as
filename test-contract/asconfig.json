@@ -1,13 +1,13 @@
 {
   "targets": {
     "debug": {
-      "binaryFile": "build/debug/contract.wasm",
+      "outFile": "build/debug/contract.wasm",
       "textFile": "build/debug/contract.wat",
       "sourceMap": true,
       "debug": true
     },
     "release": {
-      "binaryFile": "build/release/contract.wasm",
+      "outFile": "build/release/contract.wasm",
       "textFile": "build/release/contract.wat",
       "sourceMap": true,
       "optimizeLevel": 3,
