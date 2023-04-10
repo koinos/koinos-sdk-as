@@ -1,4 +1,4 @@
 {
-    "entryPoints": ["assembly/index.ts"],
+    "entryPoints": ["index.ts"],
     "out": "docs"
 }

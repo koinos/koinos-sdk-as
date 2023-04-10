@@ -105,7 +105,7 @@ export namespace Storage {
     getMany(offsetKey: TKey, limit: i32 = i32.MAX_VALUE, direction: Direction = Direction.Ascending): System.ProtoDatabaseObject<TValue>[] {
       const result: System.ProtoDatabaseObject<TValue>[] = [];
 
-      let key: Uint8Array;
+      let key: Uint8Array = new Uint8Array(0);
       if (offsetKey instanceof Uint8Array) {
         key = offsetKey;
       } else if (typeof offsetKey == 'string') {
@@ -145,7 +145,7 @@ export namespace Storage {
     getManyKeys(offsetKey: TKey, limit: i32 = i32.MAX_VALUE, direction: Direction = Direction.Ascending): TKey[] {
       const result: TKey[] = [];
 
-      let key: Uint8Array;
+      let key: Uint8Array = new Uint8Array(0);
       if (offsetKey instanceof Uint8Array) {
         key = offsetKey;
       } else if (typeof offsetKey == 'string') {
@@ -191,7 +191,7 @@ export namespace Storage {
     getManyValues(offsetKey: TKey, limit: i32 = i32.MAX_VALUE, direction: Direction = Direction.Ascending): TValue[] {
       const result: TValue[] = [];
 
-      let key: Uint8Array;
+      let key: Uint8Array = new Uint8Array(0);
       if (offsetKey instanceof Uint8Array) {
         key = offsetKey;
       } else if (typeof offsetKey == 'string') {

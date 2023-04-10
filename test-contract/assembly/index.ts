@@ -1,6 +1,6 @@
 import { test } from "./proto/test";
 import { foobar } from "./proto/foobar";
-import { System, Protobuf, Base58, Base64, Crypto, StringBytes } from "../../assembly";
+import { System, Protobuf, Base58, Base64, Crypto, StringBytes } from "../../index";
 import { chain, authority, token } from '@koinos/proto-as';
 
 

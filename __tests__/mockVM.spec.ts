@@ -1,4 +1,4 @@
-import { Arrays, Base58, MockVM, StringBytes, System } from "../assembly";
+import { Arrays, Base58, MockVM, StringBytes, System } from "../index";
 import { chain, protocol, authority, system_calls } from '@koinos/proto-as';
 
 

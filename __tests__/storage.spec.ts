@@ -1,4 +1,4 @@
-import { Base58, StringBytes, Storage, Arrays, Protobuf } from "../assembly";
+import { Base58, StringBytes, Storage, Arrays, Protobuf } from "../index";
 import { test_object } from './test';
 
 const mockContractId = Base58.decode('1DQzuCcTKacbs9GGScFTU1Hc8BsyARTPqe');

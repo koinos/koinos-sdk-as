@@ -1,4 +1,4 @@
-import { Base58, MockVM, Protobuf, StringBytes, Token } from "../assembly";
+import { Base58, MockVM, Protobuf, StringBytes, Token } from "../index";
 import { token, system_calls, chain } from '@koinos/proto-as';
 
 

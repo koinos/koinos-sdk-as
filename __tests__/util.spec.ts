@@ -1,4 +1,4 @@
-import { Arrays, Base58, Base64, Crypto, StringBytes, System } from "../assembly";
+import { Arrays, Base58, Base64, Crypto, StringBytes, System } from "../index";
 
 describe('Base58', () => {
   it('should decode a Base58 string into a Uint8Array', () => {

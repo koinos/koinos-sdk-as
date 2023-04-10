@@ -1,8 +1,7 @@
 import { env } from "./env";
 import { Protobuf, Reader, Writer } from 'as-proto';
 import { system_calls, system_call_ids, chain, protocol, authority, value, error, name_service } from '@koinos/proto-as';
-import { StringBytes } from ".";
-import { Base58 } from "./util";
+import { Base58, StringBytes } from "./util";
 
 export namespace System {
   export const DEFAULT_MAX_BUFFER_SIZE = 1024;
@@ -517,7 +516,7 @@ export namespace System {
   // Contract Management
 
   export class callReturn {
-    code: i32;
+    code: i32 = 0;
     res: chain.result = new chain.result();
   }
 
@@ -848,7 +847,7 @@ export namespace System {
     * ```
    */
   export function putBytes<K>(space: chain.object_space, key: K, obj: Uint8Array): void {
-    let finalKey: Uint8Array;
+    let finalKey: Uint8Array = new Uint8Array(0);
     if (key instanceof Uint8Array) {
       finalKey = key;
     } else if (typeof key == "string") {
@@ -857,7 +856,6 @@ export namespace System {
       exit(1, StringBytes.stringToBytes("An invalid key was passed to putBytes"));
     }
 
-    // @ts-ignore
     const args = new system_calls.put_object_arguments(space, finalKey, obj);
     const encodedArgs = Protobuf.encode(args, system_calls.put_object_arguments.encode);
 
@@ -905,7 +903,7 @@ export namespace System {
     * ```
     */
   export function removeObject<K>(space: chain.object_space, key: K): void {
-    let finalKey: Uint8Array;
+    let finalKey: Uint8Array = new Uint8Array(0);
     if (key instanceof Uint8Array) {
       finalKey = key;
     } else if (typeof key == "string") {
@@ -914,7 +912,6 @@ export namespace System {
       exit(1, StringBytes.stringToBytes("An invalid key was passed to removeObject"));
     }
 
-    // @ts-ignore
     const args = new system_calls.remove_object_arguments(space, finalKey);
     const encodedArgs = Protobuf.encode(args, system_calls.remove_object_arguments.encode);
 
@@ -943,7 +940,7 @@ export namespace System {
     space: chain.object_space,
     key: K
   ): Uint8Array | null {
-    let finalKey: Uint8Array;
+    let finalKey: Uint8Array = new Uint8Array(0);
     if (key instanceof Uint8Array) {
       finalKey = key;
     } else if (typeof key == 'string') {
@@ -952,7 +949,6 @@ export namespace System {
       exit(1, StringBytes.stringToBytes("An invalid key was passed to getBytes"));
     }
 
-    // @ts-ignore
     const args = new system_calls.get_object_arguments(space, finalKey);
     const encodedArgs = Protobuf.encode(args, system_calls.get_object_arguments.encode);
 
@@ -1028,7 +1024,7 @@ export namespace System {
     space: chain.object_space,
     key: K
   ): system_calls.database_object | null {
-    let finalKey: Uint8Array;
+    let finalKey: Uint8Array = new Uint8Array(0);
     if (key instanceof Uint8Array) {
       finalKey = key;
     } else if (typeof key == 'string') {
@@ -1037,7 +1033,6 @@ export namespace System {
       exit(1, StringBytes.stringToBytes("An invalid key was passed to getNextBytes"));
     }
 
-    // @ts-ignore
     const args = new system_calls.get_next_object_arguments(space, finalKey);
     const encodedArgs = Protobuf.encode(args, system_calls.get_next_object_arguments.encode);
 
@@ -1102,7 +1097,7 @@ export namespace System {
     space: chain.object_space,
     key: K
   ): system_calls.database_object | null {
-    let finalKey: Uint8Array;
+    let finalKey: Uint8Array = new Uint8Array(0);
     if (key instanceof Uint8Array) {
       finalKey = key;
     } else if (typeof key == 'string') {
@@ -1111,7 +1106,6 @@ export namespace System {
       exit(1, StringBytes.stringToBytes("An invalid key was passed to getPrevBytes"));
     }
 
-    // @ts-ignore
     const args = new system_calls.get_prev_object_arguments(space, finalKey);
     const encodedArgs = Protobuf.encode(args, system_calls.get_prev_object_arguments.encode);
 

@@ -1,7 +1,7 @@
 // @ts-check
 
-const td = require("typedoc");
-const ts = require("typescript");
+import td from "typedoc";
+import ts from "typescript";
 
 const app = new td.Application();
 // For reading typedoc.json - optional
@@ -11,8 +11,8 @@ app.options.addReader(new td.TSConfigReader());
 
 app.bootstrap({
   // can put other options here too, or in typedoc.json/tsconfig.json
-  tsconfig: "assembly/tsconfig.json",
-  entryPoints: ["assembly/index.ts"],
+  tsconfig: "tsconfig.json",
+  entryPoints: ["index.ts"],
   includeVersion: true
 });
 
