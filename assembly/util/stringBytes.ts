@@ -14,10 +14,11 @@ export namespace StringBytes {
    * Decode an UTF-8 encoded Uint8Array into a string.
    * @param bytes array to decode
    */
-  export function bytesToString(bytes: Uint8Array | null): string | null {
+  export function bytesToString(bytes: Uint8Array | null): string {
     if (bytes == null) {
-      return null;
+      return "";
     }
+
     return String.UTF8.decode(uint8ArrayToBuffer(bytes), true);
   }
 

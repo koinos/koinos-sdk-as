@@ -1,5 +1,5 @@
-import { Arrays, Base58, MockVM, StringBytes, System } from "../assembly";
-import { chain, protocol, authority } from 'koinos-proto-as';
+import { Arrays, Base58, MockVM, StringBytes, System } from "../index";
+import { chain, protocol, authority, system_calls } from '@koinos/proto-as';
 
 
 const mockAccount = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
@@ -7,21 +7,24 @@ const mockAccount2 = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqE');
 const mockId = StringBytes.stringToBytes("0x12345");
 
 describe('MockVM', () => {
-  it('should set the entry point', () => {
-    const setEntryPoint = 0xc3ab8ff1;
-    MockVM.setEntryPoint(0xc3ab8ff1);
 
-    const getEntryPoint = System.getEntryPoint();
+  it('should get the chain id', () => {
+    const chainId = mockAccount;
 
-    expect(getEntryPoint).toBe(setEntryPoint);
+    MockVM.setChainId(chainId);
+
+    expect(Arrays.equal(System.getChainId(), chainId)).toBe(true);
   });
 
   it('should set the contract arguments', () => {
+    const setEntryPoint = 0xc3ab8ff1;
+    MockVM.setEntryPoint(0xc3ab8ff1);
     MockVM.setContractArguments(mockAccount);
 
-    const getContractArgs = System.getContractArguments();
+    const getContractArgs = System.getArguments();
 
-    expect(Arrays.equal(getContractArgs, mockAccount)).toBe(true);
+    expect(Arrays.equal(getContractArgs.args, mockAccount)).toBe(true);
+    expect(getContractArgs.entry_point).toBe(setEntryPoint);
   });
 
   it('should set the contract id', () => {
@@ -75,6 +78,18 @@ describe('MockVM', () => {
     expect(Arrays.equal(getTransaction.id, setTransaction.id)).toBe(true);
   });
 
+  it('should set the operation', () => {
+    let setOperation = new protocol.operation();
+    setOperation.set_system_contract = new protocol.set_system_contract_operation(mockAccount, true);
+
+    MockVM.setOperation(setOperation);
+
+    const getOperation = System.getOperation();
+
+    expect(Arrays.equal(getOperation.set_system_contract!.contract_id, setOperation.set_system_contract!.contract_id)).toBe(true);
+    expect(getOperation.set_system_contract!.system_contract).toBe(true);
+  });
+
   it('should set the block', () => {
     let setBlock = new protocol.block(mockId);
 
@@ -96,39 +111,29 @@ describe('MockVM', () => {
     // this will backup the database
     MockVM.commitTransaction();
 
-    expect(() => {
-      System.requireAuthority(authority.authorization_type.contract_call, mockAccount);
-    }).not.toThrow();
-
-    expect(() => {
-      System.requireAuthority(authority.authorization_type.contract_upload, mockAccount2);
-    }).not.toThrow();
-
-    expect(() => {
-      // will print "account 1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe has not authorized action"
-      System.requireAuthority(authority.authorization_type.contract_upload, mockAccount);
-    }).toThrow();
-
-    expect(() => {
-      // will print "account 1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe has not authorized action"
-      System.requireAuthority(authority.authorization_type.transaction_application, mockAccount);
-    }).toThrow();
+    expect(System.checkAuthority(authority.authorization_type.contract_call, mockAccount)).toBe(true);
+    expect(System.checkAuthority(authority.authorization_type.contract_upload, mockAccount2)).toBe(true);
+    expect(System.checkAuthority(authority.authorization_type.contract_upload, mockAccount)).toBe(false);
+    expect(System.checkAuthority(authority.authorization_type.transaction_application, mockAccount)).toBe(false);
   });
 
   it('should set the call contract results', () => {
     const callRes1 = mockAccount;
     const callRes2 = mockAccount2;
 
-    MockVM.setCallContractResults([callRes1, callRes2]);
+    MockVM.setCallContractResults([
+      new system_calls.exit_arguments(0, new chain.result(callRes1)),
+      new system_calls.exit_arguments(0, new chain.result(callRes2))
+    ]);
 
-    let callRes = System.callContract(mockAccount, 1, new Uint8Array(0));
+    let callRes = System.call(mockAccount, 1, new Uint8Array(0));
 
     expect(callRes).not.toBeNull();
-    expect(Arrays.equal(callRes, mockAccount)).toBe(true);
+    expect(Arrays.equal(callRes.res.object, mockAccount)).toBe(true);
 
-    callRes = System.callContract(mockAccount, 1, new Uint8Array(0));
+    callRes = System.call(mockAccount, 1, new Uint8Array(0));
     expect(callRes).not.toBeNull();
-    expect(Arrays.equal(callRes, mockAccount2)).toBe(true);
+    expect(Arrays.equal(callRes.res.object, mockAccount2)).toBe(true);
   });
 
   it('should reset the MockVM database', () => {
@@ -194,5 +199,27 @@ describe('MockVM', () => {
     MockVM.clearLogs();
     System.log("log 3");
     expect(MockVM.getLogs()).toStrictEqual(["log 3"]);
+  });
+
+  it("should handle error messages", () => {
+    const message = "my message";
+    System.putBytes(MockVM.METADATA_SPACE, 'error_message', StringBytes.stringToBytes(message));
+
+    expect(MockVM.getErrorMessage()).toBe(message);
+  });
+
+  it("should set verify vrf proof results", () => {
+    MockVM.setVerifyVRFProofResults([false, true]);
+
+    expect(System.verifyVRFProof(new Uint8Array(0), new Uint8Array(0), new Uint8Array(0), new Uint8Array(0))).toBe(false);
+    expect(System.verifyVRFProof(new Uint8Array(0), new Uint8Array(0), new Uint8Array(0), new Uint8Array(0))).toBe(true);
+  });
+
+  it("should set system authority", () => {
+    expect(System.checkSystemAuthority()).toBe(false);
+
+    MockVM.setSystemAuthority(true);
+
+    expect(System.checkSystemAuthority()).toBe(true);
   });
 });

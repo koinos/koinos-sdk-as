@@ -1,4 +1,5 @@
 {
+  "extends": "./node_modules/@assemblyscript/wasi-shim/asconfig.json",
   "targets": {
     "debug": {
       "binaryFile": "build/debug/debug.wasm",
@@ -16,5 +17,7 @@
       "noAssert": false
     }
   },
-  "options": {}
+  "options": {
+    "bindings": "esm"
+  }
 }

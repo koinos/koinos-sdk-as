@@ -1,0 +1,13 @@
+node_modules
+build
+\.idea/
+\.vs/
+*.wasm
+*.pb
+*.spec.map
+*.spec.wat
+yarn-error.log
+
+assembly/proto/template.ts
+index.ts
+assembly/Template.boilerplate.ts

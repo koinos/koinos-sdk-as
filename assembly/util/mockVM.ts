@@ -1,10 +1,11 @@
 import { Protobuf } from "as-proto";
 import { System } from "../systemCalls";
-import { system_calls, chain, protocol, authority, value } from 'koinos-proto-as';
+import { system_calls, chain, protocol, authority, value } from '@koinos/proto-as';
+import { StringBytes } from "./stringBytes";
 
 
 export namespace MockVM {
-  export const METADATA_SPACE = new chain.object_space(true, null, 0);
+  export const METADATA_SPACE = new chain.object_space(true);
 
   export class MockAuthority {
     autorization_type: authority.authorization_type;
@@ -24,7 +25,7 @@ export namespace MockVM {
     * @example
     * ```ts
     * MockVM.setEntryPoint(0xc3ab8ff1);
-    * 
+    *
     * const entryPoint = System.getEntryPoint();
     * System.log('entryPoint: ' + entryPoint.toString());
     * ```
@@ -66,6 +67,10 @@ export namespace MockVM {
     */
   export function setContractId(contractId: Uint8Array): void {
     System.putBytes(METADATA_SPACE, 'contract_id', contractId);
+  }
+
+  export function setChainId(chainId: Uint8Array): void {
+    System.putBytes(METADATA_SPACE, 'chain_id', chainId);
   }
 
   /**
@@ -111,11 +116,11 @@ export namespace MockVM {
     * @example
     * ```ts
     * let callerData = new chain.caller_data(Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe'), chain.privilege.user_mode);
-    * 
+    *
     * MockVM.setCaller(callerData);
     *
     * callerData = System.getCaller();
-    * 
+    *
     * System.log('callerData.caller_privilege: ' + callerData.caller_privilege.toString());
     * if (callerData.caller) {
     *   System.log('callerData.caller (b58): ' + Base58.encode(callerData.caller!));
@@ -133,13 +138,13 @@ export namespace MockVM {
     * ```ts
     * let transaction = new protocol.transaction();
     * transaction.id = StringBytes.stringToBytes("0x12345");
-    * 
+    *
     * MockVM.setTransaction(transaction);
     *
     * transaction = System.getTransaction();
-    * 
-    * System.log("transaction.id: " + (StringBytes.bytesToString((transaction.id)!)!));
-    * 
+    *
+    * System.log("transaction.id: " + (StringBytes.bytesToString(transaction.id)));
+    *
     * let txField = System.getTransactionField('id');
     * if (txField) {
     *   System.log("transaction.id: " + (StringBytes.bytesToString((txField.bytes_value) as Uint8Array) as string));
@@ -151,19 +156,37 @@ export namespace MockVM {
   }
 
   /**
+    * Set operation that will be used when calling System.getOperation()
+    * @param { protocol.operation } operation operation to set
+    * @example
+    * ```ts
+    * let setOperation = new protocol.operation();
+    * setOperation.set_system_contract = new protocol.set_system_contract_operation(Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe'), true);
+    *
+    * MockVM.setOperation(setOperation);
+    *
+    * const getOperation = System.getOperation();
+    * ...
+    * ```
+    */
+  export function setOperation(operation: protocol.operation): void {
+    System.putObject(METADATA_SPACE, 'operation', operation, protocol.operation.encode);
+  }
+
+  /**
     * Set block that will be used when calling System.getBlock() and System.getBlockField(...)
     * @param { protocol.block } block block to set
     * @example
     * ```ts
     * let block = new protocol.block();
     * block.id = StringBytes.stringToBytes("0x12345");
-    * 
+    *
     * MockVM.setBlock(block);
     *
     * block = System.getBlock();
-    * 
+    *
     * System.log("block.id: " + (StringBytes.bytesToString((block.id) as Uint8Array) as string));
-    * 
+    *
     * let blField = System.getBlockField('id');
     * if (blField) {
     *   System.log("block.id: " + (StringBytes.bytesToString((blField.bytes_value) as Uint8Array) as string));
@@ -182,7 +205,7 @@ export namespace MockVM {
     * const account = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
     * const auth1 = new MockVM.MockAuthority(authority.authorization_type.contract_call, account, true);
     * const auth2 = new MockVM.MockAuthority(authority.authorization_type.contract_upload, account, false)
-    * 
+    *
     * MockVM.setAuthorities([auth1, auth2]);
     *
     * System.requireAuthority(authority.authorization_type.contract_call, account);
@@ -200,10 +223,56 @@ export namespace MockVM {
       authorityValueType.int32_value = auth.autorization_type;
 
       authoritiesListType.values.push(authorityValueType);
-
     }
 
     System.putObject(METADATA_SPACE, 'authority', authoritiesListType, value.list_type.encode);
+  }
+
+  /**
+   * Set system authority that will be used when calling System.requireSystemAuthority(...)
+   * @param { bool } authorized
+   * ```ts
+   * MockVM.setSystemAuthority(true);
+   *
+   * System.requireSystemAuthority();
+   * ```
+   */
+  export function setSystemAuthority(authorized: bool): void {
+    const systemAuthValueType = new value.value_type();
+    systemAuthValueType.bool_value = authorized;
+
+    System.putObject(METADATA_SPACE, 'system_authority', systemAuthValueType, value.value_type.encode);
+  }
+
+  /**
+   * Set results that will be used when calling System.verifyVRFProof(...)
+   * @param { Uint8Array[] } verifyVRFProofResults The results are FIFO, so the first System.verifyVRFPRoof(...) used in your code will use the first result you set in callContractResults, the second System.callContract(...) will get the second result, etc...
+   * @example
+   * ```ts
+   MockVM.setVerifyVRFProofResults([false, true]);
+
+   let callRes = System.verifyVRFProof(pubKey, proof, hash, messgae);
+   if (callRes) {
+     // Will execute
+   }
+
+   let callRes = System.verifyVRFProof(pubKey, proof, hash, messgae);
+   if (callRes) {
+     // Will not execute
+   }
+   * ```
+   */
+  export function setVerifyVRFProofResults(verifyVRFProofResults: bool[]): void {
+    const verifyVRFProofResultListType = new value.list_type();
+
+    for (let index = 0; index < verifyVRFProofResults.length; index++) {
+      const callVerifyVRFProofValueType = new value.value_type();
+      callVerifyVRFProofValueType.bool_value = verifyVRFProofResults[index];
+
+      verifyVRFProofResultListType.values.push(callVerifyVRFProofValueType);
+    }
+
+    System.putObject(METADATA_SPACE, 'verify_vrf', verifyVRFProofResultListType, value.list_type.encode);
   }
 
   /**
@@ -229,14 +298,12 @@ export namespace MockVM {
     }
     * ```
     */
-  export function setCallContractResults(callContractResults: Uint8Array[]): void {
+  export function setCallContractResults(callContractResults: system_calls.exit_arguments[]): void {
     const callContractResultListType = new value.list_type();
 
     for (let index = 0; index < callContractResults.length; index++) {
-      const callContractRes = callContractResults[index];
-
       const callContractResultValueType = new value.value_type();
-      callContractResultValueType.bytes_value = callContractRes;
+      callContractResultValueType.bytes_value = Protobuf.encode(callContractResults[index], system_calls.exit_arguments.encode);
 
       callContractResultListType.values.push(callContractResultValueType);
 
@@ -246,14 +313,14 @@ export namespace MockVM {
   }
 
   /**
-    * Get contract result set when calling System.setContractRsult()
+    * Get contract result set when calling System.exit()
     * @returns { Uint8Array | null }
     * @example
     * ```ts
     * System.setContractResult(Base64.decode('res1'));
     *
     * const contractRes = MockVM.getContractResult();
-    * 
+    *
     * if (contractRes) {
     *   System.log('contractRes: ' + (Base64.encode(contractRes as Uint8Array) as string));
     * }
@@ -266,14 +333,28 @@ export namespace MockVM {
   }
 
   /**
+   * Get error message string after a VM error
+   * @returns  { Uint8Array | null }
+   * @example
+   * ```ts
+   * const errorMessage = MockVM.getErrorMessage();
+   * ```
+   */
+  export function getErrorMessage(): String | null {
+    const bytes = System.getBytes(METADATA_SPACE, 'error_message');
+
+    return StringBytes.bytesToString(bytes);
+  }
+
+  /**
     * Get exit code set when calling System.exitContract(...)
     * @returns { string[] }
     * @example
     * ```ts
-    * System.exitContract(0);
+    * System.exit(0);
     *
     * const exitCode = MockVM.getExitCode();
-    * 
+    *
     * if (exitCode) {
     *   System.log('exitCode: ' + exitCode.toString());
     * }
@@ -283,8 +364,8 @@ export namespace MockVM {
     const bytes = System.getBytes(METADATA_SPACE, 'exit_code');
 
     if (bytes) {
-      const valueType =  Protobuf.decode<system_calls.exit_contract_arguments>(bytes, system_calls.exit_contract_arguments.decode);
-      return valueType.exit_code;
+      const valueType = Protobuf.decode<value.value_type>(bytes, value.value_type.decode);
+      return valueType.int32_value;
     }
 
     return -1;
@@ -297,9 +378,9 @@ export namespace MockVM {
     * ```ts
     * System.log('log 1');
     * System.log('log 2');
-    * 
+    *
     * const logs = MockVM.getLogs();
-    * 
+    *
     * for (let index = 0; index < logs.length; index++) {
     *   const log = logs;
     * }
@@ -316,7 +397,7 @@ export namespace MockVM {
       for (let index = 0; index < logsListType.values.length; index++) {
         const log = logsListType.values[index];
 
-        logs.push(log.string_value!);
+        logs.push(log.string_value);
       }
     }
 
@@ -347,15 +428,15 @@ export namespace MockVM {
     * ```ts
     * System.Event('my-event-1', Base64.decode('event data'), [Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe')]);
     * System.Event('my-event-2', Base64.decode('event data 2'), [Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe')]);
-    * 
+    *
     * const events = MockVM.getEvents();
-    * 
+    *
     * for (let index = 0; index < events.length; index++) {
     *   const event = events[index];
-    * 
+    *
     *   System.log(event.name)
     *   System.log(event.data.toString())
-    * 
+    *
     *   event.impacted.forEach(acct => {
     *     System.log(Base58.encode(acct));
     *   });
@@ -372,7 +453,7 @@ export namespace MockVM {
 
       for (let index = 0; index < eventsListType.values.length; index++) {
         const eventBytes = eventsListType.values[index];
-        events.push(Protobuf.decode<system_calls.event_arguments>(eventBytes.bytes_value!, system_calls.event_arguments.decode));
+        events.push(Protobuf.decode<system_calls.event_arguments>(eventBytes.bytes_value, system_calls.event_arguments.decode));
       }
     }
 

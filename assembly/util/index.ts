@@ -6,4 +6,4 @@ export { Arrays } from "./arrays";
 export { SafeMath } from "./safeMath";
 export { MockVM } from "./mockVM";
 export { Token } from "./token";
-export { Space } from "./space";
+export { Storage } from "./storage";

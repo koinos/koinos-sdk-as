@@ -1,13 +1,11 @@
-![Test Ubuntu](https://github.com/koinos/koinos-sdk-as/actions/workflows/test-ubuntu.yml/badge.svg)
-![Test Windows](https://github.com/koinos/koinos-sdk-as/actions/workflows/test-windows.yml/badge.svg)
-![Test MacOS](https://github.com/koinos/koinos-sdk-as/actions/workflows/test-macos.yml/badge.svg)
+[![Test](https://github.com/koinos/koinos-sdk-as/actions/workflows/test.yml/badge.svg)](https://github.com/koinos/koinos-sdk-as/actions/workflows/test.yml)
 
 # koinos-sdk-as
 AssemblyScript (AS) Software Development Toolkit (SDK) for the Koinos Blockchain
 
 See documentation: https://koinos.github.io/koinos-sdk-as/
 
-Learn how to create smart contracts by looking at the examples repo: https://github.com/roaminroe/koinos-sdk-as-examples
+Learn how to create smart contracts by looking at the examples repo: https://github.com/roaminro/koinos-sdk-as-examples
 
 ## Requirements:
 You need to install NodeJS v16 or higher [download](https://nodejs.org/en/download/)

@@ -1,13 +1,13 @@
-import { Base58, StringBytes, Space, Arrays, Protobuf, System } from "../assembly";
+import { Base58, StringBytes, Storage, Arrays, Protobuf } from "../index";
 import { test_object } from './test';
 
 const mockContractId = Base58.decode('1DQzuCcTKacbs9GGScFTU1Hc8BsyARTPqe');
 const mockKey = StringBytes.stringToBytes("0x12345");
 
-describe('space', () => {
-  it('should put and get an object', () => {
+describe('storage', () => {
+  it('should put and get an object in a Map', () => {
     const obj = new test_object(42);
-    const Objects = new Space.Space<String, test_object>(mockContractId, 1, test_object.decode, test_object.encode);
+    const Objects = new Storage.Map<String, test_object>(mockContractId, 1, test_object.decode, test_object.encode);
     const key = 'key1';
 
     Objects.put(key, obj);
@@ -17,9 +17,17 @@ describe('space', () => {
     expect(storedObj!.value).toBe(obj.value);
   });
 
-  it('should check if space has an object or not', () => {
+  it('should get an object in a Map with default value', () => {
+    const Objects = new Storage.Map<String, test_object>(mockContractId, 1, test_object.decode, test_object.encode, () => new test_object(42));
+    const key = 'idonotexist';
+
+    let storedObj = Objects.get(key);
+    expect(storedObj!.value).toBe(42);
+  });
+
+  it('should check if storage has an object or not', () => {
     const key = 'key1';
-    const Objects = new Space.Space<String, test_object>(mockContractId, 1, test_object.decode, test_object.encode);
+    const Objects = new Storage.Map<String, test_object>(mockContractId, 1, test_object.decode, test_object.encode);
 
     expect(Objects.has(key)).toBe(true);
     expect(Objects.has('key2')).toBe(false);
@@ -27,7 +35,7 @@ describe('space', () => {
 
   it('should remove an object', () => {
     const key = 'key1';
-    const Objects = new Space.Space<String, test_object>(mockContractId, 1, test_object.decode, test_object.encode);
+    const Objects = new Storage.Map<String, test_object>(mockContractId, 1, test_object.decode, test_object.encode);
 
     expect(Objects.has(key)).toBe(true);
     Objects.remove(key);
@@ -36,7 +44,7 @@ describe('space', () => {
 
   it('should get next and prev object', () => {
     const obj = new test_object(42);
-    const Objects = new Space.Space<String, test_object>(mockContractId, 1, test_object.decode, test_object.encode);
+    const Objects = new Storage.Map<String, test_object>(mockContractId, 1, test_object.decode, test_object.encode);
 
     Objects.put('key1', obj);
     Objects.put('key3', obj);
@@ -54,7 +62,7 @@ describe('space', () => {
   });
 
   it('should get many', () => {
-    const Objects = new Space.Space<String, test_object>(mockContractId, 1, test_object.decode, test_object.encode);
+    const Objects = new Storage.Map<String, test_object>(mockContractId, 1, test_object.decode, test_object.encode);
 
     Objects.put('key1', new test_object(1));
     Objects.put('key3', new test_object(3));
@@ -74,13 +82,13 @@ describe('space', () => {
     expect(Arrays.equal(objs[0].key, StringBytes.stringToBytes('key2'))).toBe(true);
     expect(Arrays.equal(objs[1].key, StringBytes.stringToBytes('key3'))).toBe(true);
 
-    objs = Objects.getMany('key4', 2, Space.Direction.Descending);
+    objs = Objects.getMany('key4', 2, Storage.Direction.Descending);
 
     expect(objs.length).toBe(2);
     expect(Arrays.equal(objs[0].key, StringBytes.stringToBytes('key3'))).toBe(true);
     expect(Arrays.equal(objs[1].key, StringBytes.stringToBytes('key2'))).toBe(true);
 
-    let keys = Objects.getManyKeys('key4', 2, Space.Direction.Descending);
+    let keys = Objects.getManyKeys('key4', 2, Storage.Direction.Descending);
     expect(keys.length).toBe(2);
     expect(keys[0]).toBe('key3');
     expect(keys[1]).toBe('key2');
@@ -90,7 +98,7 @@ describe('space', () => {
     expect(keys[0]).toBe('key2');
     expect(keys[1]).toBe('key3');
 
-    let values = Objects.getManyValues('key4', 2, Space.Direction.Descending);
+    let values = Objects.getManyValues('key4', 2, Storage.Direction.Descending);
     expect(values.length).toBe(2);
     expect(values[0].value).toBe(3);
     expect(values[1].value).toBe(2);
@@ -100,31 +108,31 @@ describe('space', () => {
     expect(values[0].value).toBe(2);
     expect(values[1].value).toBe(3);
 
-    const Objects2 = new Space.Space<Uint8Array, test_object>(mockContractId, 1, test_object.decode, test_object.encode);
+    const Objects2 = new Storage.Map<Uint8Array, test_object>(mockContractId, 1, test_object.decode, test_object.encode);
 
-    objs = Objects2.getMany(StringBytes.stringToBytes('key4'), 2, Space.Direction.Descending);
+    objs = Objects2.getMany(StringBytes.stringToBytes('key4'), 2, Storage.Direction.Descending);
 
     expect(objs.length).toBe(2);
     expect(Arrays.equal(objs[0].key, StringBytes.stringToBytes('key3'))).toBe(true);
     expect(Arrays.equal(objs[1].key, StringBytes.stringToBytes('key2'))).toBe(true);
 
-    const keys2 = Objects2.getManyKeys(StringBytes.stringToBytes('key4'), 2, Space.Direction.Descending);
+    const keys2 = Objects2.getManyKeys(StringBytes.stringToBytes('key4'), 2, Storage.Direction.Descending);
     expect(keys2.length).toBe(2);
     expect(Arrays.equal(keys2[0], StringBytes.stringToBytes('key3'))).toBe(true);
     expect(Arrays.equal(keys2[1], StringBytes.stringToBytes('key2'))).toBe(true);
 
-    const values2 = Objects2.getManyValues(StringBytes.stringToBytes('key4'), 2, Space.Direction.Descending);
+    const values2 = Objects2.getManyValues(StringBytes.stringToBytes('key4'), 2, Storage.Direction.Descending);
     expect(values2.length).toBe(2);
     expect(values2[0].value).toBe(3);
     expect(values2[1].value).toBe(2);
   });
 });
 
-describe('space with proto key', () => {
+describe('storage with proto key', () => {
   it('should put and get an object', () => {
     const key = new test_object(1);
     const obj = new test_object(42);
-    const Objects = new Space.SpaceProtoKey<test_object, test_object>(mockContractId, 2,test_object.decode, test_object.encode, test_object.decode, test_object.encode);
+    const Objects = new Storage.ProtoMap<test_object, test_object>(mockContractId, 2,test_object.decode, test_object.encode, test_object.decode, test_object.encode);
 
     Objects.put(key, obj);
 
@@ -133,9 +141,9 @@ describe('space with proto key', () => {
     expect(storedObj!.value).toBe(obj.value);
   });
 
-  it('should check if space has an object or not', () => {
+  it('should check if storage has an object or not', () => {
     const key = new test_object(1);
-    const Objects = new Space.SpaceProtoKey<test_object, test_object>(mockContractId, 2,test_object.decode, test_object.encode, test_object.decode, test_object.encode);
+    const Objects = new Storage.ProtoMap<test_object, test_object>(mockContractId, 2,test_object.decode, test_object.encode, test_object.decode, test_object.encode);
 
     expect(Objects.has(key)).toBe(true);
     expect(Objects.has(new test_object(2))).toBe(false);
@@ -143,7 +151,7 @@ describe('space with proto key', () => {
 
   it('should remove an object', () => {
     const key = new test_object(1);
-    const Objects = new Space.SpaceProtoKey<test_object, test_object>(mockContractId, 2,test_object.decode, test_object.encode, test_object.decode, test_object.encode);
+    const Objects = new Storage.ProtoMap<test_object, test_object>(mockContractId, 2,test_object.decode, test_object.encode, test_object.decode, test_object.encode);
 
     expect(Objects.has(key)).toBe(true);
     Objects.remove(key);
@@ -152,7 +160,7 @@ describe('space with proto key', () => {
 
   it('should get next and prev object', () => {
     const obj = new test_object(42);
-    const Objects = new Space.SpaceProtoKey<test_object, test_object>(mockContractId, 2,test_object.decode, test_object.encode, test_object.decode, test_object.encode);
+    const Objects = new Storage.ProtoMap<test_object, test_object>(mockContractId, 2,test_object.decode, test_object.encode, test_object.decode, test_object.encode);
 
     Objects.put(new test_object(1), obj);
     Objects.put(new test_object(3), obj);
@@ -170,7 +178,7 @@ describe('space with proto key', () => {
   });
 
   it('should get many', () => {
-    const Objects = new Space.SpaceProtoKey<test_object, test_object>(mockContractId, 2,test_object.decode, test_object.encode, test_object.decode, test_object.encode);
+    const Objects = new Storage.ProtoMap<test_object, test_object>(mockContractId, 2,test_object.decode, test_object.encode, test_object.decode, test_object.encode);
 
     Objects.put(new test_object(1), new test_object(10));
     Objects.put(new test_object(3), new test_object(30));
@@ -190,7 +198,7 @@ describe('space with proto key', () => {
     expect(Arrays.equal(objs[0].key, Protobuf.encode(new test_object(2), test_object.encode))).toBe(true);
     expect(Arrays.equal(objs[1].key, Protobuf.encode(new test_object(3), test_object.encode))).toBe(true);
 
-    objs = Objects.getManyObj(new test_object(4), 2, Space.Direction.Descending);
+    objs = Objects.getManyObj(new test_object(4), 2, Storage.Direction.Descending);
 
     expect(objs.length).toBe(2);
     expect(Arrays.equal(objs[0].key, Protobuf.encode(new test_object(3), test_object.encode))).toBe(true);
@@ -202,7 +210,7 @@ describe('space with proto key', () => {
     expect(values[0].value).toBe(20);
     expect(values[1].value).toBe(30);
 
-    values = Objects.getManyObjValues(new test_object(4), 2, Space.Direction.Descending);
+    values = Objects.getManyObjValues(new test_object(4), 2, Storage.Direction.Descending);
 
     expect(values.length).toBe(2);
     expect(values[0].value).toBe(30);
@@ -214,10 +222,34 @@ describe('space with proto key', () => {
     expect(key[0].value).toBe(2);
     expect(key[1].value).toBe(3);
     
-    key = Objects.getManyObjKeys(new test_object(4), 2, Space.Direction.Descending);
+    key = Objects.getManyObjKeys(new test_object(4), 2, Storage.Direction.Descending);
 
     expect(key.length).toBe(2);
     expect(key[0].value).toBe(3);
     expect(key[1].value).toBe(2);
+  });
+
+  it('should put, get and remove an object in a Obj', () => {
+    const obj = new test_object(42);
+    const objStorage = new Storage.Obj<test_object>(mockContractId, 100, test_object.decode, test_object.encode);
+
+    objStorage.put(obj);
+
+    let storedObj = objStorage.get();
+    expect(storedObj).not.toBeNull();
+    expect(storedObj!.value).toBe(obj.value);
+
+    objStorage.remove();
+
+    storedObj = objStorage.get();
+    expect(storedObj).toBeNull();
+  });
+
+  it('should get  an object in a Obj with default value', () => {
+    const objStorage = new Storage.Obj<test_object>(mockContractId, 1000, test_object.decode, test_object.encode, () => new test_object(42));
+
+    let storedObj = objStorage.get();
+    expect(storedObj).not.toBeNull();
+    expect(storedObj!.value).toBe(42);
   });
 });

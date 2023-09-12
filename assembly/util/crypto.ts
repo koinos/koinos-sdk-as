@@ -1,4 +1,4 @@
-import { System } from "..";
+import { System } from "../systemCalls";
 
 export namespace Crypto {
   export const DEFAULT_PREFIX: u8 = 0x00;
