@@ -111,10 +111,10 @@ describe('MockVM', () => {
     // this will backup the database
     MockVM.commitTransaction();
 
-    expect(System.checkAuthority(authority.authorization_type.contract_call, mockAccount)).toBe(true);
-    expect(System.checkAuthority(authority.authorization_type.contract_upload, mockAccount2)).toBe(true);
-    expect(System.checkAuthority(authority.authorization_type.contract_upload, mockAccount)).toBe(false);
-    expect(System.checkAuthority(authority.authorization_type.transaction_application, mockAccount)).toBe(false);
+    expect(System.checkAuthorityLegacy(authority.authorization_type.contract_call, mockAccount)).toBe(true);
+    expect(System.checkAuthorityLegacy(authority.authorization_type.contract_upload, mockAccount2)).toBe(true);
+    expect(System.checkAuthorityLegacy(authority.authorization_type.contract_upload, mockAccount)).toBe(false);
+    expect(System.checkAuthorityLegacy(authority.authorization_type.transaction_application, mockAccount)).toBe(false);
   });
 
   it('should set the call contract results', () => {
