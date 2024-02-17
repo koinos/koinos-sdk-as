@@ -817,29 +817,29 @@ export namespace System {
 
   /**
    * Check authority for an account
-   * @param type type of authority required. It uses contract_call when it is not defined (null)
    * @param account account to check
+   * @param type type of authority required. By default it uses contract_call
    * @param data data to be passed. By default it uses operation args
    * @param caller contract caller. By default it calls the function to get the caller
    * @returns bool true if the account has authority
    * @example
    * ```ts
    * // check contract call authority
-   * System.checkAuthority(null, Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe));
+   * System.checkAuthority(Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe));
    *
    * // if you already have the caller or args you can
    * // pass them to save mana
    * System.checkAuthority(
-   *   authority.authorization_type.contract_call,
    *   Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe),
+   *   authority.authorization_type.contract_call,
    *   args,
    *   caller
    * );
    * ```
    */
   export function checkAuthority(
-    type: authority.authorization_type = authority.authorization_type.contract_call,
     account: Uint8Array,
+    type: authority.authorization_type = authority.authorization_type.contract_call,
     data: Uint8Array | null = getArguments().args,
     caller: Uint8Array | null = getCaller().caller
   ): bool {
