@@ -1,7 +1,7 @@
 import { env } from "./env";
 import { Protobuf, Reader, Writer } from 'as-proto';
 import { system_calls, system_call_ids, chain, protocol, authority, value, error, name_service } from '@koinos/proto-as';
-import { Base58, StringBytes } from "./util";
+import { Base58, StringBytes, Arrays } from "./util";
 
 export namespace System {
   export const DEFAULT_MAX_BUFFER_SIZE = 1024;
@@ -847,6 +847,7 @@ export namespace System {
     // smart wallet then reject the operation. Otherwise call
     // the native check authority thunk
     if (caller && caller.length > 0) {
+      if (Arrays.equal(caller, account)) return true;
       const contractMetadata = getContractMetadata(account);
       if (
         !contractMetadata ||
