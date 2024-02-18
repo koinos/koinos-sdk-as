@@ -839,7 +839,7 @@ export namespace System {
    */
   export function checkAuthority(
     account: Uint8Array,
-    type: authority.authorization_type | null = authority.authorization_type.contract_call,
+    type: authority.authorization_type = authority.authorization_type.contract_call,
     data: Uint8Array | null = getArguments().args,
     caller: Uint8Array | null = getCaller().caller
   ): bool {
