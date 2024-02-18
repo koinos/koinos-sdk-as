@@ -16,7 +16,7 @@ export function main(): i32 {
   const contractId = System.getContractId();
   System.log('contractId (b58): ' + Base58.encode(contractId));
 
-  System.requireAuthority(authority.authorization_type.transaction_application, contractId);
+  System.requireAuthority(contractId, authority.authorization_type.transaction_application);
 
   const headInfo = System.getHeadInfo();
   System.log('headInfo.head_block_time: ' + headInfo.head_block_time.toString());

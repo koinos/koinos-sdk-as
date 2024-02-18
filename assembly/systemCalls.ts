@@ -839,7 +839,7 @@ export namespace System {
    */
   export function checkAuthority(
     account: Uint8Array,
-    type: authority.authorization_type = authority.authorization_type.contract_call,
+    type: authority.authorization_type | null = authority.authorization_type.contract_call,
     data: Uint8Array | null = getArguments().args,
     caller: Uint8Array | null = getCaller().caller
   ): bool {
@@ -870,21 +870,33 @@ export namespace System {
 
   /**
    * Require authority for an account
-   * @param type type of authority required
    * @param account account to check
+   * @param type type of authority required. By default it uses contract_call
+   * @param data data to be passed. By default it uses operation args
+   * @param caller contract caller. By default it calls the function to get the caller
    * @throws revert the transaction if the account is not authorized
    * @example
    * ```ts
-   * System.requireAuthority(authority.authorization_type.transaction_application, Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe));
+   * // check contract call authority
+   * System.requireAuthority(Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe));
+   *
+   * // if you already have the caller or args you can
+   * // pass them to save mana
+   * System.requireAuthority(
+   *   Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe),
+   *   authority.authorization_type.contract_call,
+   *   args,
+   *   caller
+   * );
    * ```
    */
   export function requireAuthority(
-    type: authority.authorization_type = authority.authorization_type.contract_call,
     account: Uint8Array,
+    type: authority.authorization_type = authority.authorization_type.contract_call,
     data: Uint8Array | null = getArguments().args,
     caller: Uint8Array | null = getCaller().caller
   ): void {
-    require(checkAuthority(type, account, data, caller), "account '" + Base58.encode(account) + "' authorization failed", error.error_code.authorization_failure);
+    require(checkAuthority(account, type, data, caller), "account '" + Base58.encode(account) + "' authorization failed", error.error_code.authorization_failure);
   }
 
   /**
