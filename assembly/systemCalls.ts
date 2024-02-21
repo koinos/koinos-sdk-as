@@ -8,6 +8,8 @@ export namespace System {
   let MAX_BUFFER_SIZE = DEFAULT_MAX_BUFFER_SIZE;
   let SYSTEM_CALL_BUFFER = new Uint8Array(MAX_BUFFER_SIZE);
   let RETURN_BYTES = new Uint32Array(1);
+  let cacheGetArguments: getArgumentsReturn | null;
+  let cacheGetCaller: chain.caller_data | null;
 
   let ERROR_MESSAGE = "";
 
@@ -600,6 +602,7 @@ export namespace System {
     * ```
     */
   export function getArguments(): getArgumentsReturn {
+    if (cacheGetArguments) return cacheGetArguments!;
     const args = new system_calls.get_arguments_arguments();
     const encodedArgs = Protobuf.encode(args, system_calls.get_arguments_arguments.encode);
 
@@ -607,14 +610,14 @@ export namespace System {
     checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
     const result = Protobuf.decode<system_calls.get_arguments_result>(SYSTEM_CALL_BUFFER, system_calls.get_arguments_result.decode, RETURN_BYTES[0]);
 
-    let ret = new getArgumentsReturn();
+    cacheGetArguments = new getArgumentsReturn();
 
     if (result.value) {
-      ret.entry_point = result.value!.entry_point;
-      ret.args = result.value!.arguments;
+      cacheGetArguments!.entry_point = result.value!.entry_point;
+      cacheGetArguments!.args = result.value!.arguments;
     }
 
-    return ret;
+    return cacheGetArguments!;
   }
 
   /**
@@ -768,6 +771,7 @@ export namespace System {
     * ```
     */
   export function getCaller(): chain.caller_data {
+    if (cacheGetCaller) return cacheGetCaller!;
     const args = new system_calls.get_caller_arguments();
     const encodedArgs = Protobuf.encode(args, system_calls.get_caller_arguments.encode);
 
@@ -775,7 +779,8 @@ export namespace System {
     checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
     const result = Protobuf.decode<system_calls.get_caller_result>(SYSTEM_CALL_BUFFER, system_calls.get_caller_result.decode, RETURN_BYTES[0]);
 
-    return result.value!;
+    cacheGetCaller = result.value!;
+    return cacheGetCaller!;
   }
 
   /**
