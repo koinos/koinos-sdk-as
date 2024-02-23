@@ -822,29 +822,32 @@ export namespace System {
 
   /**
    * Check authority for an account
+   * @param type type of authority required
    * @param account account to check
-   * @param type type of authority required. By default it uses contract_call
    * @param data data to be passed. By default it uses operation args
    * @param caller contract caller. By default it calls the function to get the caller
    * @returns bool true if the account has authority
    * @example
    * ```ts
    * // check contract call authority
-   * System.checkAuthority(Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe));
-   *
-   * // if you already have the caller or args you can
-   * // pass them to save mana
-   * System.checkAuthority(
-   *   Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe),
+   * const isAuthorized = System.checkAuthority(
    *   authority.authorization_type.contract_call,
+   *   Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe
+   * );
+   *
+   * // you can also pass args and caller. By default it gets them automatically,
+   * // and they are cached to avoid multiple system calls
+   * System.checkAuthority(
+   *   authority.authorization_type.contract_call,
+   *   Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe),
    *   args,
    *   caller
    * );
    * ```
    */
   export function checkAuthority(
+    type: authority.authorization_type,
     account: Uint8Array,
-    type: authority.authorization_type = authority.authorization_type.contract_call,
     data: Uint8Array | null = getArguments().args,
     caller: Uint8Array | null = getCaller().caller
   ): bool {
@@ -876,8 +879,8 @@ export namespace System {
 
   /**
    * Require authority for an account
+   * @param type type of authority required
    * @param account account to check
-   * @param type type of authority required. By default it uses contract_call
    * @param data data to be passed. By default it uses operation args
    * @param caller contract caller. By default it calls the function to get the caller
    * @throws revert the transaction if the account is not authorized
@@ -897,12 +900,12 @@ export namespace System {
    * ```
    */
   export function requireAuthority(
+    type: authority.authorization_type,
     account: Uint8Array,
-    type: authority.authorization_type = authority.authorization_type.contract_call,
     data: Uint8Array | null = getArguments().args,
     caller: Uint8Array | null = getCaller().caller
   ): void {
-    require(checkAuthority(account, type, data, caller), "account '" + Base58.encode(account) + "' authorization failed", error.error_code.authorization_failure);
+    require(checkAuthority(type, account, data, caller), "account '" + Base58.encode(account) + "' authorization failed", error.error_code.authorization_failure);
   }
 
   /**
