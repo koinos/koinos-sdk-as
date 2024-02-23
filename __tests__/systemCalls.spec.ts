@@ -109,21 +109,21 @@ describe('SystemCalls', () => {
     MockVM.commitTransaction();
 
     expect(() => {
-      System.requireAuthority(mockAccount, authority.authorization_type.contract_call);
+      System.requireAuthority(authority.authorization_type.contract_call, mockAccount);
     }).not.toThrow();
 
     expect(() => {
-      System.requireAuthority(mockAccount2, authority.authorization_type.contract_upload);
+      System.requireAuthority(authority.authorization_type.contract_upload, mockAccount2);
     }).not.toThrow();
 
     expect(() => {
       // will print "account 1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe has not authorized action"
-      System.requireAuthority(mockAccount, authority.authorization_type.contract_upload);
+      System.requireAuthority(authority.authorization_type.contract_upload, mockAccount);
     }).toThrow();
 
     expect(() => {
       // will print "account 1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe has not authorized action"
-      System.requireAuthority(mockAccount, authority.authorization_type.transaction_application);
+      System.requireAuthority(authority.authorization_type.transaction_application, mockAccount);
     }).toThrow();
   });
 
