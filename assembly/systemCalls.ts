@@ -888,15 +888,6 @@ export namespace System {
    * ```ts
    * // check contract call authority
    * System.requireAuthority(Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe));
-   *
-   * // if you already have the caller or args you can
-   * // pass them to save mana
-   * System.requireAuthority(
-   *   Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe),
-   *   authority.authorization_type.contract_call,
-   *   args,
-   *   caller
-   * );
    * ```
    */
   export function requireAuthority(
