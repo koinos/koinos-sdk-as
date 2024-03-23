@@ -3,8 +3,9 @@
   "version": "1.1.0",
   "main": "index.ts",
   "license": "MIT",
-  "author": "Koinos Group <contact@koinos.group>",
+  "author": "Roamin Ro",
   "repository": "https://github.com/koinos/koinos-sdk-as",
+  "contributors": ["Koinos Group <contact@koinos.group>", "Julián González"],
   "type": "module",
   "dependencies": {
     "@as-covers/core": "^0.4.2",
