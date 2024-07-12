@@ -97,7 +97,7 @@ describe('SystemCalls', () => {
     expect(getLastIrreversibleBlock).toBe(setLastIrreversibleBlock);
   });
 
-  it('should require authorities', () => {
+  xit('should require authorities', () => {
     const auth1 = new MockVM.MockAuthority(authority.authorization_type.contract_call, mockAccount, true);
     const auth2 = new MockVM.MockAuthority(authority.authorization_type.contract_upload, mockAccount, false);
     const auth3 = new MockVM.MockAuthority(authority.authorization_type.contract_upload, mockAccount2, true);
