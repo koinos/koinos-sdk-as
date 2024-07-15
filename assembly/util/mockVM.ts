@@ -245,6 +245,19 @@ export namespace MockVM {
   }
 
   /**
+   * Set contract metadata that will be used when calling System.getContractMetadata(...)
+   * @param { chain.contract_metadata_object } metadata
+   * ```ts
+   * MockVM.setContractMetadata(new chain.contract_metadata.object(hash, false, true, true, true));
+   *
+   * System.getContractMetadata();
+   * ```
+   */
+  export function setContractMetadata(metadata: chain.contract_metadata_object): void {
+    System.putObject(METADATA_SPACE, 'contract_metadata', metadata, chain.contract_metadata_object.encode);
+  }
+
+  /**
    * Set results that will be used when calling System.verifyVRFProof(...)
    * @param { Uint8Array[] } verifyVRFProofResults The results are FIFO, so the first System.verifyVRFPRoof(...) used in your code will use the first result you set in callContractResults, the second System.callContract(...) will get the second result, etc...
    * @example

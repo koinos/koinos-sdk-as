@@ -33,6 +33,11 @@ export namespace System {
     return MAX_BUFFER_SIZE;
   }
 
+  export function resetCache(): void {
+    cacheGetArguments = null;
+    cacheGetCaller = null;
+  }
+
   // General Blockchain Management
 
   /**

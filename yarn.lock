@@ -220,12 +220,11 @@
     ts-poet "^4.9.0"
     typescript "^4.6.4"
 
-"@koinos/mock-vm@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@koinos/mock-vm/-/mock-vm-1.0.0.tgz#7d2cab9c5394e0c6e1f708fefa609cedd0bd63dd"
-  integrity sha512-fKQdTXcG7zkBTWtkHeSYTqBmTAyLqy1bdiJKzrkF6OqSBlM2IkALK76e5QNPoDt5AWQZC5+0c1L2EVjAgpU++w==
+"@koinos/mock-vm@https://github.com/koinos/koinos-mock-vm.git#20-get-contract-metadata":
+  version "1.1.0"
+  resolved "https://github.com/koinos/koinos-mock-vm.git#133bb991a714a840f934c9935bb7bddb636a1966"
   dependencies:
-    "@koinos/proto-js" "1.0.0"
+    "@koinos/proto-js" "2.1.0"
     "@noble/hashes" "^1.0.0"
     "@noble/secp256k1" "^1.5.5"
     chalk "4.1.2"
@@ -240,10 +239,10 @@
   dependencies:
     as-proto "npm:@koinos/as-proto"
 
-"@koinos/proto-js@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@koinos/proto-js/-/proto-js-1.0.0.tgz#ac200fb6e95dbbc0059e0f3c002b8fa54498340a"
-  integrity sha512-5ro2EjM5tD267Rfc4Se9w/CA+IixPXY4vFFK894Z+fqOEOjrkUmtZM9Y57u4s6BLNtvNUUUx/Hvqe9H3Usc47g==
+"@koinos/proto-js@2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@koinos/proto-js/-/proto-js-2.1.0.tgz#38fdbd01519ad1706b5f7edcf697a6ebbbd3db76"
+  integrity sha512-mp2JmNhp7db6TixVqXF4VrhCW6lRXf6JCojY3c6jyByPyysQgAVJLLx2sUZlPzeUdP6Bnqt23485FMIo46TQ9g==
 
 "@multiformats/base-x@^4.0.1":
   version "4.0.1"

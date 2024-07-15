@@ -12,6 +12,7 @@ const mockStrBytes = StringBytes.stringToBytes(mockStr);
 describe('SystemCalls', () => {
   beforeEach(() => {
     MockVM.reset();
+    System.resetCache();
   });
 
   it('should get the chain id', () => {
@@ -412,5 +413,54 @@ describe('SystemCalls', () => {
     obj2 = System.getNextObject<string, TestObject.test_object>(objSpace, 'key3', TestObject.test_object.decode);
 
     expect(obj2).toBeNull();
+  });
+
+  it('should check authority using contract metadata', () => {
+    /* The expected behavior is that if the contract is called from an operation,
+     * signing the transaction should authorize.
+     * Otherwise authorization is granted if the caller is the requested contract
+     * or if the contract has an authorize overload and that overload returns true.
+     */
+
+    let mockAccountAuthorizationTrue = new MockVM.MockAuthority(authority.authorization_type.contract_call, mockAccount, true);
+    let mockAccountAuthorizationFalse = new MockVM.MockAuthority(authority.authorization_type.contract_call, mockAccount, false);
+
+    MockVM.setContractMetadata(new chain.contract_metadata_object(new Uint8Array(0), false, false, false, false));
+    MockVM.setCaller(new chain.caller_data(new Uint8Array(0), chain.privilege.user_mode));
+    MockVM.setEntryPoint(0xc3ab8ff1);
+    MockVM.setContractArguments(mockAccount);
+
+    // Case 1: Caller is an op and the transaction is signed. Should authorize.
+    MockVM.setAuthorities([mockAccountAuthorizationTrue]);
+    expect(System.checkAuthority(authority.authorization_type.contract_call, mockAccount)).toBe(true);
+
+    // Case 2: Caller is an op and the transaction is not signed. Should not authorize.
+    MockVM.setAuthorities([mockAccountAuthorizationFalse]);
+    expect(System.checkAuthority(authority.authorization_type.contract_call, mockAccount)).toBe(false);
+
+    // Case 3: Caller is another contract and there is no authorize override. Should not authorize.
+    MockVM.setCaller(new chain.caller_data(mockAccount2, chain.privilege.user_mode));
+    System.resetCache();
+
+    MockVM.setAuthorities([mockAccountAuthorizationFalse]);
+    expect(System.checkAuthority(authority.authorization_type.contract_call, mockAccount)).toBe(false);
+
+    // Case 4: Caller is another contract, there is an authorize override, and it authorizes. Should authorize.
+    MockVM.setContractMetadata(new chain.contract_metadata_object(new Uint8Array(0), false, true, true, true));
+    MockVM.setAuthorities([mockAccountAuthorizationTrue]);
+
+    expect(System.checkAuthority(authority.authorization_type.contract_call, mockAccount)).toBe(true);
+
+    // Case 5: Caller is another contract, there is an authorize override, and it does not authorize. Should not authorize.
+    MockVM.setAuthorities([mockAccountAuthorizationFalse]);
+
+    expect(System.checkAuthority(authority.authorization_type.contract_call, mockAccount)).toBe(false);
+
+    // Case 6: Caller's authority is requested. Should authorize.
+    MockVM.setAuthorities([mockAccountAuthorizationFalse]);
+    MockVM.setCaller(new chain.caller_data(mockAccount, chain.privilege.user_mode));
+    System.resetCache();
+
+    expect(System.checkAuthority(authority.authorization_type.contract_call, mockAccount)).toBe(true);
   });
 });
