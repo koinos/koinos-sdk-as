@@ -220,9 +220,10 @@
     ts-poet "^4.9.0"
     typescript "^4.6.4"
 
-"@koinos/mock-vm@https://github.com/koinos/koinos-mock-vm.git#20-get-contract-metadata":
+"@koinos/mock-vm@1.1.0":
   version "1.1.0"
-  resolved "https://github.com/koinos/koinos-mock-vm.git#133bb991a714a840f934c9935bb7bddb636a1966"
+  resolved "https://registry.yarnpkg.com/@koinos/mock-vm/-/mock-vm-1.1.0.tgz#fc3d384e42d8dd6c9f0116528f3c9dffc71e8334"
+  integrity sha512-R03wLkHs6j3zVau/wUyXne8Ifh83jBbEhdPP+nthdEWh5n+oKA0GF34DNtpo5KkhW1afOfdEJjP6svbM2frPGQ==
   dependencies:
     "@koinos/proto-js" "2.1.0"
     "@noble/hashes" "^1.0.0"

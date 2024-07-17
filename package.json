@@ -16,7 +16,7 @@
     "@koinos/abi-proto-gen": "1.0.0",
     "@koinos/as-gen": "1.0.0",
     "@koinos/as-proto-gen": "1.0.0",
-    "@koinos/mock-vm": "https://github.com/koinos/koinos-mock-vm.git#20-get-contract-metadata",
+    "@koinos/mock-vm": "1.1.0",
     "@koinos/proto-as": "1.3.0",
     "@roamin/protoc": "^2.4.0",
     "as-bignum": "^0.2.18",
