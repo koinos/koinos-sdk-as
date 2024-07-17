@@ -240,6 +240,12 @@
   dependencies:
     as-proto "npm:@koinos/as-proto"
 
+"@koinos/proto-as@https://github.com/koinos/koinos-proto-as#master":
+  version "2.1.0"
+  resolved "https://github.com/koinos/koinos-proto-as#deb83b1315529e0ebd8a526cc1d957588a8bee03"
+  dependencies:
+    as-proto "npm:@koinos/as-proto"
+
 "@koinos/proto-js@2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@koinos/proto-js/-/proto-js-2.1.0.tgz#38fdbd01519ad1706b5f7edcf697a6ebbbd3db76"
