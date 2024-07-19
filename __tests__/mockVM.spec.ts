@@ -222,4 +222,23 @@ describe('MockVM', () => {
 
     expect(System.checkSystemAuthority()).toBe(true);
   });
+
+  it("should reset cache", () => {
+    MockVM.setCaller(new chain.caller_data(mockAccount, chain.privilege.user_mode));
+    expect(Arrays.equal(System.getCaller().caller, mockAccount)).toBe(true);
+
+    MockVM.setCaller(new chain.caller_data(mockAccount2, chain.privilege.user_mode));
+    expect(Arrays.equal(System.getCaller().caller, mockAccount2)).toBe(true);
+
+    MockVM.setEntryPoint(1);
+    MockVM.setContractArguments(mockAccount);
+    expect(Arrays.equal(System.getArguments().args, mockAccount)).toBe(true);
+    expect(System.getArguments().entry_point).toBe(1);
+
+    MockVM.setContractArguments(mockAccount2);
+    expect(Arrays.equal(System.getArguments().args, mockAccount2));
+
+    MockVM.setEntryPoint(2);
+    expect(System.getArguments().entry_point).toBe(2);
+  });
 });
