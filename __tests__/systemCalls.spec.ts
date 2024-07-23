@@ -432,35 +432,33 @@ describe('SystemCalls', () => {
 
     // Case 1: Caller is an op and the transaction is signed. Should authorize.
     MockVM.setAuthorities([mockAccountAuthorizationTrue]);
-    expect(System.checkAuthority(authority.authorization_type.contract_call, mockAccount)).toBe(true);
+    expect(System.checkAccountAuthority(mockAccount)).toBe(true);
 
     // Case 2: Caller is an op and the transaction is not signed. Should not authorize.
     MockVM.setAuthorities([mockAccountAuthorizationFalse]);
-    expect(System.checkAuthority(authority.authorization_type.contract_call, mockAccount)).toBe(false);
+    expect(System.checkAccountAuthority(mockAccount)).toBe(false);
 
     // Case 3: Caller is another contract and there is no authorize override. Should not authorize.
     MockVM.setCaller(new chain.caller_data(mockAccount2, chain.privilege.user_mode));
-    System.resetCache();
 
-    MockVM.setAuthorities([mockAccountAuthorizationFalse]);
-    expect(System.checkAuthority(authority.authorization_type.contract_call, mockAccount)).toBe(false);
+    MockVM.setAuthorities([mockAccountAuthorizationTrue]);
+    expect(System.checkAccountAuthority(mockAccount)).toBe(false);
 
     // Case 4: Caller is another contract, there is an authorize override, and it authorizes. Should authorize.
     MockVM.setContractMetadata(new chain.contract_metadata_object(new Uint8Array(0), false, true, true, true));
     MockVM.setAuthorities([mockAccountAuthorizationTrue]);
 
-    expect(System.checkAuthority(authority.authorization_type.contract_call, mockAccount)).toBe(true);
+    expect(System.checkAccountAuthority(mockAccount)).toBe(true);
 
     // Case 5: Caller is another contract, there is an authorize override, and it does not authorize. Should not authorize.
     MockVM.setAuthorities([mockAccountAuthorizationFalse]);
 
-    expect(System.checkAuthority(authority.authorization_type.contract_call, mockAccount)).toBe(false);
+    expect(System.checkAccountAuthority(mockAccount)).toBe(false);
 
     // Case 6: Caller's authority is requested. Should authorize.
     MockVM.setAuthorities([mockAccountAuthorizationFalse]);
     MockVM.setCaller(new chain.caller_data(mockAccount, chain.privilege.user_mode));
-    System.resetCache();
 
-    expect(System.checkAuthority(authority.authorization_type.contract_call, mockAccount)).toBe(true);
+    expect(System.checkAccountAuthority(mockAccount)).toBe(true);
   });
 });
