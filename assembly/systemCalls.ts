@@ -905,12 +905,15 @@ export namespace System {
     caller: Uint8Array | null = getCaller().caller,
     enhancedSecurity: bool = true,
   ): void {
+    let authorized: bool = false;
     if (enhancedSecurity) {
-      require(checkAccountAuthority(account, data, caller, type), "account '" + Base58.encode(account) + "' authorization failed", error.error_code.authorization_failure);
+      authorized = checkAccountAuthority(account, data, caller, type);
     }
     else {
-      require(checkAuthority(type, account, data), "account '" + Base58.encode(account) + "' authorization failed", error.error_code.authorization_failure);
+      authorized = checkAuthority(type, account, data);
     }
+
+    require(authorized, "account '" + Base58.encode(account) + "' authorization failed", error.error_code.authorization_failure);
   }
 
   /**
