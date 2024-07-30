@@ -1,6 +1,6 @@
 {
   "name": "@koinos/sdk-as",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "main": "index.ts",
   "license": "MIT",
   "author": "Roamin Ro",
@@ -17,7 +17,7 @@
     "@koinos/as-gen": "1.0.0",
     "@koinos/as-proto-gen": "1.0.0",
     "@koinos/mock-vm": "1.1.0",
-    "@koinos/proto-as": "https://github.com/koinos/koinos-proto-as#master",
+    "@koinos/proto-as": "2.2.0",
     "@roamin/protoc": "^2.4.0",
     "as-bignum": "^0.2.18",
     "as-proto": "npm:@koinos/as-proto@1.0.1",
