@@ -1,13 +1,15 @@
 import { env } from "./env";
 import { Protobuf, Reader, Writer } from 'as-proto';
 import { system_calls, system_call_ids, chain, protocol, authority, value, error, name_service } from '@koinos/proto-as';
-import { Base58, StringBytes } from "./util";
+import { Base58, StringBytes, Arrays } from "./util";
 
 export namespace System {
   export const DEFAULT_MAX_BUFFER_SIZE = 1024;
   let MAX_BUFFER_SIZE = DEFAULT_MAX_BUFFER_SIZE;
   let SYSTEM_CALL_BUFFER = new Uint8Array(MAX_BUFFER_SIZE);
   let RETURN_BYTES = new Uint32Array(1);
+  let cacheGetArguments: getArgumentsReturn | null;
+  let cacheGetCaller: chain.caller_data | null;
 
   let ERROR_MESSAGE = "";
 
@@ -29,6 +31,11 @@ export namespace System {
 
   export function getSystemBufferSize(): u32 {
     return MAX_BUFFER_SIZE;
+  }
+
+  export function resetCache(): void {
+    cacheGetArguments = null;
+    cacheGetCaller = null;
   }
 
   // General Blockchain Management
@@ -600,6 +607,7 @@ export namespace System {
     * ```
     */
   export function getArguments(): getArgumentsReturn {
+    if (cacheGetArguments) return cacheGetArguments!;
     const args = new system_calls.get_arguments_arguments();
     const encodedArgs = Protobuf.encode(args, system_calls.get_arguments_arguments.encode);
 
@@ -607,14 +615,14 @@ export namespace System {
     checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
     const result = Protobuf.decode<system_calls.get_arguments_result>(SYSTEM_CALL_BUFFER, system_calls.get_arguments_result.decode, RETURN_BYTES[0]);
 
-    let ret = new getArgumentsReturn();
+    cacheGetArguments = new getArgumentsReturn();
 
     if (result.value) {
-      ret.entry_point = result.value!.entry_point;
-      ret.args = result.value!.arguments;
+      cacheGetArguments!.entry_point = result.value!.entry_point;
+      cacheGetArguments!.args = result.value!.arguments;
     }
 
-    return ret;
+    return cacheGetArguments!;
   }
 
   /**
@@ -768,6 +776,7 @@ export namespace System {
     * ```
     */
   export function getCaller(): chain.caller_data {
+    if (cacheGetCaller) return cacheGetCaller!;
     const args = new system_calls.get_caller_arguments();
     const encodedArgs = Protobuf.encode(args, system_calls.get_caller_arguments.encode);
 
@@ -775,19 +784,36 @@ export namespace System {
     checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
     const result = Protobuf.decode<system_calls.get_caller_result>(SYSTEM_CALL_BUFFER, system_calls.get_caller_result.decode, RETURN_BYTES[0]);
 
-    return result.value!;
+    cacheGetCaller = result.value!;
+    return cacheGetCaller!;
   }
 
   /**
-    * Check authority for an account
-    * @param type type of authority required
-    * @param account account to check
-    * @returns bool true if the account has authority
-    * @example
-    * ```ts
-    * System.checkAuthority(authority.authorization_type.transaction_application, Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe));
-    * ```
-    */
+   * Get contract metadata
+   */
+  export function getContractMetadata(contractId: Uint8Array): chain.contract_metadata_object | null {
+    const args = new system_calls.get_contract_metadata_arguments(contractId);
+    const encodedArgs = Protobuf.encode(args, system_calls.get_contract_metadata_arguments.encode);
+
+    const retcode = env.invokeSystemCall(system_call_ids.system_call_id.get_contract_metadata, SYSTEM_CALL_BUFFER.dataStart as u32, MAX_BUFFER_SIZE, encodedArgs.dataStart as u32, encodedArgs.byteLength, RETURN_BYTES.dataStart as u32);
+    checkErrorCode(retcode, SYSTEM_CALL_BUFFER.slice(0, RETURN_BYTES[0]));
+    const result = Protobuf.decode<system_calls.get_contract_metadata_result>(SYSTEM_CALL_BUFFER, system_calls.get_contract_metadata_result.decode, RETURN_BYTES[0]);
+    return result.value;
+  }
+
+  /**
+   * Check authority for an account (not as secure,
+   * it is recommended to use System.checkAuthority)
+   * @param type type of authority required
+   * @param account account to check
+   * @param data data to be passed
+   * @returns bool true if the account has authority
+   * @example
+   * @deprecated
+   * ```ts
+   * System.checkAuthorityLegacy(authority.authorization_type.transaction_application, Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe));
+   * ```
+   */
   export function checkAuthority(type: authority.authorization_type, account: Uint8Array, data: Uint8Array | null = null): bool {
     const args = new system_calls.check_authority_arguments(type, account, data !== null ? data : new Uint8Array(0));
     const encodedArgs = Protobuf.encode(args, system_calls.check_authority_arguments.encode);
@@ -798,18 +824,96 @@ export namespace System {
     return result.value;
   }
 
+  function contractAuthorizes(contractId: Uint8Array, type: authority.authorization_type): bool {
+    const contractMetadata = getContractMetadata(contractId);
+    if (!contractMetadata) {
+      return false;
+    }
+
+    switch (type) {
+      case authority.authorization_type.contract_call:
+        return contractMetadata.authorizes_call_contract;
+      case authority.authorization_type.contract_upload:
+        return contractMetadata.authorizes_upload_contract;
+      case authority.authorization_type.transaction_application:
+        return contractMetadata.authorizes_transaction_application;
+    }
+
+    return false;
+  }
+
+  /**
+   * Check authority for an account
+   * @param type type of authority required
+   * @param account account to check
+   * @param data data to be passed. By default it uses operation args
+   * @param caller contract caller. By default it calls the function to get the caller
+   * @returns bool true if the account has authority
+   * @example
+   * ```ts
+   * // check contract call authority
+   * const isAuthorized = System.checkAuthority(
+   *   authority.authorization_type.contract_call,
+   *   Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe
+   * );
+   *
+   * // you can also pass args and caller. By default it gets them automatically,
+   * // and they are cached to avoid multiple system calls
+   * System.checkAuthority(
+   *   authority.authorization_type.contract_call,
+   *   Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe),
+   *   args,
+   *   caller
+   * );
+   * ```
+   */
+  export function checkAccountAuthority(
+    account: Uint8Array,
+    data: Uint8Array | null = getArguments().args,
+    caller: Uint8Array | null = getCaller().caller,
+    type: authority.authorization_type = authority.authorization_type.contract_call,
+  ): bool {
+    // if there is a caller and the account does not use a
+    // smart wallet then reject the operation. Otherwise call
+    // the original check authority
+    if (caller && caller.length > 0) {
+      if (Arrays.equal(caller, account)) return true;
+      if (!contractAuthorizes(account, type)) return false;
+    }
+
+    // call the original check authority
+    return checkAuthority(type, account, data);
+  }
+
   /**
    * Require authority for an account
    * @param type type of authority required
    * @param account account to check
+   * @param data data to be passed. By default it uses operation args
+   * @param caller contract caller. By default it calls the function to get the caller
    * @throws revert the transaction if the account is not authorized
    * @example
    * ```ts
-   * System.requireAuthority(authority.authorization_type.transaction_application, Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe));
+   * // check contract call authority
+   * System.requireAuthority(Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe));
    * ```
    */
-  export function requireAuthority(type: authority.authorization_type, account: Uint8Array): void {
-    require(checkAuthority(type, account), "account '" + Base58.encode(account) + "' authorization failed", error.error_code.authorization_failure);
+  export function requireAuthority(
+    type: authority.authorization_type,
+    account: Uint8Array,
+    data: Uint8Array | null = getArguments().args,
+    caller: Uint8Array | null = getCaller().caller,
+    enhancedSecurity: bool = true,
+  ): void {
+    let authorized: bool = false;
+    if (enhancedSecurity) {
+      authorized = checkAccountAuthority(account, data, caller, type);
+    }
+    else {
+      authorized = checkAuthority(type, account, data);
+    }
+
+    require(authorized, "account '" + Base58.encode(account) + "' authorization failed", error.error_code.authorization_failure);
   }
 
   /**

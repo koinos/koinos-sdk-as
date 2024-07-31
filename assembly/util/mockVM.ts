@@ -35,6 +35,7 @@ export namespace MockVM {
     entryPointObj.int32_value = entryPoint;
 
     System.putObject(METADATA_SPACE, 'entry_point', entryPointObj, value.value_type.encode);
+    System.resetCache();
   }
 
   /**
@@ -51,6 +52,7 @@ export namespace MockVM {
     */
   export function setContractArguments(contractArguments: Uint8Array): void {
     System.putBytes(METADATA_SPACE, 'contract_arguments', contractArguments);
+    System.resetCache();
   }
 
   /**
@@ -129,6 +131,7 @@ export namespace MockVM {
     */
   export function setCaller(callerData: chain.caller_data): void {
     System.putObject(METADATA_SPACE, 'caller', callerData, chain.caller_data.encode);
+    System.resetCache();
   }
 
   /**
@@ -242,6 +245,19 @@ export namespace MockVM {
     systemAuthValueType.bool_value = authorized;
 
     System.putObject(METADATA_SPACE, 'system_authority', systemAuthValueType, value.value_type.encode);
+  }
+
+  /**
+   * Set contract metadata that will be used when calling System.getContractMetadata(...)
+   * @param { chain.contract_metadata_object } metadata
+   * ```ts
+   * MockVM.setContractMetadata(new chain.contract_metadata.object(hash, false, true, true, true));
+   *
+   * System.getContractMetadata();
+   * ```
+   */
+  export function setContractMetadata(metadata: chain.contract_metadata_object): void {
+    System.putObject(METADATA_SPACE, 'contract_metadata', metadata, chain.contract_metadata_object.encode);
   }
 
   /**
