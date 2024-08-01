@@ -244,6 +244,14 @@
   resolved "https://registry.yarnpkg.com/@koinos/proto-js/-/proto-js-2.1.0.tgz#38fdbd01519ad1706b5f7edcf697a6ebbbd3db76"
   integrity sha512-mp2JmNhp7db6TixVqXF4VrhCW6lRXf6JCojY3c6jyByPyysQgAVJLLx2sUZlPzeUdP6Bnqt23485FMIo46TQ9g==
 
+"@koinos/sdk-as-cli@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@koinos/sdk-as-cli/-/sdk-as-cli-1.0.2.tgz#83fe031dca9a446254096fada278d3f523204c0c"
+  integrity sha512-ggbPz/LXozvb54G0dVZ9VkgPPmjKlwCI8LamSJXA+MZ8KOggfr2lgKMHT3AcMd0CtmmRN0JzHSM+cgk8sNYltg==
+  dependencies:
+    chalk "4.1.2"
+    commander "^9.0.0"
+
 "@multiformats/base-x@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@multiformats/base-x/-/base-x-4.0.1.tgz#95ff0fa58711789d53aefb2590a8b7a4e715d121"
@@ -1320,6 +1328,11 @@ commander@^2.19.0:
   version "2.20.3"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
+
+commander@^9.0.0:
+  version "9.5.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-9.5.0.tgz#bc08d1eb5cedf7ccb797a96199d41c7bc3e60d30"
+  integrity sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==
 
 commander@^9.4.1:
   version "9.4.1"

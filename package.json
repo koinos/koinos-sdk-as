@@ -18,6 +18,7 @@
     "@koinos/as-proto-gen": "1.0.0",
     "@koinos/mock-vm": "https://github.com/koinos/koinos-mock-vm#22-nameservice",
     "@koinos/proto-as": "2.2.0",
+    "@koinos/sdk-as-cli": "^1.0.2",
     "@roamin/protoc": "^2.4.0",
     "as-bignum": "^0.2.18",
     "as-proto": "npm:@koinos/as-proto@1.0.1",
