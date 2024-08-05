@@ -241,4 +241,12 @@ describe('MockVM', () => {
     MockVM.setEntryPoint(2);
     expect(System.getArguments().entry_point).toBe(2);
   });
+
+  it("should set contract address", () => {
+    MockVM.setContractName(mockAccount, "foobar");
+    expect(System.getContractName(mockAccount)).toBe("foobar");
+
+    MockVM.setContractAddress("foobar", mockAccount);
+    expect(Arrays.equal(System.getContractAddress("foobar"), mockAccount)).toBe(true)
+  })
 });

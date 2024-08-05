@@ -1,11 +1,13 @@
 import { Protobuf } from "as-proto";
 import { System } from "../systemCalls";
-import { system_calls, chain, protocol, authority, value } from '@koinos/proto-as';
+import { system_calls, chain, protocol, authority, value, name_service } from '@koinos/proto-as';
 import { StringBytes } from "./stringBytes";
 
 
 export namespace MockVM {
   export const METADATA_SPACE = new chain.object_space(true);
+  export const CONTRACT_NAME_SPACE = new chain.object_space(true, new Uint8Array(0), 1);
+  export const CONTRACT_ADDRESS_SPACE = new chain.object_space(true, new Uint8Array(0), 2);
 
   export class MockAuthority {
     autorization_type: authority.authorization_type;
@@ -474,6 +476,46 @@ export namespace MockVM {
     }
 
     return events;
+  }
+
+  /**
+   * Set contract name for contract at address
+   * @param address The contract address
+   * @param name The desired contract name
+   * @example
+   * ```ts
+   * MockVM.setContractName(contractAddress, "foobar");
+   *
+   * System.get_contract_name(contractAddress); // returns "foobar";
+   * ```
+   */
+  export function setContractName(address: Uint8Array, name: string): void {
+    System.putObject(
+      CONTRACT_NAME_SPACE,
+      address,
+      new name_service.name_record(name),
+      name_service.name_record.encode
+    );
+  }
+
+  /**
+   * Set contract address for contract with name
+   * @param name The contract name
+   * @param address The desired contract address
+   * @example
+   * ```ts
+   * MockVM.setContractAddress("foobar", contractAddress);
+   *
+   * System.get_contract_address("foobar"); // returns 'contract_address';
+   * ```
+   */
+  export function setContractAddress(name: string, address: Uint8Array): void {
+    System.putObject(
+      CONTRACT_ADDRESS_SPACE,
+      StringBytes.stringToBytes(name),
+      new name_service.address_record(address),
+      name_service.address_record.encode
+    );
   }
 
   /**
