@@ -1,16 +1,26 @@
 import { Protobuf } from "as-proto";
 import { System } from "../systemCalls";
-import { token, error } from "@koinos/proto-as";
+import { error, kcs4, system_calls } from "@koinos/proto-as";
 
 enum entries {
   name_entry = 0x82a3537f,
   symbol_entry = 0xb76a7ca1,
   decimals_entry = 0xee80fd2f,
+  get_info_entry = 0xbd7f6850,
   total_supply_entry = 0xb0da3934,
   balance_of_entry = 0x5c721497,
+  allowance_entry = 0x32f09fa1,
+  get_allowances_entry = 0x8fa16456,
   transfer_entry = 0x27f576ca,
   mint_entry = 0xdc6f17bb,
   burn_entry = 0x859facc5,
+  approve_entry = 0x74e21680,
+}
+
+function checkErrorCode(callRes: System.callReturn, defaultMessage : string = ""): void {
+  if (callRes.code != error.error_code.success) {
+    System.fail(callRes.res.error!.message.length > 0 ? callRes.res.error!.message : defaultMessage );
+  }
 }
 
 export class Token {
@@ -37,11 +47,11 @@ export class Token {
     * ```
     */
   name(): string {
-    const args = new token.name_arguments();
+    const args = new kcs4.name_arguments();
 
-    const callRes = System.call(this._contractId, entries.name_entry, Protobuf.encode(args, token.name_arguments.encode));
-    System.require(callRes.code == 0, "failed to retrieve token name");
-    const res = Protobuf.decode<token.name_result>(callRes.res.object as Uint8Array, token.name_result.decode);
+    const callRes = System.call(this._contractId, entries.name_entry, Protobuf.encode(args, kcs4.name_arguments.encode));
+    checkErrorCode(callRes, "failed to retrieve token name");
+    const res = Protobuf.decode<kcs4.name_result>(callRes.res.object as Uint8Array, kcs4.name_result.decode);
 
     return res.value;
   }
@@ -56,11 +66,11 @@ export class Token {
     * ```
     */
   symbol(): string {
-    const args = new token.symbol_arguments();
+    const args = new kcs4.symbol_arguments();
 
-    const callRes = System.call(this._contractId, entries.symbol_entry, Protobuf.encode(args, token.symbol_arguments.encode));
-    System.require(callRes.code == 0, "failed to retrieve token symbol");
-    const res = Protobuf.decode<token.symbol_result>(callRes.res.object as Uint8Array, token.symbol_result.decode);
+    const callRes = System.call(this._contractId, entries.symbol_entry, Protobuf.encode(args, kcs4.symbol_arguments.encode));
+    checkErrorCode(callRes, "failed to retrieve token symbol");
+    const res = Protobuf.decode<kcs4.symbol_result>(callRes.res.object as Uint8Array, kcs4.symbol_result.decode);
 
     return res.value;
   }
@@ -75,13 +85,30 @@ export class Token {
     * ```
     */
   decimals(): u32 {
-    const args = new token.decimals_arguments();
+    const args = new kcs4.decimals_arguments();
 
-    const callRes = System.call(this._contractId, entries.decimals_entry, Protobuf.encode(args, token.decimals_arguments.encode));
-    System.require(callRes.code == 0, "failed to retrieve token decimals");
-    const res = Protobuf.decode<token.decimals_result>(callRes.res.object as Uint8Array, token.decimals_result.decode);
+    const callRes = System.call(this._contractId, entries.decimals_entry, Protobuf.encode(args, kcs4.decimals_arguments.encode));
+    checkErrorCode(callRes, "failed to retrieve token decimals");
+    const res = Protobuf.decode<kcs4.decimals_result>(callRes.res.object as Uint8Array, kcs4.decimals_result.decode);
 
     return res.value;
+  }
+
+  /**
+   * Get the token information
+   * @returns kcs4.get_info_result
+   * @example
+   * ``` ts
+   *  const token = new Token(Base58.decode('1DQzuCcTKacbs9GGScFTU1Hc8BsyARTPqe'));
+   *  const tokenInfo = token.getInfo();
+   * ```
+   */
+  getInfo(): kcs4.get_info_result {
+    const args = new kcs4.get_info_arguments();
+
+    const callRes = System.call(this._contractId, entries.get_info_entry, Protobuf.encode(args, kcs4.get_info_arguments.encode));
+    checkErrorCode(callRes, "failed to retrieve token info");
+    return Protobuf.decode<kcs4.get_info_result>(callRes.res.object as Uint8Array, kcs4.get_info_result.decode);
   }
 
   /**
@@ -94,11 +121,11 @@ export class Token {
    * ```
    */
   totalSupply(): u64 {
-    const args = new token.total_supply_arguments();
+    const args = new kcs4.total_supply_arguments();
 
-    const callRes = System.call(this._contractId, entries.total_supply_entry, Protobuf.encode(args, token.total_supply_arguments.encode));
-    System.require(callRes.code == 0, "failed to retrieve token supply");
-    const res = Protobuf.decode<token.total_supply_result>(callRes.res.object as Uint8Array, token.total_supply_result.decode);
+    const callRes = System.call(this._contractId, entries.total_supply_entry, Protobuf.encode(args, kcs4.total_supply_arguments.encode));
+    checkErrorCode(callRes, "failed to retrieve token supply");
+    const res = Protobuf.decode<kcs4.total_supply_result>(callRes.res.object as Uint8Array, kcs4.total_supply_result.decode);
 
     return res.value;
   }
@@ -115,13 +142,58 @@ export class Token {
    * ```
    */
   balanceOf(owner: Uint8Array): u64 {
-    const args = new token.balance_of_arguments(owner);
+    const args = new kcs4.balance_of_arguments(owner);
 
-    const callRes = System.call(this._contractId, entries.balance_of_entry, Protobuf.encode(args, token.balance_of_arguments.encode));
-    System.require(callRes.code == 0, "failed to retrieve token balance");
-    const res = Protobuf.decode<token.balance_of_result>(callRes.res.object as Uint8Array, token.balance_of_result.decode);
+    const callRes = System.call(this._contractId, entries.balance_of_entry, Protobuf.encode(args, kcs4.balance_of_arguments.encode));
+    checkErrorCode(callRes, "failed to retrieve token balance");
+    const res = Protobuf.decode<kcs4.balance_of_result>(callRes.res.object as Uint8Array, kcs4.balance_of_result.decode);
 
     return res.value;
+  }
+
+  /**
+   * Get a 'spender' allowance of the 'owner' account
+   * @param owner owner account
+   * @param spender spender address
+   * @returns u64 allowance
+   * ```ts
+   *  const ownerAccount = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqE');
+   *  const spenderAccount = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqE');
+   *  const token = new Token(Base58.decode('1DQzuCcTKacbs9GGScFTU1Hc8BsyARTPqe'));
+   *  const allowance = token.allowance(ownerAccount, spenderAccount);
+   * ```
+   */
+  allowance(owner: Uint8Array, spender: Uint8Array): u64 {
+    const args = new kcs4.allowance_arguments(owner, spender);
+
+    const callRes = System.call(this._contractId, entries.allowance_entry, Protobuf.encode(args, kcs4.allowance_arguments.encode));
+    checkErrorCode(callRes, "failed to retrieve allowance");
+    const res = Protobuf.decode<kcs4.allowance_result>(callRes.res.object as Uint8Array, kcs4.allowance_result.decode);
+
+    return res.value;
+  }
+
+  /**
+   * Get allowances of the 'owner' account
+   * @param owner owner account
+   * @param start spender start address
+   * @param limit maximum allowances to return
+   * @param descending return allowances descending
+   * @returns kcs4.spender_value[] allowances
+   * ```ts
+   *  const ownerAccount = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqE');
+   *  const spenderAccount = new Token(Base58.decode('1DQzuCcTKacbs9GGScFTU1Hc8BsyARTPqe'));
+   *  const allowances = token.get_allowances(ownerAccount, new Uint8Array(0), 10, true);
+   * ```
+   */
+  getAllowances(owner: Uint8Array, start: Uint8Array, limit: i32, descending: bool): kcs4.spender_value[] {
+    const args = new kcs4.get_allowances_arguments(owner, start, limit, descending);
+
+    const callRes = System.call(this._contractId, entries.get_allowances_entry, Protobuf.encode(args, kcs4.get_allowances_arguments.encode));
+    checkErrorCode(callRes, "failed to retrieve allowances");
+    const res = Protobuf.decode<kcs4.get_allowances_result>(callRes.res.object as Uint8Array, kcs4.get_allowances_result.decode);
+
+    return res.allowances;
   }
 
   /**
@@ -146,8 +218,12 @@ export class Token {
    * ```
    */
   transfer(from: Uint8Array, to: Uint8Array, amount: u64): bool {
-    const args = new token.transfer_arguments(from, to, amount);
-    const callRes = System.call(this._contractId, entries.transfer_entry, Protobuf.encode(args, token.transfer_arguments.encode));
+    const args = new kcs4.transfer_arguments(from, to, amount);
+    const callRes = System.call(this._contractId, entries.transfer_entry, Protobuf.encode(args, kcs4.transfer_arguments.encode));
+    if (callRes.code != error.error_code.success && callRes.res.error!.message.length > 0) {
+      System.log(callRes.res.error!.message);
+    }
+
     return callRes.code == error.error_code.success;
   }
 
@@ -171,8 +247,12 @@ export class Token {
    * ```
    */
   mint(to: Uint8Array, amount: u64): bool {
-    const args = new token.mint_arguments(to, amount);
-    const callRes = System.call(this._contractId, entries.mint_entry, Protobuf.encode(args, token.mint_arguments.encode));
+    const args = new kcs4.mint_arguments(to, amount);
+    const callRes = System.call(this._contractId, entries.mint_entry, Protobuf.encode(args, kcs4.mint_arguments.encode));
+    if (callRes.code != error.error_code.success && callRes.res.error!.message.length > 0) {
+      System.log(callRes.res.error!.message);
+    }
+
     return callRes.code == error.error_code.success;
   }
 
@@ -196,8 +276,41 @@ export class Token {
    * ```
    */
   burn(from: Uint8Array, amount: u64): bool {
-    const args = new token.burn_arguments(from, amount);
-    const callRes = System.call(this._contractId, entries.burn_entry, Protobuf.encode(args, token.burn_arguments.encode));
+    const args = new kcs4.burn_arguments(from, amount);
+    const callRes = System.call(this._contractId, entries.burn_entry, Protobuf.encode(args, kcs4.burn_arguments.encode));
+    if (callRes.code != error.error_code.success && callRes.res.error!.message.length > 0) {
+      System.log(callRes.res.error!.message);
+    }
+
+    return callRes.code == error.error_code.success;
+  }
+
+  /**
+   * Approve the `spender` to spend `owner` tokens
+   * @param owner owner account
+   * @param spender spender account
+   * @param value number of tokens to approve
+   * @returns bool approve succeeded or not
+   * ```ts
+   *  const owner = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
+   *  const spender = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
+   *  const value = 12345678;
+   *
+   *  const token = new Token(Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe'));
+   *  if (token.approve(owner, spender, value)) {
+   *    // approve succeeded
+   *  } else {
+   *    // approve failed
+   *  }
+   * ```
+   */
+  approve(owner: Uint8Array, spender: Uint8Array, value: u64): bool {
+    const args = new kcs4.approve_arguments(owner, spender, value);
+    const callRes = System.call(this._contractId, entries.approve_entry, Protobuf.encode(args, kcs4.approve_arguments.encode));
+    if (callRes.code != error.error_code.success && callRes.res.error!.message.length > 0) {
+      System.log(callRes.res.error!.message);
+    }
+
     return callRes.code == error.error_code.success;
   }
 }
