@@ -1,6 +1,6 @@
 import { Protobuf } from "as-proto";
 import { System } from "../systemCalls";
-import { error, kcs4, system_calls } from "@koinos/proto-as";
+import { error, kcs4 } from "@koinos/proto-as";
 
 enum entries {
   name_entry = 0x82a3537f,
