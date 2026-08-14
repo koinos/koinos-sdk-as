@@ -324,11 +324,12 @@ export namespace MockVM {
    */
   export function getCallContractArguments(): system_calls.call_arguments[] {
     const callContractArgumentsListType = System.getObject<string, value.list_type>(METADATA_SPACE, "call_contract_arguments", value.list_type.decode);
+    if (!callContractArgumentsListType) return [];
     const callContractArguments = new Array<system_calls.call_arguments>(
-      callContractArgumentsListType!.values.length
+      callContractArgumentsListType.values.length
     );
-    for (let i = 0; i < callContractArgumentsListType!.values.length; i += 1) {
-      callContractArguments[i] = Protobuf.decode<system_calls.call_arguments>(callContractArgumentsListType!.values[i].bytes_value, system_calls.call_arguments.decode);
+    for (let i = 0; i < callContractArgumentsListType.values.length; i += 1) {
+      callContractArguments[i] = Protobuf.decode<system_calls.call_arguments>(callContractArgumentsListType.values[i].bytes_value, system_calls.call_arguments.decode);
     }
     return callContractArguments;
   }

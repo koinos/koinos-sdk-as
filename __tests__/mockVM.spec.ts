@@ -138,6 +138,7 @@ describe('MockVM', () => {
   });
 
   it('should get and clear the call contract arguments', () => {
+    MockVM.clearCallContractArguments();
     MockVM.setCallContractResults([
       new system_calls.exit_arguments(0, new chain.result())
     ]);

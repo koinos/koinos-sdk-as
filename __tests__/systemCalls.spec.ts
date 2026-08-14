@@ -106,6 +106,7 @@ describe('SystemCalls', () => {
     MockVM.setAuthorities([auth1, auth2, auth3]);
     MockVM.setCaller(new chain.caller_data(new Uint8Array(0), chain.privilege.user_mode));
     MockVM.setContractArguments(mockAccount);
+    MockVM.setEntryPoint(0x4a2dbd90);
 
     // the System.requireAuthority that will fail will revert the database's VM, so we need to commit the transaction
     // this will backup the database
