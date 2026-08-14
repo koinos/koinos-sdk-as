@@ -294,6 +294,70 @@ export namespace MockVM {
   }
 
   /**
+   * Returns the list of calls triggered by the contract
+   * @example
+   * ```ts
+   * System.call(
+   *   Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe"),
+   *   12545657,
+   *   Protobuf.encode(
+   *     new kcs4.balance_of_arguments(account),
+   *     kcs4.balance_of_arguments.encode
+   *   )
+   * );
+   * 
+   * const callContractArguments = MockVM.getCallContractArguments();
+   * System.log(Base58.encode(callContractArguments[0].contract_id));
+   * // 1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe
+   * 
+   * System.log(`${callContractArguments[0].entry_point}`);
+   * // 12545657
+   * 
+   * const args = Protobuf.decode<kcs4.balance_of_arguments>(
+   *   callContractArguments[0].args,
+   *   kcs4.balance_of_arguments.decode
+   * );
+   * System.log(Base58.encode(args.owner));
+   * // account
+   * ```
+   * @returns { system_calls.call_arguments[] }
+   */
+  export function getCallContractArguments(): system_calls.call_arguments[] {
+    const callContractArgumentsListType = System.getObject<string, value.list_type>(METADATA_SPACE, "call_contract_arguments", value.list_type.decode);
+    if (!callContractArgumentsListType) return [];
+    const callContractArguments = new Array<system_calls.call_arguments>(
+      callContractArgumentsListType.values.length
+    );
+    for (let i = 0; i < callContractArgumentsListType.values.length; i += 1) {
+      callContractArguments[i] = Protobuf.decode<system_calls.call_arguments>(callContractArgumentsListType.values[i].bytes_value, system_calls.call_arguments.decode);
+    }
+    return callContractArguments;
+  }
+
+  /**
+   * Clears the list of call contract arguments
+   * @example
+   * ```ts
+   * System.call(
+   *   Base58.decode("1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe"),
+   *   0x5c721497,
+   *   Protobuf.encode(
+   *     new kcs4.balance_of_arguments(account),
+   *     kcs4.balance_of_arguments.encode
+   *   )
+   * );
+   * 
+   * MockVM.clearCallContractArguments();
+   * const callContractArguments = MockVM.getCallContractArguments();
+   * System.log(`${callContractArguments.length}`);
+   * // the length is 0 because the list was cleared
+   * ```
+   */
+  export function clearCallContractArguments(): void {
+    System.removeObject(METADATA_SPACE, "call_contract_arguments");
+  }
+
+  /**
     * Set call contract results that will be used when calling System.callContract(...)
     * @param { Uint8Array[] } callContractResults The results are FIFO, so the first System.callContract(...) used in your code will use the first result you set in callContractResults, the second System.callContract(...) will get the second result, etc...
     * @example
@@ -476,6 +540,21 @@ export namespace MockVM {
     }
 
     return events;
+  }
+
+  /**
+   * Remove the current events
+   * @example
+   * ```ts
+   * System.Event('my-event-1', Base64.decode('event data'), [Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe')]);
+   * MockMV.clearEvents();
+   * System.Event('my-event-2', Base64.decode('event data 2'), [Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe')]);
+   * const events = MockVM.getEvents();
+   * System.log(`events length: ${events.length}`);
+   * // length is 1 because the first event was deleted
+   */
+  export function clearEvents(): void {
+    System.putBytes(METADATA_SPACE, 'events', new Uint8Array(0));
   }
 
   /**

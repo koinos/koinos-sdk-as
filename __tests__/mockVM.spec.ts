@@ -5,6 +5,7 @@ import { chain, protocol, authority, system_calls } from '@koinos/proto-as';
 const mockAccount = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqe');
 const mockAccount2 = Base58.decode('1DQzuCcTKacbs9GGScRTU1Hc8BsyARTPqE');
 const mockId = StringBytes.stringToBytes("0x12345");
+const mockData = StringBytes.stringToBytes("0x3f452e78a178900123afff3cabe1");
 
 describe('MockVM', () => {
 
@@ -134,6 +135,41 @@ describe('MockVM', () => {
     callRes = System.call(mockAccount, 1, new Uint8Array(0));
     expect(callRes).not.toBeNull();
     expect(Arrays.equal(callRes.res.object, mockAccount2)).toBe(true);
+  });
+
+  it('should get and clear the call contract arguments', () => {
+    MockVM.clearCallContractArguments();
+    MockVM.setCallContractResults([
+      new system_calls.exit_arguments(0, new chain.result())
+    ]);
+
+    System.call(mockAccount, 1, new Uint8Array(0));
+
+    let callArgs = MockVM.getCallContractArguments();
+    expect(callArgs.length).toBe(1);
+    expect(Base58.encode(callArgs[0].contract_id)).toBe(Base58.encode(mockAccount));
+    expect(callArgs[0].entry_point).toBe(1);
+    expect(Base58.encode(callArgs[0].args)).toBe(Base58.encode(new Uint8Array(0)));
+
+    MockVM.clearCallContractArguments();
+    callArgs = MockVM.getCallContractArguments();
+    expect(callArgs.length).toBe(0);
+  });
+
+  it('should get and clear system events', () => {
+    System.event('my_event', mockData, [mockAccount]);
+
+    let events = MockVM.getEvents();
+    expect(events.length).toBe(1);
+    expect(events[0].name).toBe('my_event');
+    expect(events[0].impacted.length).toBe(1);
+    expect(Base58.encode(events[0].impacted[0])).toBe(Base58.encode(mockAccount));
+    expect(Base58.encode(events[0].data)).toBe(Base58.encode(mockData));
+
+    MockVM.clearEvents();
+
+    events = MockVM.getEvents();
+    expect(events.length).toBe(0);
   });
 
   it('should reset the MockVM database', () => {
